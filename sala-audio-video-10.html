@@ -20,81 +20,90 @@
     background:radial-gradient(120% 70% at 50% 0%, #2c0f22 0%, #0d0410 55%);
     color:var(--cream); font-family:var(--font-body); min-height:100vh;
   }
-  .wrap{ max-width:520px; margin:0 auto; padding:16px 14px 24px; position:relative; }
+  .wrap{ max-width:480px; margin:0 auto; padding:10px 10px 14px; position:relative; }
 
-  .toast{ position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:#2c1420; border:1px solid var(--line); color:var(--cream); padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; pointer-events:none; transition:.25s; z-index:999; }
+  .toast{ position:fixed; left:50%; bottom:20px; transform:translateX(-50%) translateY(20px); background:#2c1420; border:1px solid var(--line); color:var(--cream); padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; pointer-events:none; transition:.25s; z-index:999; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-  .ribbon{ position:absolute; top:0; left:0; width:80px; padding:10px 6px 14px; text-align:center;
-    background:linear-gradient(180deg,#4a1c8a,#8a1d5a 85%); border:2px solid var(--gold); border-top:none;
+  .topbar{ display:flex; align-items:flex-start; gap:4px; }
+
+  .ribbon{ flex:0 0 auto; width:56px; padding:6px 3px 8px; text-align:center;
+    background:linear-gradient(180deg,#4a1c8a,#8a1d5a 85%); border:1.5px solid var(--gold); border-top:none;
     clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%); }
-  .ribbon .crown{ font-size:22px; }
-  .ribbon .txt{ color:var(--gold); font-weight:800; font-size:10px; letter-spacing:.06em; margin-top:2px; }
-  .ribbon .dots{ color:var(--gold); font-size:9px; margin-top:4px; letter-spacing:2px; }
+  .ribbon .crown{ font-size:15px; line-height:1; }
+  .ribbon .txt{ color:var(--gold); font-weight:800; font-size:7px; letter-spacing:.04em; margin-top:1px; }
+  .ribbon .dots{ color:var(--gold); font-size:6px; margin-top:2px; letter-spacing:1px; }
 
-  .head{ text-align:center; padding-top:6px; }
-  .head h1{ font-family:var(--font-display); font-size:17px; font-weight:700; color:var(--cream); display:flex; align-items:center; justify-content:center; gap:8px; }
-  .head h1 .wave{ color:var(--pink-2); font-size:13px; letter-spacing:1px; }
-  .head .premium{ color:var(--gold); font-weight:700; font-size:12px; margin-top:4px; letter-spacing:.05em; }
-  .head .cap-pill{ display:inline-block; margin-top:8px; border:1.5px solid var(--pink); color:var(--pink-2); border-radius:999px; padding:4px 16px; font-size:11.5px; font-weight:700; letter-spacing:.04em; }
+  .head{ flex:1; text-align:center; padding-top:2px; min-width:0; }
+  .head h1{ font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--cream); display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; }
+  .head h1 .wave{ color:var(--pink-2); font-size:10px; letter-spacing:1px; }
+  .head .premium{ color:var(--gold); font-weight:700; font-size:10px; margin-top:3px; letter-spacing:.05em; }
+  .head .cap-pill{ display:inline-block; margin-top:5px; border:1.5px solid var(--pink); color:var(--pink-2); border-radius:999px; padding:2px 12px; font-size:10px; font-weight:700; letter-spacing:.04em; }
 
-  .top-right{ position:absolute; top:14px; right:14px; text-align:right; }
-  .coin-pill{ display:inline-flex; align-items:center; gap:6px; background:#1c0a14; border:1px solid var(--gold); border-radius:999px; padding:6px 12px; font-weight:700; font-size:13px; }
-  .coin-pill .c{ width:16px;height:16px;border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe9a8, var(--gold)); display:inline-flex; align-items:center; justify-content:center; font-size:10px; color:#3a2500; }
-  .icon-row{ display:flex; gap:14px; justify-content:flex-end; margin-top:10px; }
-  .icon-row button{ background:none; border:none; color:var(--muted); font-family:var(--font-body); display:flex; flex-direction:column; align-items:center; gap:2px; font-size:9.5px; cursor:pointer; }
-  .icon-row button .i{ font-size:17px; }
+  .top-right{ flex:0 0 auto; text-align:right; }
+  .coin-pill{ display:inline-flex; align-items:center; gap:4px; background:#1c0a14; border:1px solid var(--gold); border-radius:999px; padding:4px 8px; font-weight:700; font-size:11px; white-space:nowrap; }
+  .coin-pill .c{ width:13px;height:13px;border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe9a8, var(--gold)); display:inline-flex; align-items:center; justify-content:center; font-size:8px; color:#3a2500; }
+  .icon-row{ display:flex; gap:6px; justify-content:flex-end; margin-top:5px; }
+  .icon-row button{ background:none; border:none; color:var(--muted); font-family:var(--font-body); display:flex; flex-direction:column; align-items:center; gap:1px; font-size:7.5px; cursor:pointer; }
+  .icon-row button .i{ font-size:13px; }
 
-  .seat-grid{ margin-top:100px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-  .seat{ position:relative; aspect-ratio:1/1.15; border-radius:14px; border:1.5px solid var(--pink); background:#2a0f1e; overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 0 14px -6px rgba(255,47,135,.6) inset; }
-  .seat .num{ position:absolute; top:6px; left:6px; background:#1c0a14; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px; }
+  .seat-grid{ margin-top:10px; display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+  .seat{ position:relative; aspect-ratio:1/1; border-radius:12px; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 0 12px -3px rgba(255,47,135,.85), 0 0 10px -4px rgba(255,47,135,.6) inset; }
+  .seat .num{ position:absolute; top:4px; left:4px; background:#1c0a14; color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:6px; }
   .seat video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .seat .silhouette{ font-size:44px; color:#5a2a40; }
-  .seat .mic{ position:absolute; bottom:6px; left:50%; transform:translateX(-50%); font-size:13px; color:#fff; opacity:.85; }
+  .seat .silhouette{ width:46%; height:46%; color:#8a3a5a; }
+  .seat .silhouette svg{ width:100%; height:100%; fill:currentColor; }
+  .seat .mic{ position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--pink-soft,#ffd6e8); opacity:.9; }
   .seat .mic.muted{ color:var(--bad); }
-  .seat .name{ position:absolute; bottom:4px; left:6px; right:6px; font-size:9px; color:var(--cream); text-align:center; background:rgba(0,0,0,.4); border-radius:6px; padding:1px 0; display:none; }
+  .seat .name{ position:absolute; bottom:3px; left:4px; right:4px; font-size:8px; color:var(--cream); text-align:center; background:rgba(0,0,0,.4); border-radius:6px; padding:1px 0; display:none; }
   .seat.occupied .name{ display:block; }
-  .seat.mine{ border-color:var(--gold); box-shadow:0 0 16px -4px rgba(244,197,66,.7); }
-  .seat.leader{ grid-column:2; aspect-ratio:1/1; border-radius:50%; border:2px solid var(--gold); box-shadow:0 0 24px -4px rgba(244,197,66,.8); }
-  .seat.leader .crown-badge{ position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:22px; }
+  .seat.mine{ border-color:var(--gold); box-shadow:0 0 14px -3px rgba(244,197,66,.9); }
+  .seat.leader{ grid-column:2; border-radius:50%; border:2px solid var(--pink); background:#0d0410; box-shadow:0 0 0 4px rgba(255,47,135,.18), 0 0 20px -2px rgba(255,47,135,.9); }
+  .seat.leader .crown-badge{ position:absolute; top:2px; left:50%; transform:translateX(-50%); font-size:15px; z-index:2; }
   .seat.leader .num{ display:none; }
-  .seat.leader .tag{ position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); white-space:nowrap; background:#1c0a14; border:1px solid var(--pink); color:var(--pink-2); font-size:9.5px; font-weight:700; padding:3px 10px; border-radius:999px; }
+  .seat.leader .silhouette{ padding-top:6px; }
+  .seat.leader .mic{ color:var(--gold); bottom:14px; }
+  .seat.leader .tag{ position:absolute; bottom:2px; left:50%; transform:translateX(-50%); white-space:nowrap; color:var(--pink-2); font-size:6.5px; font-weight:800; letter-spacing:.03em; }
+  .seat.leader.occupied .tag{ display:none; }
+  .seat.leader.occupied .name{ display:block; bottom:3px; }
 
-  .bar{ margin-top:44px; background:#1c0a14; border:1px solid var(--line); border-radius:18px; padding:12px 6px; display:flex; justify-content:space-around; }
-  .bar button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:4px; font-family:var(--font-body); font-size:10px; cursor:pointer; }
-  .bar button .i{ font-size:19px; }
-  .bar button .st{ font-size:9px; font-weight:700; }
+  .bar{ margin-top:22px; background:rgba(28,10,20,.7); border:1px solid var(--line); border-radius:16px; padding:8px 2px; display:flex; justify-content:space-around; }
+  .bar button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:2px; font-family:var(--font-body); font-size:8.5px; cursor:pointer; padding:2px; }
+  .bar button .i{ font-size:16px; }
+  .bar button .st{ font-size:7.5px; font-weight:700; }
   .bar button .st.on{ color:var(--good); }
   .bar button .st.off{ color:var(--bad); }
   .bar button.danger .i, .bar button.danger .lbl{ color:var(--bad); }
 
-  .nav2{ margin-top:14px; display:flex; justify-content:space-around; align-items:flex-end; }
-  .nav2 button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:5px; font-family:var(--font-body); font-size:10px; cursor:pointer; }
-  .nav2 button .i{ font-size:18px; }
-  .nav2 .center{ transform:translateY(-10px); }
-  .nav2 .center .i{ font-size:26px; width:54px; height:54px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--gold),#ffb14a); color:#3a2500; box-shadow:0 0 20px -2px rgba(244,197,66,.8); }
+  .nav2{ margin-top:10px; display:flex; justify-content:space-around; align-items:flex-end; }
+  .nav2 button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:3px; font-family:var(--font-body); font-size:8.5px; cursor:pointer; }
+  .nav2 button .i{ font-size:15px; }
+  .nav2 .center{ transform:translateY(-6px); }
+  .nav2 .center .i{ font-size:20px; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--gold),#ffb14a); color:#3a2500; box-shadow:0 0 16px -2px rgba(244,197,66,.9); }
   .nav2 .center .lbl{ color:var(--gold); font-weight:700; }
 
-  .status-line{ text-align:center; margin-top:14px; color:var(--muted); font-size:11.5px; }
+  .status-line{ text-align:center; margin-top:8px; color:var(--muted); font-size:10px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="ribbon"><div class="crown">👑</div><div class="txt">PREMIUM</div><div class="dots">✦✦✦</div></div>
+  <div class="topbar">
+    <div class="ribbon"><div class="crown">👑</div><div class="txt">PREMIUM</div><div class="dots">✦✦✦</div></div>
 
-  <div class="top-right">
-    <div class="coin-pill"><span class="c">$</span><span id="balance">—</span></div>
-    <div class="icon-row">
-      <button onclick="soon('Ranking')"><span class="i">🏆</span>Ranking</button>
-      <button onclick="soon('Presentes')"><span class="i">🎁</span>Presentes</button>
-      <button onclick="soon('Configurações')"><span class="i">⚙️</span>Config.</button>
+    <div class="head">
+      <h1><span class="wave">·|||·</span> SALA DE ÁUDIO E VÍDEO <span class="wave">·|||·</span></h1>
+      <div class="premium">✦ PREMIUM ✦</div>
+      <div class="cap-pill">10 LUGARES</div>
     </div>
-  </div>
 
-  <div class="head">
-    <h1><span class="wave">·|||·</span> SALA DE ÁUDIO E VÍDEO <span class="wave">·|||·</span></h1>
-    <div class="premium">✦ PREMIUM ✦</div>
-    <div class="cap-pill">10 LUGARES</div>
+    <div class="top-right">
+      <div class="coin-pill"><span class="c">$</span><span id="balance">—</span></div>
+      <div class="icon-row">
+        <button onclick="soon('Ranking')"><span class="i">🏆</span>Rank.</button>
+        <button onclick="soon('Presentes')"><span class="i">🎁</span>Pres.</button>
+        <button onclick="soon('Configurações')"><span class="i">⚙️</span>Conf.</button>
+      </div>
+    </div>
   </div>
 
   <div class="seat-grid" id="seat-grid"></div>
@@ -175,7 +184,7 @@ function renderSeatGrid(){
     if(isLeaderSeat) inner += `<div class="crown-badge">👑</div>`;
     inner += `<div class="num">${n}</div>`;
     inner += `<video id="vid-${n}" autoplay playsinline muted style="display:none;"></video>`;
-    inner += `<div class="silhouette" id="sil-${n}">👤</div>`;
+    inner += `<div class="silhouette" id="sil-${n}"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
     inner += `<div class="mic${info && info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info ? (info.mic_on===false?"🔇":"🎙️") : ""}</div>`;
     inner += `<div class="name">${info ? (info.display_name||"—") : ""}</div>`;
     if(isLeaderSeat) inner += `<div class="tag">LÍDER DA SALA</div>`;
