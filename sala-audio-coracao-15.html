@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RosaLive — Sala de Áudio</title>
+<title>Sala CoraÃ§Ã£o Â· 15 lugares</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,13 +11,13 @@
 <style>
   :root{
     --pink:#ff2f87; --pink-2:#ff6fae; --gold:#f4c542; --cream:#fbe9f0; --muted:#c99bb0;
-    --good:#57d68d; --bad:#ff5a5a; --line:rgba(255,143,195,.35); --bg:#0d0410;
+    --good:#57d68d; --bad:#ff5a5a; --line:rgba(255,143,195,.35);
     --font-display:"Fraunces", serif; --font-body:"Inter", sans-serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:radial-gradient(120% 70% at 50% 0%, #2c0f22 0%, var(--bg) 55%);
+    background:radial-gradient(120% 70% at 50% 0%, #2c0f22 0%, #0d0410 55%);
     color:var(--cream); font-family:var(--font-body); min-height:100vh;
   }
   .wrap{ max-width:480px; margin:0 auto; padding:10px 10px 14px; position:relative; }
@@ -25,18 +25,17 @@
   .toast{ position:fixed; left:50%; bottom:20px; transform:translateX(-50%) translateY(20px); background:#2c1420; border:1px solid var(--line); color:var(--cream); padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; pointer-events:none; transition:.25s; z-index:999; }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-  .topbar{ display:flex; align-items:flex-start; gap:4px; }
+  .topbar{ display:flex; align-items:flex-start; gap:6px; }
 
-  .ribbon{ flex:0 0 auto; width:56px; padding:6px 3px 8px; text-align:center;
-    background:linear-gradient(180deg,#4a1c8a,#8a1d5a 85%); border:1.5px solid var(--gold); border-top:none;
-    clip-path:polygon(0 0,100% 0,100% 82%,50% 100%,0 82%); }
-  .ribbon .crown{ font-size:15px; line-height:1; }
-  .ribbon .txt{ color:var(--gold); font-weight:800; font-size:7px; letter-spacing:.04em; margin-top:1px; }
-  .ribbon .dots{ color:var(--gold); font-size:6px; margin-top:2px; letter-spacing:1px; }
+  .room-photo-box{ position:relative; flex:0 0 auto; width:64px; height:64px; border-radius:12px; overflow:hidden; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .room-photo-box img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .room-photo-box .ph{ font-size:22px; }
+  .room-photo-box .edit{ position:absolute; bottom:2px; right:2px; width:18px; height:18px; border-radius:50%; background:#1c0a14; border:1px solid var(--gold); display:none; align-items:center; justify-content:center; font-size:9px; }
 
   .head{ flex:1; text-align:center; padding-top:2px; min-width:0; }
-  .head h1{ font-family:var(--font-display); font-size:14px; font-weight:700; color:var(--cream); display:flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap; }
-  .head h1 .wave{ color:var(--pink-2); font-size:10px; letter-spacing:1px; }
+  .head h1{ font-family:var(--font-display); font-size:12.5px; font-weight:700; color:var(--cream); display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .head h1 .wave{ color:var(--pink-2); font-size:10px; letter-spacing:1px; flex:0 0 auto; }
+  .head h1 #edit-name-btn{ display:none; background:none; border:none; color:var(--muted); font-size:11px; cursor:pointer; flex:0 0 auto; }
   .head .premium{ color:var(--gold); font-weight:700; font-size:10px; margin-top:3px; letter-spacing:.05em; }
   .head .cap-pill{ display:inline-block; margin-top:5px; border:1.5px solid var(--pink); color:var(--pink-2); border-radius:999px; padding:2px 12px; font-size:10px; font-weight:700; letter-spacing:.04em; }
 
@@ -47,22 +46,45 @@
   .icon-row button{ background:none; border:none; color:var(--muted); font-family:var(--font-body); display:flex; flex-direction:column; align-items:center; gap:1px; font-size:7.5px; cursor:pointer; }
   .icon-row button .i{ font-size:13px; }
 
-  .seat-grid{ margin-top:12px; display:grid; grid-template-columns:repeat(5,1fr); gap:5px; row-gap:16px; }
-  .heart-cell{ position:relative; aspect-ratio:1/1; }
-  .heart-outer, .heart-inner{ position:absolute; clip-path:url(#heart-clip); }
-  .heart-outer{ inset:0; background:linear-gradient(150deg,var(--pink),var(--pink-2)); filter:drop-shadow(0 0 6px rgba(255,47,135,.85)); }
-  .heart-inner{ inset:6%; background:linear-gradient(160deg,#4a1130,#22101c 75%); }
-  .heart-cell .num{ position:absolute; top:0; left:4px; background:#1c0a14; color:#fff; font-size:8px; font-weight:700; padding:1px 4px; border-radius:5px; z-index:3; }
-  .heart-cell .silhouette{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2; padding-bottom:12%; }
-  .heart-cell .silhouette svg{ width:44%; height:44%; fill:#8a3a5a; }
-  .heart-cell .mic{ position:absolute; bottom:8%; left:50%; transform:translateX(-50%); font-size:8px; color:var(--pink-soft,#ffd6e8); opacity:.9; z-index:3; }
-  .heart-cell .mic.muted{ color:var(--bad); }
-  .heart-cell .name{ position:absolute; bottom:-13px; left:0; right:0; text-align:center; font-size:7px; color:var(--cream); display:none; }
-  .heart-cell.occupied .name{ display:block; }
-  .heart-cell.mine .heart-outer{ background:linear-gradient(150deg,var(--gold),#ffdd8a); filter:drop-shadow(0 0 8px rgba(244,197,66,.85)); }
-  .heart-cell.leader .crown-badge{ position:absolute; top:-13px; left:50%; transform:translateX(-50%); font-size:14px; z-index:4; }
+  .avatar-strip{ display:flex; gap:6px; margin:10px 0 4px; overflow-x:auto; min-height:32px; }
+  .avatar-strip img{ width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid var(--pink-2); flex-shrink:0; }
+  .avatar-strip .more{ width:30px; height:30px; border-radius:50%; background:#000c; color:#fff; font-size:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .people-count{ text-align:center; font-size:11.5px; color:var(--muted); margin-bottom:6px; display:flex; align-items:center; justify-content:center; gap:6px; }
+  .people-count .dot{ width:7px; height:7px; border-radius:50%; background:var(--good); display:inline-block; }
 
-  .bar{ margin-top:18px; background:rgba(28,10,20,.7); border:1px solid var(--line); border-radius:16px; padding:8px 2px; display:flex; justify-content:space-around; }
+  .seat-grid{ margin-top:6px; display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .seat{
+    position:relative; aspect-ratio:1/0.95; cursor:pointer;
+    clip-path: path("M50 90 C 10 65, -5 35, 15 15 C 30 0, 50 5, 50 25 C 50 5, 70 0, 85 15 C 105 35, 90 65, 50 90 Z");
+    background:linear-gradient(160deg,#4a1130,#22101c 75%); border:1.5px solid var(--pink);
+    box-shadow:0 0 10px -3px rgba(255,47,135,.7); display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .seat .num{ position:absolute; top:8px; left:12px; background:#1c0a14; color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:6px; z-index:3; }
+  .seat .avatar-photo{ position:absolute; width:56%; height:56%; border-radius:50%; object-fit:cover; }
+  .seat .silhouette{ width:34%; height:34%; color:#8a3a5a; }
+  .seat .silhouette svg{ width:100%; height:100%; fill:currentColor; }
+  .seat .mic{ position:absolute; bottom:10px; left:50%; transform:translateX(-50%); font-size:12px; z-index:3; }
+  .seat .mic.muted{ color:var(--bad); }
+  .seat .name{ position:absolute; bottom:-2px; left:6px; right:6px; font-size:8px; color:var(--cream); text-align:center; background:rgba(0,0,0,.45); border-radius:6px; padding:5px 0 2px; display:none; }
+  .seat.occupied .name{ display:block; }
+  .seat.mine{ border-color:var(--gold); box-shadow:0 0 14px -3px rgba(244,197,66,.9); }
+  .seat.leader{ border-color:var(--gold); box-shadow:0 0 14px -2px rgba(244,197,66,.8); }
+  .seat.leader .crown-badge{ position:absolute; top:-2px; left:50%; transform:translateX(-50%); font-size:15px; z-index:3; }
+  .seat.leader .tag{ position:absolute; bottom:-2px; left:6px; right:6px; white-space:nowrap; color:var(--gold); font-size:6.5px; font-weight:800; text-align:center; letter-spacing:.02em; }
+  .seat.leader.occupied .tag{ display:none; }
+  .seat.leader.occupied .name{ display:block; }
+  .seat.locked{ cursor:not-allowed; }
+
+  .chat-box{ margin-top:14px; background:rgba(28,10,20,.55); border:1px solid var(--line); border-radius:14px; padding:8px 10px; }
+  .chat-messages{ max-height:130px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
+  .chat-line{ font-size:11.5px; line-height:1.3; word-break:break-word; }
+  .chat-line b{ margin-right:4px; }
+  .chat-input-row{ margin-top:8px; display:flex; align-items:center; gap:8px; background:rgba(0,0,0,.25); border-radius:999px; padding:4px 4px 4px 12px; }
+  .chat-input-row input{ flex:1; background:none; border:none; outline:none; color:var(--cream); font-family:var(--font-body); font-size:12px; }
+  .chat-input-row input::placeholder{ color:var(--muted); }
+  .chat-input-row button{ flex:0 0 auto; width:30px; height:30px; border-radius:50%; border:none; background:var(--pink); color:#fff; font-size:13px; cursor:pointer; }
+
+  .bar{ margin-top:14px; background:rgba(28,10,20,.7); border:1px solid var(--line); border-radius:16px; padding:8px 2px; display:flex; justify-content:space-around; }
   .bar button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:2px; font-family:var(--font-body); font-size:8.5px; cursor:pointer; padding:2px; }
   .bar button .i{ font-size:16px; }
   .bar button .st{ font-size:7.5px; font-weight:700; }
@@ -70,62 +92,57 @@
   .bar button .st.off{ color:var(--bad); }
   .bar button.danger .i, .bar button.danger .lbl{ color:var(--bad); }
 
-  .nav2{ margin-top:10px; display:flex; justify-content:space-around; align-items:flex-end; }
-  .nav2 button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:3px; font-family:var(--font-body); font-size:8.5px; cursor:pointer; }
-  .nav2 button .i{ font-size:15px; }
-  .nav2 .center{ transform:translateY(-6px); }
-  .nav2 .center .i{ font-size:20px; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,var(--gold),#ffb14a); color:#3a2500; box-shadow:0 0 16px -2px rgba(244,197,66,.9); }
-  .nav2 .center .lbl{ color:var(--gold); font-weight:700; }
-
-  .status-line{ text-align:center; margin-top:14px; color:var(--muted); font-size:10px; }
+  .status-line{ text-align:center; margin-top:8px; color:var(--muted); font-size:10px; }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute;">
-  <clipPath id="heart-clip" clipPathUnits="objectBoundingBox">
-    <path d="M0.5,0.24 C0.42,0.02 0.02,0.05 0.02,0.34 C0.02,0.58 0.28,0.78 0.5,0.98 C0.72,0.78 0.98,0.58 0.98,0.34 C0.98,0.05 0.58,0.02 0.5,0.24 Z"/>
-  </clipPath>
-</svg>
-
 <div class="wrap">
   <div class="topbar">
-    <div class="ribbon"><div class="crown">👑</div><div class="txt">PREMIUM</div><div class="dots">✦✦✦</div></div>
+    <div class="room-photo-box" onclick="pickRoomPhoto()">
+      <img id="room-photo-img" alt="">
+      <div class="ph" id="room-photo-ph">ðŸŽ™ï¸</div>
+      <div class="edit" id="room-photo-edit">âœï¸</div>
+    </div>
+    <input type="file" id="room-photo-input" accept="image/*" style="display:none;">
 
     <div class="head">
-      <h1><span class="wave">·|||·</span> SALA DE ÁUDIO <span class="wave">·|||·</span></h1>
-      <div class="premium">✦ PREMIUM ✦</div>
-      <div class="cap-pill">15 LUGARES</div>
+      <h1><span class="wave">Â·|||Â·</span><span id="room-title-text">SALA DE ÃUDIO</span><button id="edit-name-btn" onclick="editRoomName()">âœï¸</button><span class="wave">Â·|||Â·</span></h1>
+      <div class="premium">âœ¦ PREMIUM âœ¦</div>
+      <div class="cap-pill" id="cap-pill">15 LUGARES</div>
     </div>
 
     <div class="top-right">
-      <div class="coin-pill"><span class="c">$</span><span id="balance">—</span></div>
+      <div class="coin-pill"><span class="c">$</span><span id="balance">â€”</span></div>
       <div class="icon-row">
-        <button onclick="soon('Ranking')"><span class="i">🏆</span>Rank.</button>
-        <button onclick="soon('Presentes')"><span class="i">🎁</span>Pres.</button>
-        <button onclick="soon('Configurações')"><span class="i">⚙️</span>Conf.</button>
+        <button onclick="soon('Ranking')"><span class="i">ðŸ†</span>Rank.</button>
+        <button onclick="soon('Presentes')"><span class="i">ðŸŽ</span>Pres.</button>
+        <button onclick="soon('ConfiguraÃ§Ãµes')"><span class="i">âš™ï¸</span>Conf.</button>
       </div>
     </div>
   </div>
 
+  <div class="avatar-strip" id="avatar-strip"></div>
+  <div class="people-count"><span class="dot"></span><span id="people-count-text">0/15</span></div>
+
   <div class="seat-grid" id="seat-grid"></div>
 
+  <div class="chat-box">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" maxlength="200" placeholder="Digite sua mensagem...">
+      <button onclick="sendChat()">âž¤</button>
+    </div>
+  </div>
+
   <div class="bar">
-    <button id="btn-mic" onclick="toggleMic()"><span class="i">🎤</span><span>Microfone</span><span class="st on" id="mic-st">Ligado</span></button>
-    <button id="btn-spk" onclick="toggleSpeaker()"><span class="i">🔊</span><span>Alto-falante</span><span class="st on" id="spk-st">Ligado</span></button>
-    <button onclick="soon('Presentes')"><span class="i">🎀</span><span>Presente</span></button>
-    <button onclick="soon('Chat')"><span class="i">💬</span><span>Chat</span></button>
-    <button class="danger" onclick="leaveRoom()"><span class="i">↪️</span><span class="lbl">Sair da Sala</span></button>
+    <button id="btn-mic" onclick="toggleMic()"><span class="i">ðŸŽ¤</span><span>Microfone</span><span class="st on" id="mic-st">Ligado</span></button>
+    <button id="btn-spk" onclick="toggleSpeaker()"><span class="i">ðŸ”Š</span><span>Alto-falante</span><span class="st on" id="spk-st">Ligado</span></button>
+    <button onclick="soon('Presentes')"><span class="i">ðŸŽ€</span><span>Presente</span></button>
+    <button onclick="clearChat()"><span class="i">ðŸ§¹</span><span>Limpar Chat</span></button>
+    <button class="danger" onclick="leaveRoom()"><span class="i">â†ªï¸</span><span class="lbl">Sair da Sala</span></button>
   </div>
 
-  <div class="nav2">
-    <button onclick="soon('Participantes')"><span class="i">👥</span>Participantes</button>
-    <button onclick="soon('Ranking da sala')"><span class="i">👑</span>Ranking da Sala</button>
-    <button class="center" onclick="soon('Presentes')"><span class="i">🎁</span><span class="lbl">Enviar Presente</span></button>
-    <button onclick="soon('Top Presentes')"><span class="i">📊</span>Top Presentes</button>
-    <button onclick="location.href='index.html'"><span class="i">🪙</span>Recarga de Moedas</button>
-  </div>
-
-  <div class="status-line" id="status-line">Entrando na sala…</div>
+  <div class="status-line" id="status-line">Entrando na salaâ€¦</div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -134,17 +151,21 @@ const SUPABASE_URL = "https://tnlssnevrgdknapqyssg.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_4Z1zOfzG2FZuNa0i2IC_5w_WH9t6DFT";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const ROOM_KEY = "coracao-15";
-const CAPACITY = 15;
+const ROOM_KEY = "audio-15";
 const LEADER_SEAT = 8;
 
+let CAPACITY = 15;
+let ROOM_NAME = "SALA DE ÃUDIO";
+let ROOM_PHOTO = null;
+
 let myUserId = null;
+let myDisplayName = null;
 let mySeatNumber = null;
 let amLeader = false;
 let callObject = null;
 let micOn = true;
 let speakerOn = true;
-let seatsState = {};
+let seatsState = {}; // seat_number -> {user_id, display_name, avatar_url, is_leader, mic_on}
 
 function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
 function soon(label){ showToast((label||"Isso") + " chega em breve por aqui."); }
@@ -154,11 +175,14 @@ function showToast(msg){
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 2200);
 }
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
 
 async function callEdgeFunction(name, body){
   const { data: sessionData } = await sb.auth.getSession();
   const token = sessionData && sessionData.session ? sessionData.session.access_token : null;
-  if(!token) throw new Error("Sessão expirada, entre novamente no app.");
+  if(!token) throw new Error("SessÃ£o expirada, entre novamente no app.");
   const res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
     method:"POST",
     headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
@@ -169,24 +193,104 @@ async function callEdgeFunction(name, body){
   return j;
 }
 
+// ---------- Header (foto e nome da sala) ----------
+function renderHeader(){
+  document.getElementById("room-title-text").textContent = ROOM_NAME;
+  document.getElementById("cap-pill").textContent = CAPACITY + " LUGARES";
+  const img = document.getElementById("room-photo-img");
+  const ph = document.getElementById("room-photo-ph");
+  if(ROOM_PHOTO){ img.src = ROOM_PHOTO; img.style.display="block"; ph.style.display="none"; }
+  else { img.style.display="none"; ph.style.display="flex"; }
+  document.getElementById("edit-name-btn").style.display = amLeader ? "inline-block" : "none";
+  document.getElementById("room-photo-edit").style.display = amLeader ? "flex" : "none";
+}
+
+function pickRoomPhoto(){
+  if(!amLeader){ showToast("SÃ³ o dono da sala pode trocar a foto."); return; }
+  document.getElementById("room-photo-input").click();
+}
+document.getElementById("room-photo-input").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    const dataUrl = reader.result;
+    const { error } = await sb.from("seat_rooms").update({ photo_url: dataUrl }).eq("room_key", ROOM_KEY);
+    if(error){ showToast("Erro ao salvar foto: "+error.message); return; }
+    ROOM_PHOTO = dataUrl;
+    renderHeader();
+  };
+  reader.readAsDataURL(file);
+});
+
+async function editRoomName(){
+  if(!amLeader){ showToast("SÃ³ o dono da sala pode renomear."); return; }
+  const val = prompt("Nome da sala:", ROOM_NAME);
+  if(!val || !val.trim()) return;
+  const { error } = await sb.from("seat_rooms").update({ name: val.trim() }).eq("room_key", ROOM_KEY);
+  if(error){ showToast("Erro ao salvar nome: "+error.message); return; }
+  ROOM_NAME = val.trim();
+  renderHeader();
+}
+
+// ---------- Avatares de quem estÃ¡ na sala + contador ----------
+function renderPresence(){
+  const strip = document.getElementById("avatar-strip");
+  const countText = document.getElementById("people-count-text");
+  const people = Object.values(seatsState);
+  countText.textContent = `${people.length}/${CAPACITY}`;
+  const shown = people.slice(0, 7);
+  strip.innerHTML = shown.map(p =>
+    `<img src="${p.avatar_url||''}" title="${escapeHtml(p.display_name||'')}" onerror="this.style.display='none'">`
+  ).join("");
+  if(people.length > 7){
+    const more = document.createElement("div");
+    more.className = "more";
+    more.textContent = "+" + (people.length - 7);
+    strip.appendChild(more);
+  }
+}
+
+// ---------- Assentos ----------
 function renderSeatGrid(){
   const grid = document.getElementById("seat-grid");
   grid.innerHTML = "";
   for(let n=1; n<=CAPACITY; n++){
-    const cell = document.createElement("div");
+    const seat = document.createElement("div");
     const info = seatsState[n];
     const isLeaderSeat = n === LEADER_SEAT;
-    cell.className = "heart-cell" + (isLeaderSeat?" leader":"") + (info?" occupied":"") + (info && info.user_id===myUserId?" mine":"");
-    cell.id = "seat-"+n;
-    let inner = `<div class="heart-outer"></div><div class="heart-inner"></div>`;
-    if(isLeaderSeat) inner += `<div class="crown-badge">👑</div>`;
+    const locked = isLeaderSeat && !amLeader;
+    seat.className = "seat"
+      + (isLeaderSeat?" leader":"")
+      + (info?" occupied":"")
+      + (info && info.user_id===myUserId?" mine":"")
+      + (locked?" locked":"");
+    seat.id = "seat-"+n;
+    let inner = "";
+    if(isLeaderSeat) inner += `<div class="crown-badge">ðŸ‘‘</div>`;
     inner += `<div class="num">${n}</div>`;
-    inner += `<div class="silhouette"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
-    inner += `<div class="mic${info && info.mic_on===false ? " muted":""}">${info ? (info.mic_on===false?"🔇":"🎙️") : ""}</div>`;
-    inner += `<div class="name">${info ? (info.display_name||"—") : ""}</div>`;
-    cell.innerHTML = inner;
-    grid.appendChild(cell);
+    inner += `<img class="avatar-photo" id="ph-${n}" style="display:${info && info.avatar_url ? "block":"none"};" src="${info && info.avatar_url ? info.avatar_url : ""}">`;
+    inner += `<div class="silhouette" id="sil-${n}" style="display:${info && info.avatar_url ? "none":"flex"};"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
+    inner += `<div class="mic${info && info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info ? (info.mic_on===false?"ðŸ”‡":"ðŸŽ™ï¸") : ""}</div>`;
+    inner += `<div class="name">${info ? escapeHtml(info.display_name||"â€”") : ""}</div>`;
+    if(isLeaderSeat) inner += `<div class="tag">LÃDER</div>`;
+    seat.innerHTML = inner;
+    seat.onclick = () => onSeatClick(n, info, locked);
+    grid.appendChild(seat);
   }
+  renderPresence();
+}
+
+async function onSeatClick(n, info, locked){
+  if(info) return; // ocupado
+  if(locked){ showToast("Assento reservado para o dono da sala."); return; }
+  if(mySeatNumber === n) return;
+  if(mySeatNumber === null) return; // ainda entrando na sala
+  try{
+    const res = await callEdgeFunction("move-seat", { room_key: ROOM_KEY, seat_number: n });
+    mySeatNumber = res.seat_number;
+    await loadSeatsFromDb();
+  }catch(e){ showToast("NÃ£o foi possÃ­vel trocar de assento: " + e.message); }
 }
 
 async function loadSeatsFromDb(){
@@ -221,12 +325,7 @@ function toggleMic(){
 
 function toggleSpeaker(){
   speakerOn = !speakerOn;
-  if(callObject){
-    const participants = callObject.participants();
-    Object.keys(participants).forEach(id=>{
-      if(!participants[id].local) callObject.updateParticipant(id, { setSubscribedTracks: speakerOn ? true : { audio:false, video:false, screenVideo:false } });
-    });
-  }
+  document.querySelectorAll("audio").forEach(a=>{ a.muted = !speakerOn; });
   document.getElementById("spk-st").textContent = speakerOn ? "Ligado" : "Desligado";
   document.getElementById("spk-st").className = "st " + (speakerOn?"on":"off");
 }
@@ -253,26 +352,79 @@ function leaveBeacon(){
 }
 window.addEventListener("beforeunload", leaveBeacon);
 
+// ---------- Chat ----------
+function colorFor(id){
+  const colors = ["#ff6fae","#57d68d","#f4c542","#7fd1ff","#c99bff"];
+  let h = 0;
+  for(const c of String(id||"")) h = (h + c.charCodeAt(0)) % colors.length;
+  return colors[h];
+}
+function renderChat(rows){
+  const box = document.getElementById("chat-messages");
+  box.innerHTML = rows.map(m =>
+    `<div class="chat-line"><b style="color:${colorFor(m.user_id)}">${escapeHtml(m.display_name||"â€”")}</b>${escapeHtml(m.message)}</div>`
+  ).join("");
+  box.scrollTop = box.scrollHeight;
+}
+async function loadChat(){
+  const { data } = await sb.from("seat_room_messages").select("*").eq("room_key", ROOM_KEY).order("created_at",{ ascending:true }).limit(50);
+  renderChat(data||[]);
+}
+async function sendChat(){
+  const input = document.getElementById("chat-input");
+  const msg = input.value.trim();
+  if(!msg || !myUserId) return;
+  input.value = "";
+  const { error } = await sb.from("seat_room_messages").insert({ room_key: ROOM_KEY, user_id: myUserId, display_name: myDisplayName, message: msg });
+  if(error) showToast("Erro ao enviar: " + error.message);
+}
+document.getElementById("chat-input").addEventListener("keydown", (e)=>{ if(e.key==="Enter") sendChat(); });
+async function clearChat(){
+  if(!amLeader){ showToast("SÃ³ o dono da sala pode limpar o chat."); return; }
+  if(!confirm("Limpar todo o chat da sala?")) return;
+  const { error } = await sb.from("seat_room_messages").delete().eq("room_key", ROOM_KEY);
+  if(error) showToast("Erro ao limpar: " + error.message);
+}
+function subscribeChatRealtime(){
+  sb.channel("chat-"+ROOM_KEY)
+    .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_messages", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
+      loadChat();
+    })
+    .subscribe();
+}
+
+// ---------- Init ----------
 async function init(){
   const { data: auth } = await sb.auth.getUser();
   if(!auth || !auth.user){ window.location.href="index.html"; return; }
   myUserId = auth.user.id;
 
-  const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
+  const { data: profile } = await sb.from("profiles").select("balance, name").eq("id", myUserId).single();
   document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+  myDisplayName = profile ? profile.name : "â€”";
+
+  const { data: room } = await sb.from("seat_rooms").select("*").eq("room_key", ROOM_KEY).single();
+  if(room){
+    CAPACITY = room.capacity || CAPACITY;
+    ROOM_NAME = room.name || ROOM_NAME;
+    ROOM_PHOTO = room.photo_url || null;
+  }
 
   try{
     const res = await callEdgeFunction("enter-seat-room", { room_key: ROOM_KEY });
     mySeatNumber = res.seat_number;
     amLeader = res.is_leader;
     document.getElementById("status-line").textContent = amLeader
-      ? "Você criou esta sala — está no assento do líder."
-      : "Você entrou no assento " + mySeatNumber + ".";
+      ? "VocÃª criou esta sala â€” estÃ¡ no assento do lÃ­der."
+      : "VocÃª entrou no assento " + mySeatNumber + ".";
+    renderHeader();
     await loadSeatsFromDb();
     subscribeRealtime();
+    await loadChat();
+    subscribeChatRealtime();
     await joinDaily(res);
   }catch(e){
-    document.getElementById("status-line").textContent = "Não foi possível entrar: " + e.message;
+    document.getElementById("status-line").textContent = "NÃ£o foi possÃ­vel entrar: " + e.message;
   }
 }
 init();
