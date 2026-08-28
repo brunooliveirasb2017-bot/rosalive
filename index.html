@@ -163,12 +163,24 @@
   .room-select-tabs{ display:flex; gap:8px; background:var(--bg-elev); border-radius:999px; padding:4px; margin-top:16px; }
   .room-select-tab{ flex:1; text-align:center; padding:9px 0; border-radius:999px; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer; }
   .room-select-tab.active{ background:linear-gradient(120deg, var(--pink), #ff6a9e); color:#1c0a14; }
-  .room-size-grid{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px; margin-top:14px; }
-  .room-size-card{ background:var(--bg-elev); border:1.5px solid var(--line); border-radius:14px; padding:16px 10px; text-align:center; cursor:pointer; }
-  .room-size-card.selected{ border-color:var(--pink); box-shadow:0 0 0 3px rgba(255,47,135,.15); }
-  .room-size-card .ico{ font-size:26px; }
-  .room-size-card .nm{ font-size:13px; font-weight:700; margin-top:6px; }
-  .room-size-card .sub{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .room-size-grid{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; margin-top:14px; }
+  .room-size-card{
+    position:relative; overflow:hidden; border-radius:20px; padding:20px 12px 18px; text-align:center; cursor:pointer;
+    aspect-ratio:1/1.15; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    border:1.5px solid var(--line); transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .room-size-card:active{ transform:scale(.98); }
+  .room-size-card.video-theme{ background:radial-gradient(120% 100% at 50% 0%, rgba(255,47,135,.35), #1c0a14 65%); }
+  .room-size-card.audio-theme{ background:radial-gradient(120% 100% at 50% 0%, rgba(60,140,255,.35), #0a1220 65%); }
+  .room-size-card.video-theme.selected{ border-color:var(--pink); box-shadow:0 0 0 3px rgba(255,47,135,.2), 0 8px 28px rgba(255,47,135,.25); }
+  .room-size-card.audio-theme.selected{ border-color:#3c8cff; box-shadow:0 0 0 3px rgba(60,140,255,.2), 0 8px 28px rgba(60,140,255,.25); }
+  .room-size-card .ico-wrap{
+    width:100%; flex:1; display:flex; align-items:center; justify-content:center; margin-bottom:10px;
+    filter:drop-shadow(0 6px 18px rgba(0,0,0,.4));
+  }
+  .room-size-card .ico{ font-size:52px; line-height:1; }
+  .room-size-card .nm{ font-family:var(--font-display); font-size:20px; font-weight:700; margin-top:2px; }
+  .room-size-card .sub{ font-size:12px; color:var(--muted); margin-top:3px; }
   .gift-picker-grid{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:12px; max-height:60vh; overflow-y:auto; }
   .gift-item{ min-width:0; background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; overflow:hidden; }
   .gift-item .em{ font-size:30px; display:flex; align-items:center; justify-content:center; height:38px; }
@@ -486,13 +498,13 @@
       <p style="margin-top:6px; font-size:12.5px; color:var(--muted);">Salas com vários participantes ao vivo ao mesmo tempo</p>
 
       <div class="room-size-grid" style="margin-top:16px;">
-        <div class="room-size-card selected" id="room-type-video" onclick="setRoomSelectType('video')">
-          <div class="ico">🎥</div>
+        <div class="room-size-card video-theme selected" id="room-type-video" onclick="setRoomSelectType('video')">
+          <div class="ico-wrap"><div class="ico">🎥</div></div>
           <div class="nm">Vídeo</div>
           <div class="sub">10 lugares · quadrada</div>
         </div>
-        <div class="room-size-card" id="room-type-audio" onclick="setRoomSelectType('audio')">
-          <div class="ico">🎙️</div>
+        <div class="room-size-card audio-theme" id="room-type-audio" onclick="setRoomSelectType('audio')">
+          <div class="ico-wrap"><div class="ico">🎙️</div></div>
           <div class="nm">Áudio</div>
           <div class="sub">sala coração</div>
         </div>
@@ -1292,7 +1304,38 @@ async function renderHome(){
     card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${countryFlag(l.country)} ${l.name}</b><span>${viewers} assistindo · 🪙 ${fmt(l.call_price)}/min</span></div>`;
     grid.appendChild(card);
   });
-  if(lives.length===0) grid.innerHTML = '<p style="grid-column:1/-1;">Ninguém ao vivo agora. Volte daqui a pouco!</p>';
+
+  // Salas com assentos (áudio coração e vídeo) — só aparecem quando têm pelo menos 1 pessoa sentada.
+  let seatRoomCards = 0;
+  try{
+    const { data: seatRows } = await sb.from("seat_room_seats").select("room_key");
+    const counts = {};
+    (seatRows||[]).forEach(r=>{ counts[r.room_key] = (counts[r.room_key]||0) + 1; });
+    const activeKeys = Object.keys(counts).filter(k=>counts[k] > 0);
+    if(activeKeys.length){
+      const { data: roomsMeta } = await sb.from("seat_rooms").select("*").in("room_key", activeKeys);
+      (roomsMeta||[]).forEach(room=>{
+        const key = room.room_key;
+        const occupied = counts[key] || 0;
+        const isVideo = key === "video-10";
+        const url = isVideo ? "sala-audio-video-10.html" : `sala-audio-coracao-${key.split("-")[1]}.html`;
+        const capacity = room.capacity || (isVideo ? 10 : parseInt(key.split("-")[1],10));
+        const card = document.createElement("div");
+        card.className = "live-card";
+        card.onclick = ()=>{ window.location.href = url; };
+        const thumb = room.photo_url
+          ? `<img src="${room.photo_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
+          : `<div class="avatar-glow">${isVideo ? "🎥" : "🎙️"}</div>`;
+        card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${room.name || (isVideo ? "Sala de Vídeo" : "Sala de Áudio")}</b><span>${occupied}/${capacity} na sala</span></div>`;
+        grid.appendChild(card);
+        seatRoomCards++;
+      });
+    }
+  }catch(e){
+    // Tabelas seat_rooms/seat_room_seats ainda não acessíveis daqui — ignora silenciosamente.
+  }
+
+  if(lives.length===0 && seatRoomCards===0) grid.innerHTML = '<p style="grid-column:1/-1;">Ninguém ao vivo agora. Volte daqui a pouco!</p>';
 }
 
 let liveCallObject = null;
