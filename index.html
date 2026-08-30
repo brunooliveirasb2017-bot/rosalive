@@ -1365,11 +1365,13 @@ const GIFT_CATEGORY_RULES = [
 let giftPickerData = [];
 let giftPickerActiveCat = "todos";
 function categorizeGift(g){
+  if(g.category === "sorte") return "sorte";
+  if(g.category === "geral") return "geral";
   const name = (g.name||"").toLowerCase();
   for(const rule of GIFT_CATEGORY_RULES){
     if(rule.words.some(w=>name.includes(w))) return rule.key;
   }
-  return "outros";
+  return "geral";
 }
 async function openGiftPicker(){
   document.getElementById("gift-modal-balance").textContent = fmt(currentUser.balance);
