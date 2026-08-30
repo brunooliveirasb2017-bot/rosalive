@@ -557,18 +557,18 @@ function flyFromComboToSeat(){
   fly.className = "gift-fly";
   const isImg = selectedGift && selectedGift.emoji && selectedGift.emoji.length > 4;
   if(isImg){
-    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:68px;height:68px;object-fit:contain;display:block;">`;
+    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:82px;height:82px;object-fit:contain;display:block;">`;
   } else {
     fly.textContent = (selectedGift && selectedGift.emoji) ? selectedGift.emoji : "🎁";
   }
-  fly.style.left = start.left + start.width/2 - 34 + "px";
-  fly.style.top = start.top + start.height/2 - 34 + "px";
+  fly.style.left = start.left + start.width/2 - 41 + "px";
+  fly.style.top = start.top + start.height/2 - 41 + "px";
   document.body.appendChild(fly);
   requestAnimationFrame(()=>{
-    fly.style.left = end.left + end.width/2 - 34 + "px";
-    fly.style.top = end.top + end.height/2 - 34 + "px";
-    fly.style.transform = "scale(.45)";
-    fly.style.opacity = "0.15";
+    fly.style.left = end.left + end.width/2 - 41 + "px";
+    fly.style.top = end.top + end.height/2 - 41 + "px";
+    fly.style.transform = "scale(.8)";
+    fly.style.opacity = "0.9";
   });
   setTimeout(()=>{
     fly.remove();
