@@ -101,6 +101,9 @@
   .gift-target-avatar.active img,.gift-target-avatar.active .ph{ border-color:var(--gold); }
   .gift-target-avatar .nm{ font-size:8.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .gift-picker-grid{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .gift-cat-tabs{ display:flex; gap:14px; margin-top:10px; border-bottom:1px solid var(--line); }
+  .gift-cat-tab{ background:none; border:none; color:var(--muted); font-family:var(--font-body); font-size:12.5px; font-weight:700; padding:0 0 8px; cursor:pointer; border-bottom:2px solid transparent; }
+  .gift-cat-tab.active{ color:var(--cream); border-bottom-color:var(--pink); }
   .gift-item{ min-width:0; background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; overflow:hidden; }
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
@@ -165,6 +168,7 @@
     <h3>Enviar presente</h3>
     <p style="margin:0;font-size:12px;color:var(--muted);">Seu saldo: <span id="gift-modal-balance">0</span> moedas</p>
     <div class="gift-target-strip" id="gift-target-strip"></div>
+    <div class="gift-cat-tabs" id="gift-cat-tabs"></div>
     <div class="gift-picker-grid" id="gift-picker-grid"></div>
   </div>
 </div>
@@ -470,6 +474,23 @@ function subscribeChatRealtime(){
 // ---------- Presentes (envio para qualquer assento) ----------
 let giftPickerData = [];
 let giftTargetSeat = null;
+let giftPickerActiveCat = "geral";
+
+function categorizeGift(g){
+  return g.category === "sorte" ? "sorte" : "geral";
+}
+function renderGiftCatTabs(){
+  const hasSorte = giftPickerData.some(g=>categorizeGift(g)==="sorte");
+  const tabs = [{key:"geral", label:"Em geral"}];
+  if(hasSorte) tabs.push({key:"sorte", label:"Sorte"});
+  const wrap = document.getElementById("gift-cat-tabs");
+  wrap.innerHTML = tabs.map(t=>`<button type="button" class="gift-cat-tab${t.key===giftPickerActiveCat?" active":""}" onclick="selectGiftCat('${t.key}')">${t.label}</button>`).join("");
+}
+function selectGiftCat(key){
+  giftPickerActiveCat = key;
+  renderGiftCatTabs();
+  renderGiftGrid();
+}
 
 function occupiedSeatsExceptMe(){
   return Object.entries(seatsState)
@@ -486,6 +507,8 @@ async function openGiftPicker(targetSeat){
     const { data: gifts } = await sb.from("gifts").select("*").eq("active", true).order("price", { ascending:true });
     giftPickerData = gifts || [];
   }
+  giftPickerActiveCat = "geral";
+  renderGiftCatTabs();
   renderGiftGrid();
   document.getElementById("modal-gift").classList.add("active");
 }
@@ -515,7 +538,8 @@ function selectGiftTarget(n){
 
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
-  grid.innerHTML = giftPickerData.map(g => {
+  const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
+  grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
       ? `<img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))">`
       : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
