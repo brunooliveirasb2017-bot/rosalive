@@ -91,7 +91,7 @@
   /* ---- Modal de presentes ---- */
   .modal-back{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center; z-index:200; }
   .modal-back.active{ display:flex; }
-  .modal-card{ width:100%; max-width:480px; background:#150910; border-radius:18px 18px 0 0; padding:14px 14px 18px; position:relative; max-height:86vh; overflow-y:auto; border-top:1px solid var(--line); }
+  .modal-card{ width:100%; max-width:480px; background:#150910; border-radius:18px 18px 0 0; padding:14px 14px 18px; position:relative; max-height:40vh; overflow-y:auto; border-top:1px solid var(--line); }
   .modal-card h3{ margin:2px 0 2px; font-family:var(--font-display); color:var(--cream); font-size:16px; }
   .modal-card .sheet-close{ position:absolute; right:12px; top:12px; background:rgba(255,255,255,.08); border:0; color:#fff; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; }
   .gift-target-strip{ display:flex; gap:8px; overflow-x:auto; margin:10px 0 4px; padding-bottom:4px; }
@@ -105,6 +105,13 @@
   .gift-cat-tab{ background:none; border:none; color:var(--muted); font-family:var(--font-body); font-size:12.5px; font-weight:700; padding:0 0 8px; cursor:pointer; border-bottom:2px solid transparent; }
   .gift-cat-tab.active{ color:var(--cream); border-bottom-color:var(--pink); }
   .gift-item{ min-width:0; background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; overflow:hidden; }
+  .gift-item.selected{ border:2px solid var(--gold); }
+  .gift-send-row{ display:flex; justify-content:flex-end; margin-top:12px; position:sticky; bottom:-18px; padding:10px 0 4px; background:#150910; }
+  .gift-send-btn{ background:var(--pink); color:#fff; border:0; border-radius:999px; padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer; }
+  .gift-send-btn:disabled{ opacity:.4; cursor:default; }
+  .combo-send-btn{ position:fixed; right:18px; bottom:220px; width:72px; height:72px; border-radius:50%; background:var(--pink); border:4px solid var(--gold); color:#fff; font-size:32px; z-index:300; display:none; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(255,47,135,.25); }
+  .combo-send-count{ position:absolute; top:-6px; right:-6px; background:var(--gold); color:#4a1b0c; font-size:11px; font-weight:700; border-radius:10px; padding:1px 7px; }
+  .gift-fly{ position:fixed; font-size:44px; z-index:301; pointer-events:none; transition:all 1.3s cubic-bezier(.2,.7,.3,1); filter:drop-shadow(0 0 6px rgba(0,0,0,.6)); }
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
   .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
@@ -170,8 +177,10 @@
     <div class="gift-target-strip" id="gift-target-strip"></div>
     <div class="gift-cat-tabs" id="gift-cat-tabs"></div>
     <div class="gift-picker-grid" id="gift-picker-grid"></div>
+    <div class="gift-send-row"><button class="gift-send-btn" id="gift-send-btn" disabled onclick="startComboSend()">Enviar</button></div>
   </div>
 </div>
+<button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
 
 
 <script>
@@ -508,6 +517,8 @@ async function openGiftPicker(targetSeat){
     giftPickerData = gifts || [];
   }
   giftPickerActiveCat = "geral";
+  selectedGift = null;
+  document.getElementById("gift-send-btn").disabled = true;
   renderGiftCatTabs();
   renderGiftGrid();
   document.getElementById("modal-gift").classList.add("active");
@@ -536,6 +547,8 @@ function selectGiftTarget(n){
   renderGiftTargets();
 }
 
+let selectedGift = null;
+
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
@@ -543,12 +556,75 @@ function renderGiftGrid(){
     const img = g.emoji && g.emoji.length > 4
       ? `<img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))">`
       : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
-    return `<div class="gift-item" onclick='sendGiftNow(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
+    const isSelected = selectedGift && selectedGift.id === g.id;
+    return `<div class="gift-item${isSelected?" selected":""}" onclick='selectGift(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
       ${img}
       <div class="nm">${escapeHtml(g.name)}</div>
       <div class="pr">🪙 ${fmt(g.price)}</div>
     </div>`;
   }).join("");
+}
+
+function selectGift(gift){
+  selectedGift = gift;
+  document.getElementById("gift-send-btn").disabled = false;
+  renderGiftGrid();
+}
+
+let comboCount = 0;
+let comboHideTimer = null;
+
+function startComboSend(){
+  if(!selectedGift || giftTargetSeat === null) return;
+  closeGiftModal();
+  comboCount = 0;
+  const comboBtn = document.getElementById("combo-send-btn");
+  comboBtn.style.display = "flex";
+  comboSendTap();
+}
+
+function comboSendTap(){
+  comboCount++;
+  const countEl = document.getElementById("combo-send-count");
+  countEl.style.display = "block";
+  countEl.textContent = comboCount;
+  sendGiftNow(selectedGift);
+  flyFromComboToSeat();
+  clearTimeout(comboHideTimer);
+  comboHideTimer = setTimeout(hideComboSend, 3000);
+}
+
+function hideComboSend(){
+  document.getElementById("combo-send-btn").style.display = "none";
+  document.getElementById("combo-send-count").style.display = "none";
+  comboCount = 0;
+  selectedGift = null;
+}
+
+function flyFromComboToSeat(){
+  const comboBtn = document.getElementById("combo-send-btn");
+  const seatEl = document.getElementById("seat-"+giftTargetSeat);
+  if(!seatEl) return;
+  const start = comboBtn.getBoundingClientRect();
+  const end = seatEl.getBoundingClientRect();
+  const fly = document.createElement("div");
+  fly.className = "gift-fly";
+  const isImg = selectedGift && selectedGift.emoji && selectedGift.emoji.length > 4;
+  if(isImg){
+    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:52px;height:52px;object-fit:contain;display:block;">`;
+  } else {
+    fly.textContent = (selectedGift && selectedGift.emoji) ? selectedGift.emoji : "🎁";
+  }
+  fly.style.left = start.left + start.width/2 - 26 + "px";
+  fly.style.top = start.top + start.height/2 - 26 + "px";
+  document.body.appendChild(fly);
+  requestAnimationFrame(()=>{
+    fly.style.left = end.left + end.width/2 - 26 + "px";
+    fly.style.top = end.top + end.height/2 - 26 + "px";
+    fly.style.transform = "scale(.4)";
+    fly.style.opacity = "0.15";
+  });
+  setTimeout(()=>fly.remove(), 1350);
 }
 
 async function sendGiftNow(gift){
