@@ -47,12 +47,13 @@
   .icon-row button .i{ font-size:13px; }
 
   .seat-grid{ margin-top:26px; display:grid; grid-template-columns:repeat(5,1fr); gap:20px 5px; }
-  .seat{ position:relative; aspect-ratio:1/1; border-radius:50%; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px -3px rgba(255,47,135,.7); cursor:pointer; }
-  .seat .num{ position:absolute; top:2px; left:2px; background:#1c0a14; color:#fff; font-size:7.5px; font-weight:700; padding:1px 4px; border-radius:6px; }
+  .seat{ position:relative; aspect-ratio:1/1; border-radius:50%; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); overflow:visible; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px -3px rgba(255,47,135,.7); cursor:pointer; }
+  .seat-photo-mask{ position:absolute; inset:0; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; }
+  .seat .num{ position:absolute; top:-6px; left:-6px; background:#1c0a14; color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:8px; border:1px solid var(--pink); z-index:2; }
   .seat .avatar-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .seat .silhouette{ width:44%; height:44%; color:#8a3a5a; }
   .seat .silhouette svg{ width:100%; height:100%; fill:currentColor; }
-  .seat .mic{ position:absolute; bottom:-1px; right:-1px; font-size:10px; background:#1c0a14; border-radius:50%; width:15px; height:15px; display:flex; align-items:center; justify-content:center; }
+  .seat .mic{ position:absolute; bottom:-4px; right:-4px; font-size:11px; background:#1c0a14; border-radius:50%; width:17px; height:17px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.2); z-index:2; }
   .seat .mic.muted{ color:var(--bad); }
   .seat .name{ position:absolute; bottom:-14px; left:-15%; right:-15%; font-size:7px; color:var(--cream); text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none; }
   .seat.occupied .name{ display:block; }
@@ -104,6 +105,8 @@
   .combo-send-btn{ position:fixed; right:18px; bottom:220px; width:72px; height:72px; border-radius:50%; background:var(--pink); border:4px solid var(--gold); color:#fff; font-size:32px; z-index:300; display:none; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(255,47,135,.25); }
   .combo-send-count{ position:absolute; top:-6px; right:-6px; background:var(--gold); color:#4a1b0c; font-size:11px; font-weight:700; border-radius:10px; padding:1px 7px; }
   .gift-fly{ position:fixed; font-size:44px; z-index:301; pointer-events:none; transition:all 1.3s cubic-bezier(.2,.7,.3,1); filter:drop-shadow(0 0 6px rgba(0,0,0,.6)); }
+  .seat.gift-hit{ animation:seatGiftPulse .8s ease-out; }
+  @keyframes seatGiftPulse{ 0%{ box-shadow:0 0 0 0 rgba(255,211,77,.9); } 100%{ box-shadow:0 0 0 22px rgba(255,211,77,0); } }
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
   .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
@@ -275,8 +278,10 @@ function renderSeatGrid(){
     let inner = "";
     if(info && info.is_leader) inner += `<div class="crown-badge">👑</div>`;
     inner += `<div class="num">${n}</div>`;
+    inner += `<div class="seat-photo-mask">`;
     inner += `<img class="avatar-photo" id="ph-${n}" style="display:${info && info.avatar_url ? "block":"none"};" src="${info && info.avatar_url ? info.avatar_url : ""}">`;
     inner += `<div class="silhouette" id="sil-${n}" style="display:${info && info.avatar_url ? "none":"flex"};"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
+    inner += `</div>`;
     if(info) inner += `<div class="mic${info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info.mic_on===false?"🔇":"🎙️"}</div>`;
     inner += `<div class="name">${info ? (info.display_name||"—") : ""}</div>`;
     seat.innerHTML = inner;
@@ -552,20 +557,24 @@ function flyFromComboToSeat(){
   fly.className = "gift-fly";
   const isImg = selectedGift && selectedGift.emoji && selectedGift.emoji.length > 4;
   if(isImg){
-    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:52px;height:52px;object-fit:contain;display:block;">`;
+    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:68px;height:68px;object-fit:contain;display:block;">`;
   } else {
     fly.textContent = (selectedGift && selectedGift.emoji) ? selectedGift.emoji : "🎁";
   }
-  fly.style.left = start.left + start.width/2 - 26 + "px";
-  fly.style.top = start.top + start.height/2 - 26 + "px";
+  fly.style.left = start.left + start.width/2 - 34 + "px";
+  fly.style.top = start.top + start.height/2 - 34 + "px";
   document.body.appendChild(fly);
   requestAnimationFrame(()=>{
-    fly.style.left = end.left + end.width/2 - 26 + "px";
-    fly.style.top = end.top + end.height/2 - 26 + "px";
-    fly.style.transform = "scale(.4)";
+    fly.style.left = end.left + end.width/2 - 34 + "px";
+    fly.style.top = end.top + end.height/2 - 34 + "px";
+    fly.style.transform = "scale(.45)";
     fly.style.opacity = "0.15";
   });
-  setTimeout(()=>fly.remove(), 1350);
+  setTimeout(()=>{
+    fly.remove();
+    seatEl.classList.add("gift-hit");
+    setTimeout(()=>seatEl.classList.remove("gift-hit"), 800);
+  }, 1350);
 }
 
 async function sendGiftNow(gift){
