@@ -687,7 +687,7 @@ function showLuckyResult(result){
 
   popup.className = "lucky-popup";
   multEl.textContent = result.multiplier + "X";
-  msgEl.textContent = result.receiver_name + " ganhou " + fmt(result.prize) + " moedas";
+  msgEl.textContent = result.sender_name + " ganhou " + fmt(result.prize) + " moedas";
 
   let holdTime = 2200;
   if(result.multiplier === 100){
