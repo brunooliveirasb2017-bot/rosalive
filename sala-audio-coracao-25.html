@@ -42,6 +42,8 @@
   .top-right{ flex:0 0 auto; text-align:right; }
   .coin-pill{ display:inline-flex; align-items:center; gap:4px; background:#1c0a14; border:1px solid var(--gold); border-radius:999px; padding:4px 8px; font-weight:700; font-size:11px; white-space:nowrap; }
   .coin-pill .c{ width:13px;height:13px;border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe9a8, var(--gold)); display:inline-flex; align-items:center; justify-content:center; font-size:8px; color:#3a2500; }
+  .room-total-box{ margin-top:5px; text-align:right; }
+  .room-total-label{ font-size:7.5px; color:var(--muted); margin-bottom:2px; white-space:nowrap; }
   .icon-row{ display:flex; gap:6px; justify-content:flex-end; margin-top:5px; }
   .icon-row button{ background:none; border:none; color:var(--muted); font-family:var(--font-body); display:flex; flex-direction:column; align-items:center; gap:1px; font-size:7.5px; cursor:pointer; }
   .icon-row button .i{ font-size:13px; }
@@ -138,16 +140,16 @@
 
     <div class="head">
       <h1><span class="wave">🎙️</span><span id="room-title-text">SALA DE ÁUDIO</span><button id="edit-name-btn" onclick="editRoomName()">✏️</button><span class="wave">🎙️</span></h1>
-      <div class="premium">✦ PREMIUM ✦</div>
-      <div class="cap-pill" id="cap-pill">25 LUGARES</div>
     </div>
 
     <div class="top-right">
-      <div class="coin-pill"><span class="c">$</span><span id="balance">—</span></div>
       <div class="icon-row">
-        <button onclick="soon('Ranking')"><span class="i">🏆</span>Rank.</button>
         <button onclick="openGiftPicker()"><span class="i">🎁</span>Pres.</button>
         <button onclick="soon('Configurações')"><span class="i">⚙️</span>Conf.</button>
+      </div>
+      <div class="room-total-box">
+        <div class="room-total-label">Total recebido na sala</div>
+        <div class="coin-pill"><span class="c">$</span><span id="room-total">0</span></div>
       </div>
     </div>
   </div>
@@ -224,6 +226,8 @@ let callObject = null;
 let micOn = true;
 let speakerOn = true;
 let seatsState = {}; // seat_number -> {user_id, display_name, avatar_url, is_leader, mic_on}
+let giftTotalsByUser = {}; // user_id -> soma de moedas recebidas (presentes "em geral") nesta sala
+let roomGiftTotal = 0; // soma de todas as moedas recebidas na sala
 
 function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
 function soon(label){ showToast((label||"Isso") + " chega em breve por aqui."); }
@@ -254,7 +258,6 @@ async function callEdgeFunction(name, body){
 // ---------- Header (foto e nome da sala) ----------
 function renderHeader(){
   document.getElementById("room-title-text").textContent = ROOM_NAME;
-  document.getElementById("cap-pill").textContent = CAPACITY + " LUGARES";
   const img = document.getElementById("room-photo-img");
   const ph = document.getElementById("room-photo-ph");
   if(ROOM_PHOTO){ img.src = ROOM_PHOTO; img.style.display="block"; ph.style.display="none"; }
@@ -311,7 +314,7 @@ function renderSeatGrid(){
     inner += `<div class="silhouette" id="sil-${n}" style="display:${info && info.avatar_url ? "none":"flex"};"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
     inner += `</div>`;
     if(info) inner += `<div class="mic${info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info.mic_on===false?"🔇":"🎙️"}</div>`;
-    inner += `<div class="name">${info ? (info.display_name||"—") : ""}</div>`;
+    inner += `<div class="name">${info ? ("🪙 " + fmt(giftTotalsByUser[info.user_id]||0)) : ""}</div>`;
     seat.innerHTML = inner;
     seat.onclick = () => onSeatClick(n, info, false);
     grid.appendChild(seat);
@@ -349,6 +352,27 @@ async function loadSeatsFromDb(){
       });
     }catch(e){ /* segue mostrando a silhueta se a foto não carregar */ }
   }
+  renderSeatGrid();
+}
+
+async function loadGiftTotals(){
+  const { data } = await sb.from("seat_room_gifts").select("receiver_id, price").eq("room_key", ROOM_KEY);
+  giftTotalsByUser = {};
+  roomGiftTotal = 0;
+  (data||[]).forEach(row=>{
+    const amount = Number(row.price||0);
+    giftTotalsByUser[row.receiver_id] = (giftTotalsByUser[row.receiver_id]||0) + amount;
+    roomGiftTotal += amount;
+  });
+  document.getElementById("room-total").textContent = fmt(roomGiftTotal);
+  renderSeatGrid();
+}
+
+function addGiftToTotals(g){
+  const amount = Number(g.price||0);
+  giftTotalsByUser[g.receiver_id] = (giftTotalsByUser[g.receiver_id]||0) + amount;
+  roomGiftTotal += amount;
+  document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
 }
 
@@ -616,8 +640,6 @@ async function sendGiftNow(gift){
       p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
     });
     if(error) throw error;
-    const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
-    document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
@@ -631,8 +653,6 @@ async function sendLuckyGift(gift){
       p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
     });
     if(error) throw error;
-    const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
-    document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
     showLuckyResult(data);
     return true;
   }catch(e){
@@ -693,6 +713,7 @@ function subscribeGiftsRealtime(){
       const g = payload.new;
       flyGiftEmoji(g.gift_emoji);
       showToast((g.receiver_id===myUserId ? "Você recebeu" : "Assento "+g.seat_number+" recebeu") + " " + g.gift_name + " 🎁");
+      addGiftToTotals(g);
     })
     .subscribe();
 }
@@ -703,8 +724,7 @@ async function init(){
   if(!auth || !auth.user){ window.location.href="index.html"; return; }
   myUserId = auth.user.id;
 
-  const { data: profile } = await sb.from("profiles").select("balance, name").eq("id", myUserId).single();
-  document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+  const { data: profile } = await sb.from("profiles").select("name").eq("id", myUserId).single();
   myDisplayName = profile ? profile.name : "—";
 
   const { data: room } = await sb.from("seat_rooms").select("*").eq("room_key", ROOM_KEY).single();
@@ -723,6 +743,7 @@ async function init(){
       : "Você entrou no assento " + mySeatNumber + ".";
     renderHeader();
     await loadSeatsFromDb();
+    await loadGiftTotals();
     subscribeRealtime();
     subscribeGiftsRealtime();
     await loadChat();
