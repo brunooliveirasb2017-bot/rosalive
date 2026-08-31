@@ -324,7 +324,7 @@ function renderSeatGrid(){
 
 async function onSeatClick(n, info, locked){
   if(info){
-    if(info.user_id && info.user_id !== myUserId) openGiftPicker(n);
+    if(info.user_id) openGiftPicker(n);
     return;
   }
   if(locked){ showToast("Assento reservado para o dono da sala."); return; }
@@ -502,14 +502,16 @@ function renderGiftCatTabs(){
 }
 function selectGiftCat(key){
   giftPickerActiveCat = key;
+  if(giftPickerActiveCat !== "sorte" && giftTargetSeat === "all") giftTargetSeat = null;
   renderGiftCatTabs();
   renderGiftGrid();
+  renderGiftTargets();
 }
 
 function occupiedSeatsExceptMe(){
   return Object.entries(seatsState)
     .map(([n, info]) => ({ n: Number(n), info }))
-    .filter(o => o.info && o.info.user_id && o.info.user_id !== myUserId);
+    .filter(o => o.info && o.info.user_id);
 }
 
 async function openGiftPicker(targetSeat){
@@ -540,15 +542,20 @@ function renderGiftTargets(){
     return;
   }
   if(giftTargetSeat === null) giftTargetSeat = seats[0].n;
-  strip.innerHTML = seats.map(o => `
+  const allOption = (giftPickerActiveCat === "sorte") ? `
+    <div class="gift-target-avatar${giftTargetSeat==="all"?" active":""}" onclick="selectGiftTarget('all')">
+      <div class="ph">🎉</div>
+      <div class="nm">Todos da sala</div>
+    </div>` : "";
+  strip.innerHTML = allOption + seats.map(o => `
     <div class="gift-target-avatar${o.n===giftTargetSeat?" active":""}" onclick="selectGiftTarget(${o.n})">
       ${o.info.avatar_url ? `<img src="${o.info.avatar_url}">` : `<div class="ph">🙂</div>`}
-      <div class="nm">${escapeHtml(o.info.display_name||("Assento "+o.n))}</div>
+      <div class="nm">${o.info.user_id===myUserId ? "Você" : escapeHtml(o.info.display_name||("Assento "+o.n))}</div>
     </div>
   `).join("");
 }
 function selectGiftTarget(n){
-  giftTargetSeat = n;
+  giftTargetSeat = (n === "all") ? "all" : Number(n);
   renderGiftTargets();
 }
 
@@ -642,6 +649,7 @@ async function sendGiftNow(gift){
   if(categorizeGift(gift) === "sorte"){
     return await sendLuckyGift(gift);
   }
+  if(giftTargetSeat === "all"){ showToast("Presentes 'Em geral' precisam de um destinatário específico."); return false; }
   try{
     const { data, error } = await sb.rpc("send_seat_gift", {
       p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
@@ -661,8 +669,9 @@ async function sendGiftNow(gift){
 
 async function sendLuckyGift(gift){
   try{
+    const seatParam = (giftTargetSeat === "all") ? null : giftTargetSeat;
     const { data, error } = await sb.rpc("send_lucky_gift", {
-      p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
+      p_room_key: ROOM_KEY, p_seat_number: seatParam, p_gift_id: gift.id
     });
     if(error) throw error;
     showLuckyResult(data);
