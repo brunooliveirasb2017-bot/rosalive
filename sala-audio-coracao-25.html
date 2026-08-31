@@ -228,6 +228,7 @@ let speakerOn = true;
 let seatsState = {}; // seat_number -> {user_id, display_name, avatar_url, is_leader, mic_on}
 let giftTotalsByUser = {}; // user_id -> soma de moedas recebidas (presentes "em geral") nesta sala
 let roomGiftTotal = 0; // soma de todas as moedas recebidas na sala
+let processedGiftIds = new Set(); // evita contar o mesmo presente duas vezes (local + realtime)
 
 function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
 function soon(label){ showToast((label||"Isso") + " chega em breve por aqui."); }
@@ -356,19 +357,25 @@ async function loadSeatsFromDb(){
 }
 
 async function loadGiftTotals(){
-  const { data } = await sb.from("seat_room_gifts").select("receiver_id, price").eq("room_key", ROOM_KEY);
+  const { data } = await sb.from("seat_room_gifts").select("id, receiver_id, price").eq("room_key", ROOM_KEY);
   giftTotalsByUser = {};
   roomGiftTotal = 0;
+  processedGiftIds = new Set();
   (data||[]).forEach(row=>{
     const amount = Number(row.price||0);
     giftTotalsByUser[row.receiver_id] = (giftTotalsByUser[row.receiver_id]||0) + amount;
     roomGiftTotal += amount;
+    if(row.id) processedGiftIds.add(row.id);
   });
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
 }
 
 function addGiftToTotals(g){
+  if(g.id){
+    if(processedGiftIds.has(g.id)) return; // já contado (evita duplicar entre update local e realtime)
+    processedGiftIds.add(g.id);
+  }
   const amount = Number(g.price||0);
   giftTotalsByUser[g.receiver_id] = (giftTotalsByUser[g.receiver_id]||0) + amount;
   roomGiftTotal += amount;
@@ -640,6 +647,11 @@ async function sendGiftNow(gift){
       p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
     });
     if(error) throw error;
+    const { data: lastGift } = await sb.from("seat_room_gifts")
+      .select("id, receiver_id, price")
+      .eq("room_key", ROOM_KEY).eq("sender_id", myUserId)
+      .order("created_at", { ascending:false }).limit(1).single();
+    if(lastGift) addGiftToTotals(lastGift);
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
