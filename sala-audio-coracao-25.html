@@ -557,12 +557,13 @@ function startComboSend(){
   comboSendTap();
 }
 
-function comboSendTap(){
+async function comboSendTap(){
+  const ok = await sendGiftNow(selectedGift);
+  if(!ok) return;
   comboCount++;
   const countEl = document.getElementById("combo-send-count");
   countEl.style.display = "block";
   countEl.textContent = comboCount;
-  sendGiftNow(selectedGift);
   flyFromComboToSeat();
   clearTimeout(comboHideTimer);
   comboHideTimer = setTimeout(hideComboSend, 3000);
@@ -606,10 +607,9 @@ function flyFromComboToSeat(){
 }
 
 async function sendGiftNow(gift){
-  if(giftTargetSeat === null){ showToast("Escolha pra quem enviar."); return; }
+  if(giftTargetSeat === null){ showToast("Escolha pra quem enviar."); return false; }
   if(categorizeGift(gift) === "sorte"){
-    await sendLuckyGift(gift);
-    return;
+    return await sendLuckyGift(gift);
   }
   try{
     const { data, error } = await sb.rpc("send_seat_gift", {
@@ -618,8 +618,10 @@ async function sendGiftNow(gift){
     if(error) throw error;
     const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
     document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+    return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
+    return false;
   }
 }
 
@@ -632,8 +634,10 @@ async function sendLuckyGift(gift){
     const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
     document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
     showLuckyResult(data);
+    return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
+    return false;
   }
 }
 
