@@ -107,6 +107,16 @@
   .gift-fly{ position:fixed; font-size:44px; z-index:301; pointer-events:none; transition:all 1.3s cubic-bezier(.2,.7,.3,1); filter:drop-shadow(0 0 6px rgba(0,0,0,.6)); }
   .seat.gift-hit{ animation:seatGiftPulse .8s ease-out; }
   @keyframes seatGiftPulse{ 0%{ box-shadow:0 0 0 0 rgba(255,211,77,.9); } 100%{ box-shadow:0 0 0 22px rgba(255,211,77,0); } }
+  .lucky-popup-back{ position:fixed; inset:0; z-index:400; display:none; align-items:center; justify-content:center; pointer-events:none; }
+  .lucky-popup{ background:radial-gradient(circle at 50% 15%, #3a1550, #150816 70%); border:3px solid var(--gold); border-radius:24px; padding:26px 30px; text-align:center; min-width:220px; box-shadow:0 0 40px rgba(255,211,77,.55); animation:luckyPopIn .35s ease-out; }
+  @keyframes luckyPopIn{ 0%{ transform:scale(.4); opacity:0; } 100%{ transform:scale(1); opacity:1; } }
+  .lucky-popup .mult{ font-size:44px; font-weight:800; color:var(--gold); text-shadow:0 0 14px rgba(255,211,77,.8); font-family:var(--font-display); }
+  .lucky-popup .sub{ font-size:16px; font-weight:700; color:#fff; margin-top:6px; }
+  .lucky-popup .msg{ font-size:14px; color:var(--cream); margin-top:10px; }
+  .lucky-popup.tier-500{ padding:22px 30px 30px; }
+  .lucky-popup.tier-500 .mult{ font-size:50px; }
+  .lucky-chest{ width:96px; height:78px; margin:10px auto 4px; position:relative; }
+  .lucky-chest svg{ width:100%; height:100%; filter:drop-shadow(0 0 16px rgba(255,211,77,.85)); }
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
   .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
@@ -175,6 +185,24 @@
   </div>
 </div>
 <button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
+
+<div class="lucky-popup-back" id="lucky-popup-back">
+  <div class="lucky-popup" id="lucky-popup">
+    <div class="mult" id="lucky-popup-mult">100X</div>
+    <div class="sub" id="lucky-popup-sub">✨ VITÓRIA!</div>
+    <div class="lucky-chest" id="lucky-popup-chest" style="display:none;">
+      <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="34" width="80" height="40" rx="6" fill="#caa227" stroke="#7a5a10" stroke-width="2"/>
+        <rect x="10" y="34" width="80" height="10" fill="#e6c65c"/>
+        <path d="M14 34 Q50 6 86 34" fill="none" stroke="#caa227" stroke-width="10"/>
+        <path d="M14 34 Q50 6 86 34" fill="none" stroke="#7a5a10" stroke-width="2"/>
+        <rect x="44" y="40" width="12" height="16" rx="3" fill="#7a5a10"/>
+        <circle cx="50" cy="46" r="3" fill="#3a2604"/>
+      </svg>
+    </div>
+    <div class="msg" id="lucky-popup-msg">Maria ganhou 1.000 moedas</div>
+  </div>
+</div>
 
 
 <script>
@@ -579,6 +607,10 @@ function flyFromComboToSeat(){
 
 async function sendGiftNow(gift){
   if(giftTargetSeat === null){ showToast("Escolha pra quem enviar."); return; }
+  if(categorizeGift(gift) === "sorte"){
+    await sendLuckyGift(gift);
+    return;
+  }
   try{
     const { data, error } = await sb.rpc("send_seat_gift", {
       p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
@@ -589,6 +621,56 @@ async function sendGiftNow(gift){
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
   }
+}
+
+async function sendLuckyGift(gift){
+  try{
+    const { data, error } = await sb.rpc("send_lucky_gift", {
+      p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
+    });
+    if(error) throw error;
+    const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
+    document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+    showLuckyResult(data);
+  }catch(e){
+    showToast("Não foi possível enviar: " + e.message);
+  }
+}
+
+function showLuckyResult(result){
+  // Resultados comuns (20x/50x) só aparecem no chat da sala -- a mensagem já foi
+  // inserida pelo backend em seat_room_messages, então o chat mostra sozinho.
+  if(result.multiplier < 100) return;
+
+  const back = document.getElementById("lucky-popup-back");
+  const popup = document.getElementById("lucky-popup");
+  const multEl = document.getElementById("lucky-popup-mult");
+  const subEl = document.getElementById("lucky-popup-sub");
+  const chestEl = document.getElementById("lucky-popup-chest");
+  const msgEl = document.getElementById("lucky-popup-msg");
+
+  popup.className = "lucky-popup";
+  multEl.textContent = result.multiplier + "X";
+  msgEl.textContent = result.receiver_name + " ganhou " + fmt(result.prize) + " moedas";
+
+  let holdTime = 2200;
+  if(result.multiplier === 100){
+    subEl.textContent = "✨ VITÓRIA!";
+    chestEl.style.display = "none";
+  }else if(result.multiplier === 250){
+    subEl.textContent = "🔥 VITÓRIA ESPECIAL!";
+    chestEl.style.display = "none";
+    holdTime = 2800;
+  }else{
+    popup.classList.add("tier-500");
+    subEl.textContent = "GRANDE VITÓRIA!";
+    chestEl.style.display = "block";
+    holdTime = 3600;
+  }
+
+  back.style.display = "flex";
+  clearTimeout(showLuckyResult._t);
+  showLuckyResult._t = setTimeout(()=>{ back.style.display = "none"; }, holdTime);
 }
 
 function flyGiftEmoji(emoji){
