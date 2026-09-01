@@ -642,10 +642,12 @@ function hideComboSend(){
 
 function flyFromComboToSeat(){
   const comboBtn = document.getElementById("combo-send-btn");
-  const seatEl = document.getElementById("seat-"+giftTargetSeat);
-  if(!seatEl) return;
+  const targetEl = (giftTargetSeat === "all")
+    ? document.querySelector(".room-total-box")
+    : document.getElementById("seat-"+giftTargetSeat);
+  if(!targetEl) return;
   const start = comboBtn.getBoundingClientRect();
-  const end = seatEl.getBoundingClientRect();
+  const end = targetEl.getBoundingClientRect();
   const fly = document.createElement("div");
   fly.className = "gift-fly";
   const isImg = selectedGift && selectedGift.emoji && selectedGift.emoji.length > 4;
