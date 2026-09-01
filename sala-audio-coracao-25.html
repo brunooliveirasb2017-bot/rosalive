@@ -367,6 +367,29 @@ async function loadGiftTotals(){
     roomGiftTotal += amount;
     if(row.id) processedGiftIds.add(row.id);
   });
+
+  // soma também a comissão de 4% do Presente da Sorte (é só isso que
+  // realmente chega pra quem fica na sala; o prêmio em si vai pra
+  // quem apostou, não conta aqui pra não inflar o total)
+  const { data: lucky } = await sb.from("lucky_gift_events").select("receiver_id, prize").eq("room_key", ROOM_KEY);
+  const currentOccupants = Object.values(seatsState).map(o=>o.user_id).filter(Boolean);
+  (lucky||[]).forEach(row=>{
+    const commission = Math.floor(Number(row.prize||0) * 0.04);
+    if(!commission) return;
+    if(row.receiver_id){
+      giftTotalsByUser[row.receiver_id] = (giftTotalsByUser[row.receiver_id]||0) + commission;
+      roomGiftTotal += commission;
+    } else if(currentOccupants.length){
+      // "todos da sala": divide pelos ocupantes atuais (aproximação,
+      // já que não guardamos quem estava sentado no momento exato)
+      const share = Math.floor(commission / currentOccupants.length);
+      currentOccupants.forEach(uid=>{
+        giftTotalsByUser[uid] = (giftTotalsByUser[uid]||0) + share;
+      });
+      roomGiftTotal += share * currentOccupants.length;
+    }
+  });
+
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
 }
@@ -387,6 +410,9 @@ function subscribeRealtime(){
   sb.channel("seat-room-"+ROOM_KEY)
     .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_seats", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
       loadSeatsFromDb();
+    })
+    .on("postgres_changes", { event:"INSERT", schema:"public", table:"lucky_gift_events", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
+      loadGiftTotals();
     })
     .subscribe();
 }
@@ -675,6 +701,7 @@ async function sendLuckyGift(gift){
     });
     if(error) throw error;
     showLuckyResult(data);
+    loadGiftTotals();
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
