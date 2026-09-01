@@ -80,6 +80,7 @@
   .bar button .st.on{ color:var(--good); }
   .bar button .st.off{ color:var(--bad); }
   .bar button.danger .i, .bar button.danger .lbl{ color:var(--bad); }
+  .bar button.danger .power-btn-icon{ width:22px; height:22px; border-radius:50%; background:var(--bad); display:flex; align-items:center; justify-content:center; }
 
   .status-line{ text-align:center; margin-top:8px; color:var(--muted); font-size:10px; }
 
@@ -169,7 +170,7 @@
     <button id="btn-spk" onclick="toggleSpeaker()"><span class="i">🔊</span><span>Alto-falante</span><span class="st on" id="spk-st">Ligado</span></button>
     <button onclick="openGiftPicker()"><span class="i">🎀</span><span>Enviar Presente</span></button>
     <button onclick="clearChat()"><span class="i">🧹</span><span>Limpar Chat</span></button>
-    <button class="danger" onclick="leaveRoom()"><span class="i">↪️</span><span class="lbl">Sair da Sala</span></button>
+    <button class="danger" onclick="leaveRoom()"><span class="power-btn-icon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/></svg></span><span class="lbl">Sair da Sala</span></button>
   </div>
 
   <div class="status-line" id="status-line">Entrando na sala…</div>
