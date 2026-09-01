@@ -683,13 +683,14 @@
         <div style="margin-top:16px; border-top:1px solid var(--line); padding-top:14px;">
           <div class="eyebrow" style="margin-bottom:8px;">Personalizado</div>
           <div class="row" style="flex-wrap:wrap; gap:8px;">
-            <div class="field" style="max-width:90px;"><label>20x %</label><input id="lucky-custom-20" type="number" step="0.1"></div>
-            <div class="field" style="max-width:90px;"><label>50x %</label><input id="lucky-custom-50" type="number" step="0.1"></div>
-            <div class="field" style="max-width:90px;"><label>100x %</label><input id="lucky-custom-100" type="number" step="0.1"></div>
-            <div class="field" style="max-width:90px;"><label>250x %</label><input id="lucky-custom-250" type="number" step="0.1"></div>
-            <div class="field" style="max-width:90px;"><label>500x %</label><input id="lucky-custom-500" type="number" step="0.1"></div>
+            <div class="field" style="max-width:90px;"><label>Sem retorno %</label><input id="lucky-custom-0" type="number" step="0.01"></div>
+            <div class="field" style="max-width:90px;"><label>20x %</label><input id="lucky-custom-20" type="number" step="0.01"></div>
+            <div class="field" style="max-width:90px;"><label>50x %</label><input id="lucky-custom-50" type="number" step="0.01"></div>
+            <div class="field" style="max-width:90px;"><label>100x %</label><input id="lucky-custom-100" type="number" step="0.01"></div>
+            <div class="field" style="max-width:90px;"><label>250x %</label><input id="lucky-custom-250" type="number" step="0.01"></div>
+            <div class="field" style="max-width:90px;"><label>500x %</label><input id="lucky-custom-500" type="number" step="0.01"></div>
           </div>
-          <small style="color:var(--muted);">Os 5 valores devem somar 100.</small><br>
+          <small style="color:var(--muted);">Os 6 valores devem somar 100.</small><br>
           <button class="btn btn-ghost" style="margin-top:8px;" onclick="setLuckyCustom()">Salvar personalizado</button>
         </div>
         <div id="lucky-banner" style="margin-top:10px;"></div>
@@ -2443,7 +2444,8 @@ async function loadLuckyGiftPanel(){
   const cfg = data[0];
   const labels = { facil:"🟢 Fácil", medio:"🟡 Médio", dificil:"🔴 Difícil", personalizado:"Personalizado" };
   box.textContent = "Nível atual: " + (labels[cfg.difficulty] || cfg.difficulty)
-    + " — 20x: "+cfg.prob_20x+"% · 50x: "+cfg.prob_50x+"% · 100x: "+cfg.prob_100x+"% · 250x: "+cfg.prob_250x+"% · 500x: "+cfg.prob_500x+"%";
+    + " — sem retorno: "+cfg.prob_0x+"% · 20x: "+cfg.prob_20x+"% · 50x: "+cfg.prob_50x+"% · 100x: "+cfg.prob_100x+"% · 250x: "+cfg.prob_250x+"% · 500x: "+cfg.prob_500x+"%";
+  document.getElementById("lucky-custom-0").value = cfg.prob_0x;
   document.getElementById("lucky-custom-20").value = cfg.prob_20x;
   document.getElementById("lucky-custom-50").value = cfg.prob_50x;
   document.getElementById("lucky-custom-100").value = cfg.prob_100x;
@@ -2463,19 +2465,20 @@ async function setLuckyDifficulty(level){
 }
 async function setLuckyCustom(){
   const banner = document.getElementById("lucky-banner");
+  const v0 = parseFloat(document.getElementById("lucky-custom-0").value);
   const v20 = parseFloat(document.getElementById("lucky-custom-20").value);
   const v50 = parseFloat(document.getElementById("lucky-custom-50").value);
   const v100 = parseFloat(document.getElementById("lucky-custom-100").value);
   const v250 = parseFloat(document.getElementById("lucky-custom-250").value);
   const v500 = parseFloat(document.getElementById("lucky-custom-500").value);
-  const soma = v20+v50+v100+v250+v500;
+  const soma = v0+v20+v50+v100+v250+v500;
   if(Math.abs(soma-100) > 0.05){
-    banner.innerHTML = `<div class="banner banner-err">Os valores somam ${soma.toFixed(1)}%, precisa somar 100%.</div>`;
+    banner.innerHTML = `<div class="banner banner-err">Os valores somam ${soma.toFixed(2)}%, precisa somar 100%.</div>`;
     return;
   }
   banner.innerHTML = '<div class="banner banner-note">Salvando...</div>';
   const { error } = await sb.rpc("set_lucky_gift_custom", {
-    p_prob_20x: v20, p_prob_50x: v50, p_prob_100x: v100, p_prob_250x: v250, p_prob_500x: v500
+    p_prob_0x: v0, p_prob_20x: v20, p_prob_50x: v50, p_prob_100x: v100, p_prob_250x: v250, p_prob_500x: v500
   });
   if(error){ banner.innerHTML = `<div class="banner banner-err">${error.message}</div>`; return; }
   banner.innerHTML = '<div class="banner banner-ok">Personalizado salvo!</div>';
