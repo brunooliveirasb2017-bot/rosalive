@@ -611,26 +611,41 @@ function selectGift(gift){
 
 let comboCount = 0;
 let comboHideTimer = null;
+let comboQueue = 0;
+let comboProcessing = false;
 
 function startComboSend(){
   if(!selectedGift || giftTargetSeat === null) return;
   closeGiftModal();
   comboCount = 0;
+  comboQueue = 0;
   const comboBtn = document.getElementById("combo-send-btn");
   comboBtn.style.display = "flex";
   comboSendTap();
 }
 
-async function comboSendTap(){
-  const ok = await sendGiftNow(selectedGift);
-  if(!ok) return;
-  comboCount++;
-  const countEl = document.getElementById("combo-send-count");
-  countEl.style.display = "block";
-  countEl.textContent = comboCount;
-  flyFromComboToSeat();
-  clearTimeout(comboHideTimer);
-  comboHideTimer = setTimeout(hideComboSend, 3000);
+function comboSendTap(){
+  comboQueue++;
+  processComboQueue();
+}
+
+async function processComboQueue(){
+  if(comboProcessing) return;
+  comboProcessing = true;
+  while(comboQueue > 0){
+    comboQueue--;
+    const ok = await sendGiftNow(selectedGift);
+    if(ok){
+      comboCount++;
+      const countEl = document.getElementById("combo-send-count");
+      countEl.style.display = "block";
+      countEl.textContent = comboCount;
+      flyFromComboToSeat();
+      clearTimeout(comboHideTimer);
+      comboHideTimer = setTimeout(hideComboSend, 3000);
+    }
+  }
+  comboProcessing = false;
 }
 
 function hideComboSend(){
