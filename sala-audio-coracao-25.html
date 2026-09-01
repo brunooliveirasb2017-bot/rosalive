@@ -406,13 +406,19 @@ function addGiftToTotals(g){
   renderSeatGrid();
 }
 
+let loadGiftTotalsTimer = null;
+function scheduleLoadGiftTotals(){
+  clearTimeout(loadGiftTotalsTimer);
+  loadGiftTotalsTimer = setTimeout(loadGiftTotals, 700);
+}
+
 function subscribeRealtime(){
   sb.channel("seat-room-"+ROOM_KEY)
     .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_seats", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
       loadSeatsFromDb();
     })
     .on("postgres_changes", { event:"INSERT", schema:"public", table:"lucky_gift_events", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
-      loadGiftTotals();
+      scheduleLoadGiftTotals();
     })
     .subscribe();
 }
@@ -703,7 +709,7 @@ async function sendLuckyGift(gift){
     });
     if(error) throw error;
     showLuckyResult(data);
-    loadGiftTotals();
+    scheduleLoadGiftTotals();
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
