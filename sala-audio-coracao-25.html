@@ -665,6 +665,7 @@ function flyFromComboToSeat(){
   fly.style.left = start.left + start.width/2 - 41 + "px";
   fly.style.top = start.top + start.height/2 - 41 + "px";
   document.body.appendChild(fly);
+  void fly.offsetWidth; // força o navegador a "registrar" a posição inicial antes de animar
   requestAnimationFrame(()=>{
     fly.style.left = end.left + end.width/2 - 41 + "px";
     fly.style.top = end.top + end.height/2 - 41 + "px";
