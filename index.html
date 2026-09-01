@@ -1050,9 +1050,10 @@ async function loadConfig(){
 /* Recarrega o perfil + fotos do usuário logado a partir do banco
    (chamar sempre depois de qualquer operação que mexe em saldo/nível/fotos) */
 async function refreshCurrentUser(){
-  const { data: auth } = await sb.auth.getUser();
-  if(!auth || !auth.user) { currentUser = null; return null; }
-  const { data: profile, error } = await sb.from("profiles").select("*").eq("id", auth.user.id).single();
+  const { data: sessionData } = await sb.auth.getSession();
+  const user = sessionData && sessionData.session ? sessionData.session.user : null;
+  if(!user) { currentUser = null; return null; }
+  const { data: profile, error } = await sb.from("profiles").select("*").eq("id", user.id).single();
   if(error || !profile) { currentUser = null; return null; }
   const { data: photoRows } = await sb.from("photos").select("*").eq("profile_id", profile.id).order("position");
   profile.photos = (photoRows||[]).map(p => ({
@@ -2729,8 +2730,8 @@ async function sendAiMessage(){
 (async function init(){
   updatePasswordFieldVisibility();
   await loadConfig();
-  const { data: auth } = await sb.auth.getUser();
-  if(auth && auth.user){
+  const { data: sessionData } = await sb.auth.getSession();
+  if(sessionData && sessionData.session && sessionData.session.user){
     await refreshCurrentUser();
     if(currentUser && currentUser.active){
       if(currentUser.type==="female" && (!currentUser.verified || (currentUser.photos||[]).length===0)){
