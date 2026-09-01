@@ -406,19 +406,13 @@ function addGiftToTotals(g){
   renderSeatGrid();
 }
 
-let loadGiftTotalsTimer = null;
-function scheduleLoadGiftTotals(){
-  clearTimeout(loadGiftTotalsTimer);
-  loadGiftTotalsTimer = setTimeout(loadGiftTotals, 700);
-}
-
 function subscribeRealtime(){
   sb.channel("seat-room-"+ROOM_KEY)
     .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_seats", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
       loadSeatsFromDb();
     })
     .on("postgres_changes", { event:"INSERT", schema:"public", table:"lucky_gift_events", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
-      scheduleLoadGiftTotals();
+      loadGiftTotals();
     })
     .subscribe();
 }
@@ -665,7 +659,6 @@ function flyFromComboToSeat(){
   fly.style.left = start.left + start.width/2 - 41 + "px";
   fly.style.top = start.top + start.height/2 - 41 + "px";
   document.body.appendChild(fly);
-  void fly.offsetWidth; // força o navegador a "registrar" a posição inicial antes de animar
   requestAnimationFrame(()=>{
     fly.style.left = end.left + end.width/2 - 41 + "px";
     fly.style.top = end.top + end.height/2 - 41 + "px";
@@ -710,7 +703,7 @@ async function sendLuckyGift(gift){
     });
     if(error) throw error;
     showLuckyResult(data);
-    scheduleLoadGiftTotals();
+    loadGiftTotals();
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
