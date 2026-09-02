@@ -220,12 +220,12 @@
   .live-profile-text b{ display:block; font-size:12px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .live-profile-text span{ display:block; font-size:10px; color:var(--muted); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .live-bottom-bar{ position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:8px; padding:12px 14px calc(16px + env(safe-area-inset-bottom,0px)); z-index:5; background:linear-gradient(0deg, rgba(0,0,0,.65), transparent); }
-  .live-round-btn{ width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.4); color:#fff; font-size:19px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .live-round-btn{ width:48px; height:48px; border-radius:50%; border:1px solid rgba(255,255,255,.25); background:rgba(0,0,0,.4); color:#fff; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
   .live-call-btn-sm{ padding:0 16px; height:40px; line-height:40px; font-size:12px; flex:0 0 auto; white-space:nowrap; }
   .live-chat-feed{ position:absolute; left:12px; right:70px; bottom:66px; max-height:46%; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; gap:7px; z-index:4; pointer-events:none; }
   .live-chat-msg{ background:transparent; padding:0; font-size:13px; line-height:1.4; max-width:100%; word-break:break-word; align-self:flex-start; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.95), 0 1px 10px rgba(0,0,0,.8); }
   .live-chat-msg b{ color:var(--pink-2); margin-right:5px; }
-  .live-chat-input{ flex:1; background:rgba(0,0,0,.42); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:0 16px; height:40px; color:#fff; font-size:12.5px; min-width:0; }
+  .live-chat-input{ flex:1; background:rgba(0,0,0,.42); border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:0 18px; height:46px; color:#fff; font-size:14px; min-width:0; }
   .live-chat-input::placeholder{ color:rgba(255,255,255,.55); }
 
   /* ===== Vídeo em tela cheia customizado (substitui a UI padrão do Daily.co) ===== */
@@ -235,9 +235,16 @@
   .live-follow-btn{ background:var(--pink); color:#fff; border:none; border-radius:999px; padding:5px 12px; font-size:11px; font-weight:800; flex-shrink:0; cursor:pointer; }
   .live-follow-btn.following{ background:rgba(255,255,255,.18); color:#fff; }
   .live-viewer-chip{ display:flex; align-items:center; gap:4px; background:rgba(0,0,0,.4); color:#fff; border-radius:999px; padding:5px 10px; font-size:11px; font-weight:700; flex-shrink:0; }
+  .broadcast-power-btn{ width:44px; height:44px; border-radius:50%; border:2px solid rgba(255,60,90,.9); background:rgba(220,40,60,.85); box-shadow:0 0 14px rgba(255,50,80,.55); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .broadcast-earnings-box{ position:absolute; top:60px; left:14px; z-index:5; display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.45); border:1px solid rgba(255,200,60,.5); border-radius:14px; padding:8px 12px; cursor:pointer; max-width:200px; }
+  .broadcast-earnings-box .trophy{ font-size:22px; }
+  .broadcast-earnings-box .txt{ display:flex; flex-direction:column; line-height:1.25; }
+  .broadcast-earnings-box .lbl{ font-size:10px; color:var(--muted); }
+  .broadcast-earnings-box b{ font-size:15px; color:#ffd257; }
+  .broadcast-earnings-box .chev{ color:var(--muted); font-size:16px; }
   .broadcast-tools-row{ position:absolute; top:64px; right:14px; display:flex; flex-direction:column; gap:10px; z-index:5; align-items:center; }
-  .broadcast-tools-row .live-icon-btn{ background:rgba(0,0,0,.4); }
-  .broadcast-tools-row .tool-label{ font-size:9px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8); margin-top:-4px; }
+  .broadcast-tools-row .live-icon-btn{ background:rgba(0,0,0,.4); width:46px; height:46px; font-size:20px; }
+  .broadcast-tools-row .tool-label{ font-size:9.5px; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.8); margin-top:-4px; }
   .live-like-btn{ font-size:22px; }
 
   .wallet-card{ background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:20px; padding:20px; position:relative; overflow:hidden; }
@@ -553,22 +560,36 @@
         <div class="live-profile-chip" style="cursor:default; flex:1;">
           <div class="live-icon-btn" style="background:rgba(255,60,140,.55); width:26px; height:26px; font-size:11px;">●</div>
           <div class="live-profile-text">
-            <b data-i18n="broadcast_title">Você está ao vivo</b>
+            <b data-i18n="broadcast_title">AO VIVO</b>
             <span id="broadcast-viewers" data-i18n="broadcast_sub">Transmitindo agora</span>
           </div>
         </div>
-        <button class="btn btn-danger live-call-btn-sm" onclick="stopBroadcast()" data-i18n="btn_stop_broadcast">⏹️ Encerrar</button>
+        <div class="live-viewer-chip">👥 <span id="broadcast-viewer-count">—</span></div>
+        <button class="broadcast-power-btn" onclick="stopBroadcast()" title="Encerrar transmissão">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/></svg>
+        </button>
+      </div>
+      <div class="broadcast-earnings-box" onclick="showAppScreen('scr-wallet')">
+        <span class="trophy">🏆</span>
+        <div class="txt"><span class="lbl">Saldo recebido</span><b id="broadcast-earnings">0</b></div>
+        <span class="chev">›</span>
       </div>
       <div class="broadcast-tools-row">
         <button class="live-icon-btn" id="broadcast-mic-btn" onclick="toggleBroadcastMic(this)" title="Microfone">🎙️</button>
-        <button class="live-icon-btn" onclick="showComingSoonToast('Filtros')" title="Filtros">✨</button>
-        <button class="live-icon-btn" onclick="showComingSoonToast('Beleza')" title="Beleza">💄</button>
-        <button class="live-icon-btn" onclick="showComingSoonToast('Clareza')" title="Clareza">☀️</button>
+        <span class="tool-label">Microfone</span>
+        <button class="live-icon-btn" onclick="showComingSoonToast('Beleza')" title="Beleza">✨</button>
+        <span class="tool-label">Beleza</span>
+        <button class="live-icon-btn" onclick="showComingSoonToast('Maquiagem')" title="Maquiagem">💄</button>
+        <span class="tool-label">Maquiagem</span>
+        <button class="live-icon-btn" onclick="showComingSoonToast('Iluminação')" title="Iluminação">☀️</button>
+        <span class="tool-label">Iluminação</span>
         <button class="live-icon-btn" onclick="openLiveSettings()" title="Configurações">⚙️</button>
+        <span class="tool-label">Configurações</span>
       </div>
       <div class="live-chat-feed" id="broadcast-chat-feed"></div>
       <div class="live-bottom-bar">
         <input type="text" id="broadcast-chat-input" class="live-chat-input" placeholder="Diga algo..." onkeydown="if(event.key==='Enter'){ sendBroadcastChat(); }">
+        <button class="live-round-btn" onclick="sendBroadcastChat()" title="Enviar">➤</button>
         <button class="live-round-btn" onclick="openBroadcastGiftView()" title="Presentes recebidos">🎁</button>
       </div>
     </div>
@@ -823,7 +844,7 @@ const I18N = {
     buycoins_title:"Comprar moedas", buycoins_sub_html:'Pacotes para <span id="buycoins-country">—</span>. O pedido fica pendente até o pagamento ser confirmado.',
     profile_title:"Meu perfil", profile_meta_html:'Idade: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Gênero: <span id="profile-gender">—</span>',
     btn_logout:"Sair / trocar de perfil",
-    broadcast_title:"Minha transmissão", btn_stop_broadcast:"⏹️ Encerrar transmissão",
+    broadcast_title:"AO VIVO", btn_stop_broadcast:"⏹️ Encerrar transmissão",
     incall_title:"Ligação", btn_end_call:"Encerrar chamada",
     tab_lives:"Lives", tab_wallet:"Carteira", tab_profile:"Perfil"
   },
@@ -2269,6 +2290,8 @@ async function startBroadcast(){
     const res = await callEdgeFunction("start-live", {});
     myLiveSessionId = res.session_id;
     document.getElementById("broadcast-chat-feed").innerHTML = "";
+    document.getElementById("broadcast-earnings").textContent = fmt(currentUser.earnings_balance||0);
+    document.getElementById("broadcast-viewer-count").textContent = Math.floor(Math.random()*400)+30;
     showAppScreen("scr-broadcast");
     requestLiveFullscreen();
     const videoEl = document.getElementById("broadcast-local-video");
