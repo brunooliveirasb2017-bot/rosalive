@@ -127,6 +127,28 @@
   .gift-emoji-fly{ position:fixed; z-index:999; font-size:34px; pointer-events:none; animation:giftFly 1.6s ease-out forwards; }
   @keyframes giftFly{ 0%{ transform:translateY(0) scale(.6); opacity:0; } 15%{ opacity:1; transform:scale(1);} 100%{ transform:translateY(-160px) scale(1.3); opacity:0; } }
 
+
+/* ===== BOMBA ROSALIVE ===== */
+.bomb-event{display:none;position:relative;margin:18px auto 4px;max-width:360px;text-align:center;z-index:20}
+.bomb-event.show{display:block;animation:bombIn .5s ease-out}
+@keyframes bombIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.bomb-stage{position:relative;width:210px;height:210px;margin:auto}
+.bomb-sphere{position:absolute;inset:15px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%);border:4px solid #55515d;box-shadow:inset -18px -22px 35px #000, inset 12px 10px 25px rgba(255,255,255,.16),0 0 28px rgba(255,47,135,.32)}
+.bomb-liquid{position:absolute;left:-12%;right:-12%;bottom:-3%;height:62%;background:linear-gradient(#ff4d9b,#d70b69 45%,#7c073f);border-top:2px solid rgba(255,182,220,.7);animation:seaWave 1.8s ease-in-out infinite alternate;clip-path:polygon(0 16%,10% 10%,20% 18%,30% 8%,40% 17%,50% 7%,60% 15%,70% 9%,80% 18%,90% 8%,100% 15%,100% 100%,0 100%)}
+@keyframes seaWave{0%{transform:translateX(-3px) rotate(-1deg);height:60%}100%{transform:translateX(5px) rotate(1.5deg);height:65%}}
+.bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.35);animation:bubbleUp 2.8s infinite ease-in}
+.bubble.b1{width:9px;height:9px;left:35%;bottom:28%}.bubble.b2{width:6px;height:6px;left:58%;bottom:22%;animation-delay:.8s}.bubble.b3{width:12px;height:12px;left:48%;bottom:35%;animation-delay:1.4s}
+@keyframes bubbleUp{0%{transform:translateY(0) scale(.7);opacity:0}25%{opacity:.8}100%{transform:translateY(-80px) scale(1);opacity:0}}
+.bomb-highlight{position:absolute;inset:25px;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 28%);pointer-events:none}
+.bomb-fuse{position:absolute;top:0;left:50%;width:34px;height:62px;transform:translateX(-50%) rotate(12deg);border-top:6px solid #29252b;border-right:5px solid #29252b;border-radius:50%;z-index:4}
+.bomb-spark{position:absolute;top:-5px;left:50%;width:17px;height:17px;margin-left:10px;border-radius:50%;background:#fff2a1;box-shadow:0 0 8px #ffd34d,0 0 18px #ff7a00;animation:spark .55s infinite alternate}
+@keyframes spark{to{transform:scale(1.4);opacity:.55}}
+.bomb-level{font-weight:800;font-size:12px;color:var(--gold);letter-spacing:.08em}.bomb-title{font-size:15px;font-weight:800;margin-top:3px}.bomb-trophy{font-size:10px;color:var(--muted);margin-top:3px}.bomb-count{font-size:13px;font-weight:800;color:#fff;margin-top:7px}.bomb-progress{height:7px;border-radius:999px;background:#321321;overflow:hidden;margin:7px 25px}.bomb-progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff2f87,#f4c542);transform-origin:left}.bomb-actions{display:flex;justify-content:center;gap:8px;margin-top:9px}.bomb-btn{border:1px solid var(--gold);background:#21101a;color:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:11px}.bomb-btn.claim{background:var(--pink)}
+.bomb-burst{display:none;font-size:40px;animation:burst .7s ease-out}.bomb-event.exploded .bomb-stage{display:none}.bomb-event.exploded .bomb-burst{display:block}.bomb-event.exploded .bomb-count{display:none}.bomb-event.exploded .bomb-progress{display:none}
+@keyframes burst{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
+.bomb-winner{display:none;margin-top:8px;background:linear-gradient(135deg,#3a0f22,#160a12);border:1px solid var(--gold);border-radius:14px;padding:9px}.bomb-event.exploded .bomb-winner{display:block}.bomb-winner .big{font-size:18px;color:var(--gold);font-weight:900}.bomb-winner .small{font-size:10px;color:var(--cream);margin-top:2px}
+.bomb-prize-panel{display:none;margin:10px auto 0;max-width:330px;background:#150910;border:1px solid var(--line);border-radius:14px;padding:10px}.bomb-prize-panel.show{display:block}.bomb-prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.bomb-prize{border:1px solid var(--line);border-radius:10px;padding:6px;background:#210d18;font-size:10px}.bomb-prize strong{display:block;color:var(--gold);font-size:12px}.bomb-prize button{margin-top:5px;border:0;border-radius:999px;background:var(--pink);color:#fff;padding:5px 8px;font-size:9px;font-weight:800}.backpack-empty{color:var(--muted);font-size:11px;padding:12px;text-align:center}.backpack-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:7px;margin-top:6px;background:#210d18}.backpack-item .ico{font-size:24px}.backpack-item .info{flex:1;text-align:left}.backpack-item .info b{font-size:11px}.backpack-item .info small{display:block;color:var(--muted);font-size:9px}.backpack-item button{border:0;background:var(--pink);color:#fff;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:800}
+
 </style>
 </head>
 <body>
@@ -156,6 +178,23 @@
   </div>
 
   <div class="seat-grid" id="seat-grid"></div>
+
+
+  <div class="bomb-event" id="bomb-event">
+    <div class="bomb-stage">
+      <div class="bomb-fuse"><span class="bomb-spark"></span></div>
+      <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+    </div>
+    <div class="bomb-burst">💥✨</div>
+    <div class="bomb-level" id="bomb-level">BOMBA LV.1</div>
+    <div class="bomb-title" id="bomb-title">A bomba foi liberada!</div>
+    <div class="bomb-trophy" id="bomb-trophy">Troféu: 0 moedas</div>
+    <div class="bomb-count" id="bomb-count">05:00</div>
+    <div class="bomb-progress"><i id="bomb-progress"></i></div>
+    <div class="bomb-actions"><button class="bomb-btn claim" id="bomb-claim" onclick="claimBombPrize()">PEGAR PRÊMIO</button><button class="bomb-btn" onclick="closeBombPanel()">Ocultar</button></div>
+    <div class="bomb-winner" id="bomb-winner"><div class="big" id="bomb-winner-prize">2.000 moedas</div><div class="small" id="bomb-winner-name">Maior prêmio</div></div>
+    <div class="bomb-prize-panel" id="bomb-prize-panel"><b>Prêmios disponíveis</b><div class="bomb-prize-grid" id="bomb-prize-grid"></div></div>
+  </div>
 
   <div class="chat-box">
     <div class="chat-messages" id="chat-messages"></div>
@@ -187,6 +226,9 @@
     <div class="gift-send-row"><button class="gift-send-btn" id="gift-send-btn" disabled onclick="startComboSend()">Enviar</button></div>
   </div>
 </div>
+
+<div class="modal-back" id="modal-backpack"><div class="modal-card"><button class="sheet-close" onclick="closeBackpack()">✕</button><h3>🎒 Mochila</h3><p style="margin:0;font-size:12px;color:var(--muted);">Presentes ganhos na bomba</p><div id="backpack-list"></div></div></div>
+
 <button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
 
 <div class="lucky-popup-back" id="lucky-popup-back">
@@ -393,6 +435,7 @@ async function loadGiftTotals(){
 
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
+  checkBombUnlock();
 }
 
 function addGiftToTotals(g){
@@ -405,6 +448,7 @@ function addGiftToTotals(g){
   roomGiftTotal += amount;
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
+  checkBombUnlock();
 }
 
 function subscribeRealtime(){
@@ -524,11 +568,13 @@ function renderGiftCatTabs(){
   const hasSorte = giftPickerData.some(g=>categorizeGift(g)==="sorte");
   const tabs = [{key:"geral", label:"Em geral"}];
   if(hasSorte) tabs.push({key:"sorte", label:"Sorte"});
+  tabs.push({key:"mochila", label:"Mochila"});
   const wrap = document.getElementById("gift-cat-tabs");
   wrap.innerHTML = tabs.map(t=>`<button type="button" class="gift-cat-tab${t.key===giftPickerActiveCat?" active":""}" onclick="selectGiftCat('${t.key}')">${t.label}</button>`).join("");
 }
 function selectGiftCat(key){
   giftPickerActiveCat = key;
+  if(key === "mochila"){ renderGiftCatTabs(); renderBackpack(); return; }
   if(giftPickerActiveCat !== "sorte" && giftTargetSeat === "all") giftTargetSeat = null;
   renderGiftCatTabs();
   renderGiftGrid();
@@ -563,6 +609,7 @@ function closeGiftModal(){
 
 function renderGiftTargets(){
   const strip = document.getElementById("gift-target-strip");
+  if(giftPickerActiveCat === "mochila"){ strip.innerHTML=""; return; }
   const seats = occupiedSeatsExceptMe();
   if(!seats.length){
     strip.innerHTML = `<div style="font-size:11px;color:var(--muted);">Ninguém mais na sala ainda pra receber presente.</div>`;
@@ -590,6 +637,7 @@ let selectedGift = null;
 
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
+  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = backpack.length ? backpack.map((x,i)=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.icon||"🎁"}</div><div class="info"><b>${escapeHtml(x.name)}</b><small>Prêmio da Bomba LV.${x.level} • ${fmt(x.value)} moedas</small></div><button onclick="sendBackpackItem(${i})">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos na bomba aparecerão aqui.</div>`; return; }
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
   grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
@@ -784,6 +832,116 @@ function subscribeGiftsRealtime(){
     .subscribe();
 }
 
+
+// ---------- Bomba + Mochila (Supabase real) ----------
+const BOMB_LEVELS = [
+  {level:1, threshold:100000, prizes:[{v:2000,q:1},{v:1000,q:1},{v:500,q:2},{v:100,q:10},{v:10,q:30},{v:5,q:50}]},
+  {level:2, threshold:250000, prizes:[{v:4000,q:2},{v:2000,q:2},{v:1000,q:4},{v:200,q:20},{v:20,q:60},{v:10,q:100}]},
+  {level:3, threshold:400000, prizes:[{v:8000,q:4},{v:4000,q:4},{v:2000,q:8},{v:400,q:40},{v:40,q:120},{v:20,q:200}]}
+];
+let bombState={active:false,level:0,eventId:null,startedAt:0,endedAt:0,claimed:false,timer:null,exploded:false};
+let backpack=JSON.parse(localStorage.getItem("rosalive_backpack")||"[]");
+function bombTotalPrize(level){return level.prizes.reduce((a,p)=>a+p.v*p.q,0)}
+function getBombLevelForTrophy(t){let unlocked=0;for(const b of BOMB_LEVELS)if(t>=b.threshold)unlocked=b.level;return unlocked}
+function renderBackpack(){const el=document.getElementById("backpack-list");if(!el)return;if(!backpack.length){el.innerHTML='<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos na bomba aparecerão aqui.</div>';return}el.innerHTML=backpack.map((x,i)=>`<div class="backpack-item"><div class="ico">${x.icon||"🎁"}</div><div class="info"><b>${escapeHtml(x.name)}</b><small>${fmt(x.value||0)} moedas • prêmio da Bomba LV.${x.level}</small></div><button onclick="sendBackpackItem(${i})">Enviar</button></div>`).join('')}
+function openBackpack(){document.getElementById('modal-backpack').classList.add('active');renderBackpack()}
+function closeBackpack(){document.getElementById('modal-backpack').classList.remove('active')}
+function addBackpackItem(level,value){const icons=['💎','🌹','👑','💖','🎁','✨'];const item={level,value,name:'Presente da Bomba',icon:icons[Math.floor(Math.random()*icons.length)]};backpack.push(item);localStorage.setItem('rosalive_backpack',JSON.stringify(backpack));renderBackpack()}
+function sendBackpackItem(i){const item=backpack[i];if(!item)return;showToast('A transferência de presentes da Mochila será ligada ao sistema real de presentes na próxima etapa.');}
+function renderBombPrizes(){const b=BOMB_LEVELS[bombState.level-1];const grid=document.getElementById('bomb-prize-grid');grid.innerHTML=b.prizes.map(p=>`<div class="bomb-prize"><strong>🪙 ${fmt(p.v)}</strong>${p.q} prêmio(s)</div>`).join('')}
+function showBombFromEvent(ev){
+  if(!ev || !ev.level || !ev.started_at) return;
+  const b=BOMB_LEVELS[ev.level-1]; if(!b) return;
+  bombState={active:true,level:ev.level,eventId:ev.id,startedAt:new Date(ev.started_at).getTime(),endedAt:new Date(ev.ended_at).getTime(),claimed:false,timer:null,exploded:false};
+  const el=document.getElementById('bomb-event'); el.classList.add('show'); el.classList.remove('exploded');
+  document.getElementById('bomb-level').textContent=`BOMBA LV.${ev.level}`;
+  document.getElementById('bomb-title').textContent=`💣 Prêmios da bomba • ${fmt(bombTotalPrize(b))} moedas`;
+  document.getElementById('bomb-trophy').textContent=`Troféu da sala • meta ${fmt(b.threshold)}`;
+  document.getElementById('bomb-prize-panel').classList.remove('show');
+  document.getElementById('bomb-claim').style.display='inline-block';
+  document.getElementById('bomb-claim').disabled=false;
+  document.getElementById('bomb-claim').textContent='PEGAR PRÊMIO';
+  renderBombPrizes(); bombTick();
+  if(bombState.timer) clearInterval(bombState.timer);
+  bombState.timer=setInterval(bombTick,250);
+  updateBombWinner(ev.id);
+}
+function bombTick(){
+  if(!bombState.active)return;
+  const left=Math.max(0,bombState.endedAt-Date.now());
+  const sec=Math.ceil(left/1000);
+  document.getElementById('bomb-count').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  const total=Math.max(1,bombState.endedAt-bombState.startedAt);
+  document.getElementById('bomb-progress').style.transform=`scaleX(${left/total})`;
+  if(left<=0){clearInterval(bombState.timer);explodeBomb()}
+}
+function explodeBomb(){
+  if(bombState.exploded)return;
+  bombState.exploded=true;
+  document.getElementById('bomb-event').classList.add('exploded');
+  document.getElementById('bomb-title').textContent='💥 Bomba encerrada!';
+  document.getElementById('bomb-prize-panel').classList.add('show');
+  document.getElementById('bomb-claim').style.display='none';
+  updateBombWinner(bombState.eventId);
+}
+async function updateBombWinner(eventId){
+  if(!eventId)return;
+  try{
+    const {data:claim}=await sb.from('bomb_claims').select('user_id, prize_value').eq('event_id',eventId).order('prize_value',{ascending:false}).limit(1).maybeSingle();
+    if(!claim){document.getElementById('bomb-winner-prize').textContent='Maior prêmio';document.getElementById('bomb-winner-name').textContent='Aguardando vencedor';return;}
+    const {data:p}=await sb.from('profiles').select('name').eq('id',claim.user_id).maybeSingle();
+    document.getElementById('bomb-winner-prize').textContent=`🪙 ${fmt(claim.prize_value)} moedas`;
+    document.getElementById('bomb-winner-name').textContent=`${p?.name||'Usuário'} ganhou o maior prêmio`;
+  }catch(e){console.warn('winner',e)}
+}
+async function claimBombPrize(){
+  if(!bombState.active||bombState.claimed||bombState.exploded)return;
+  const btn=document.getElementById('bomb-claim'); btn.disabled=true; btn.textContent='SORTEANDO...';
+  try{
+    const {data,error}=await sb.rpc('claim_bomb_prize',{p_room_key:ROOM_KEY,p_level:bombState.level});
+    if(error)throw error;
+    const result=data||{}; const value=Number(result.prize||0);
+    bombState.claimed=true;
+    btn.textContent='PRÊMIO PEGADO';
+    showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
+    const {data:profile}=await sb.from('profiles').select('balance,name').eq('id',myUserId).single();
+    const balanceEl=document.getElementById('balance'); if(balanceEl) balanceEl.textContent=fmt(profile?.balance||0);
+    updateBombWinner(bombState.eventId);
+  }catch(e){
+    btn.disabled=false; btn.textContent='PEGAR PRÊMIO';
+    showToast('Não foi possível pegar o prêmio: '+(e.message||e));
+  }
+}
+async function checkBombUnlock(){
+  const lvl=getBombLevelForTrophy(roomGiftTotal);
+  if(!lvl||!amLeader||bombState.active)return;
+  try{
+    const {data,error}=await sb.rpc('start_bomb_if_unlocked',{p_room_key:ROOM_KEY,p_level:lvl});
+    if(error)return;
+    if(data)showBombFromEvent(data);
+  }catch(e){console.warn('bomb unlock',e)}
+}
+async function loadActiveBomb(){
+  try{
+    const {data}=await sb.from('bomb_events').select('*').eq('room_key',ROOM_KEY).gt('ended_at',new Date().toISOString()).order('level',{ascending:false}).limit(1).maybeSingle();
+    if(data)showBombFromEvent(data);
+  }catch(e){console.warn('active bomb',e)}
+}
+function subscribeBombRealtime(){
+  sb.channel('bomb-'+ROOM_KEY)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_events',filter:`room_key=eq.${ROOM_KEY}`},payload=>{
+      showBombFromEvent(payload.new);
+      showToast(`💣 Bomba LV.${payload.new.level} liberada!`);
+    })
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_claims'},payload=>{
+      if(bombState.eventId && payload.new.event_id===bombState.eventId){
+        updateBombWinner(bombState.eventId);
+        if(payload.new.user_id===myUserId) return;
+        showToast('🎉 Um participante pegou um prêmio da bomba!');
+      }
+    }).subscribe();
+}
+
 // ---------- Init ----------
 async function init(){
   const { data: auth } = await sb.auth.getUser();
@@ -812,6 +970,8 @@ async function init(){
     await loadGiftTotals();
     subscribeRealtime();
     subscribeGiftsRealtime();
+    subscribeBombRealtime();
+    await loadActiveBomb();
     await loadChat();
     subscribeChatRealtime();
     await joinDaily(res);
