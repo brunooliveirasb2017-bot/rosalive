@@ -129,6 +129,12 @@
 
 
 /* ===== BOMBA ROSALIVE ===== */
+.seat-grid-wrap{ position:relative; }
+.bomb-mini{ display:none; position:absolute; top:calc(100% + 8px); right:0; width:15%; aspect-ratio:1/1; border-radius:50%; overflow:hidden; cursor:pointer; z-index:15; background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%); border:1.5px solid var(--pink); box-shadow:0 0 10px -3px rgba(255,47,135,.7); }
+.bomb-mini.active{ display:block; animation:bombIn .5s ease-out; }
+.bomb-mini .bomb-stage{ position:absolute; top:50%; left:50%; width:210px; height:210px; transform:translate(-50%,-50%) scale(.32); margin:0; }
+.bomb-mini-badge{ position:absolute; top:-3px; left:-3px; background:var(--gold); color:#2a1508; font-size:9px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center; z-index:2; }
+.bomb-mini-count{ position:absolute; bottom:1px; left:0; right:0; text-align:center; font-size:8px; font-weight:800; color:#fff; text-shadow:0 1px 2px #000; z-index:2; }
 .bomb-event{display:none;position:relative;margin:18px auto 4px;max-width:360px;text-align:center;z-index:20}
 .bomb-event.show{display:block;animation:bombIn .5s ease-out}
 @keyframes bombIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
@@ -177,23 +183,37 @@
     </div>
   </div>
 
-  <div class="seat-grid" id="seat-grid"></div>
-
-
-  <div class="bomb-event" id="bomb-event">
-    <div class="bomb-stage">
-      <div class="bomb-fuse"><span class="bomb-spark"></span></div>
-      <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+  <div class="seat-grid-wrap">
+    <div class="seat-grid" id="seat-grid"></div>
+    <div class="bomb-mini" id="bomb-mini" onclick="openBombPanel()">
+      <div class="bomb-mini-badge" id="bomb-mini-badge">1</div>
+      <div class="bomb-stage">
+        <div class="bomb-fuse"><span class="bomb-spark"></span></div>
+        <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+      </div>
+      <div class="bomb-mini-count" id="bomb-mini-count">05:00</div>
     </div>
-    <div class="bomb-burst">💥✨</div>
-    <div class="bomb-level" id="bomb-level">BOMBA LV.1</div>
-    <div class="bomb-title" id="bomb-title">A bomba foi liberada!</div>
-    <div class="bomb-trophy" id="bomb-trophy">Troféu: 0 moedas</div>
-    <div class="bomb-count" id="bomb-count">05:00</div>
-    <div class="bomb-progress"><i id="bomb-progress"></i></div>
-    <div class="bomb-actions"><button class="bomb-btn claim" id="bomb-claim" onclick="claimBombPrize()">PEGAR PRÊMIO</button><button class="bomb-btn" onclick="closeBombPanel()">Ocultar</button></div>
-    <div class="bomb-winner" id="bomb-winner"><div class="big" id="bomb-winner-prize">2.000 moedas</div><div class="small" id="bomb-winner-name">Maior prêmio</div></div>
-    <div class="bomb-prize-panel" id="bomb-prize-panel"><b>Prêmios disponíveis</b><div class="bomb-prize-grid" id="bomb-prize-grid"></div></div>
+  </div>
+
+  <div class="modal-back" id="modal-bomb">
+    <div class="modal-card">
+      <button class="sheet-close" onclick="closeBombPanel()">✕</button>
+      <div class="bomb-event show" id="bomb-event">
+        <div class="bomb-stage">
+          <div class="bomb-fuse"><span class="bomb-spark"></span></div>
+          <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+        </div>
+        <div class="bomb-burst">💥✨</div>
+        <div class="bomb-level" id="bomb-level">BOMBA LV.1</div>
+        <div class="bomb-title" id="bomb-title">A bomba foi liberada!</div>
+        <div class="bomb-trophy" id="bomb-trophy">Troféu: 0 moedas</div>
+        <div class="bomb-count" id="bomb-count">05:00</div>
+        <div class="bomb-progress"><i id="bomb-progress"></i></div>
+        <div class="bomb-actions"><button class="bomb-btn claim" id="bomb-claim" onclick="claimBombPrize()">PEGAR PRÊMIO</button></div>
+        <div class="bomb-winner" id="bomb-winner"><div class="big" id="bomb-winner-prize">2.000 moedas</div><div class="small" id="bomb-winner-name">Maior prêmio</div></div>
+        <div class="bomb-prize-panel" id="bomb-prize-panel"><b>Prêmios disponíveis</b><div class="bomb-prize-grid" id="bomb-prize-grid"></div></div>
+      </div>
+    </div>
   </div>
 
   <div class="chat-box">
@@ -853,7 +873,9 @@ function showBombFromEvent(ev){
   if(!ev || !ev.level || !ev.started_at) return;
   const b=BOMB_LEVELS[ev.level-1]; if(!b) return;
   bombState={active:true,level:ev.level,eventId:ev.id,startedAt:new Date(ev.started_at).getTime(),endedAt:new Date(ev.ended_at).getTime(),claimed:false,timer:null,exploded:false};
-  const el=document.getElementById('bomb-event'); el.classList.add('show'); el.classList.remove('exploded');
+  document.getElementById('bomb-mini').classList.add('active');
+  document.getElementById('bomb-mini-badge').textContent=ev.level;
+  document.getElementById('bomb-event').classList.remove('exploded');
   document.getElementById('bomb-level').textContent=`BOMBA LV.${ev.level}`;
   document.getElementById('bomb-title').textContent=`💣 Prêmios da bomba • ${fmt(bombTotalPrize(b))} moedas`;
   document.getElementById('bomb-trophy').textContent=`Troféu da sala • meta ${fmt(b.threshold)}`;
@@ -866,11 +888,20 @@ function showBombFromEvent(ev){
   bombState.timer=setInterval(bombTick,250);
   updateBombWinner(ev.id);
 }
+function openBombPanel(){
+  if(!bombState.active) return;
+  document.getElementById('modal-bomb').classList.add('active');
+}
+function closeBombPanel(){
+  document.getElementById('modal-bomb').classList.remove('active');
+}
 function bombTick(){
   if(!bombState.active)return;
   const left=Math.max(0,bombState.endedAt-Date.now());
   const sec=Math.ceil(left/1000);
-  document.getElementById('bomb-count').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  const label=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
+  document.getElementById('bomb-count').textContent=label;
+  document.getElementById('bomb-mini-count').textContent=label;
   const total=Math.max(1,bombState.endedAt-bombState.startedAt);
   document.getElementById('bomb-progress').style.transform=`scaleX(${left/total})`;
   if(left<=0){clearInterval(bombState.timer);explodeBomb()}
@@ -882,6 +913,7 @@ function explodeBomb(){
   document.getElementById('bomb-title').textContent='💥 Bomba encerrada!';
   document.getElementById('bomb-prize-panel').classList.add('show');
   document.getElementById('bomb-claim').style.display='none';
+  document.getElementById('bomb-mini-count').textContent='FIM';
   updateBombWinner(bombState.eventId);
 }
 async function updateBombWinner(eventId){
