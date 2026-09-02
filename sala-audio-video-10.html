@@ -320,7 +320,7 @@ function renderSeatGrid(){
 
 async function onSeatClick(n, info, locked){
   if(info){
-    if(info.user_id && info.user_id !== myUserId) openGiftPicker(n);
+    if(info.user_id) openGiftPicker(n);
     return;
   }
   if(locked){ showToast("Assento reservado para o dono da sala."); return; }
@@ -543,7 +543,7 @@ function selectGiftCat(key){
 function occupiedSeatsExceptMe(){
   return Object.entries(seatsState)
     .map(([n, info]) => ({ n: Number(n), info }))
-    .filter(o => o.info && o.info.user_id && o.info.user_id !== myUserId);
+    .filter(o => o.info && o.info.user_id);
 }
 
 async function loadGiftButtonIcon(){
@@ -587,7 +587,7 @@ function renderGiftTargets(){
   strip.innerHTML = seats.map(o => `
     <div class="gift-target-avatar${o.n===giftTargetSeat?" active":""}" onclick="selectGiftTarget(${o.n})">
       ${o.info.avatar_url ? `<img src="${o.info.avatar_url}">` : `<div class="ph">🙂</div>`}
-      <div class="nm">${escapeHtml(o.info.display_name||("Assento "+o.n))}</div>
+      <div class="nm">${o.info.user_id===myUserId ? "Você" : escapeHtml(o.info.display_name||("Assento "+o.n))}</div>
     </div>
   `).join("");
 }
