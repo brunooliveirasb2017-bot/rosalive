@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RosaLive — Sala de Áudio e Vídeo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@daily-co/daily-js"></script>
+<style>
+  :root{
+    --pink:#ff2f87; --pink-2:#ff6fae; --gold:#f4c542; --cream:#fbe9f0; --muted:#c99bb0;
+    --good:#57d68d; --bad:#ff5a5a; --line:rgba(255,143,195,.35);
+    --font-display:"Fraunces", serif; --font-body:"Inter", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(120% 70% at 50% 0%, #2c0f22 0%, #0d0410 55%);
+    color:var(--cream); font-family:var(--font-body); min-height:100vh;
+  }
+  .wrap{ max-width:480px; margin:0 auto; padding:10px 10px 110px; position:relative; }
+
+  .toast{ position:fixed; left:50%; bottom:20px; transform:translateX(-50%) translateY(20px); background:#2c1420; border:1px solid var(--line); color:var(--cream); padding:10px 18px; border-radius:999px; font-size:13px; opacity:0; pointer-events:none; transition:.25s; z-index:999; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .topbar{ display:flex; align-items:flex-start; gap:6px; }
+
+  .room-photo-box{ position:relative; flex:0 0 auto; width:96px; height:96px; border-radius:14px; overflow:hidden; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .room-photo-box img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .room-photo-box .ph{ font-size:34px; }
+  .room-photo-box .edit{ position:absolute; bottom:3px; right:3px; width:22px; height:22px; border-radius:50%; background:#1c0a14; border:1px solid var(--gold); display:none; align-items:center; justify-content:center; font-size:11px; }
+  .room-trophy-box{ flex:0 0 auto; width:96px; margin-top:5px; display:flex; align-items:center; justify-content:center; gap:4px; background:#1c0a14; border:1px solid var(--gold); border-radius:999px; padding:3px 0; font-size:11px; font-weight:700; color:#f4c542; }
+
+  .head{ flex:1; text-align:center; padding-top:2px; min-width:0; }
+  .head h1{ font-family:var(--font-display); font-size:12.5px; font-weight:700; color:var(--cream); display:flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .head h1 .wave{ color:var(--pink-2); font-size:10px; letter-spacing:1px; flex:0 0 auto; }
+  .head h1 #edit-name-btn{ display:none; background:none; border:none; color:var(--muted); font-size:11px; cursor:pointer; flex:0 0 auto; }
+  .head .premium{ color:var(--gold); font-weight:700; font-size:10px; margin-top:3px; letter-spacing:.05em; }
+  .head .cap-pill{ display:inline-block; margin-top:5px; border:1.5px solid var(--pink); color:var(--pink-2); border-radius:999px; padding:2px 12px; font-size:10px; font-weight:700; letter-spacing:.04em; }
+
+  .top-right{ flex:0 0 auto; text-align:right; }
+  .coin-pill{ display:inline-flex; align-items:center; gap:4px; background:#1c0a14; border:1px solid var(--gold); border-radius:999px; padding:4px 8px; font-weight:700; font-size:11px; white-space:nowrap; }
+  .coin-pill .c{ width:13px;height:13px;border-radius:50%; background:radial-gradient(circle at 35% 30%, #ffe9a8, var(--gold)); display:inline-flex; align-items:center; justify-content:center; font-size:8px; color:#3a2500; }
+  .power-btn-top{ width:26px; height:26px; border-radius:50%; border:1.5px solid #f09595; background:var(--bad); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+  .icon-row{ display:flex; gap:6px; justify-content:flex-end; margin-top:5px; }
+  .icon-row button{ background:none; border:none; color:var(--muted); font-family:var(--font-body); display:flex; flex-direction:column; align-items:center; gap:1px; font-size:7.5px; cursor:pointer; }
+  .icon-row button .i{ font-size:13px; }
+
+  .seat-grid{ margin-top:22px; display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+  .seat{ position:relative; aspect-ratio:1/1; border-radius:12px; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 0 12px -3px rgba(255,47,135,.85), 0 0 10px -4px rgba(255,47,135,.6) inset; cursor:pointer; }
+  .seat.has-frame{ box-shadow:0 0 0 2px rgba(255,215,120,.9), 0 0 16px 2px rgba(255,215,120,.7); animation:seatFrameGlow 2.2s ease-in-out infinite; }
+  @keyframes seatFrameGlow{ 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.15); } }
+  .seat .num{ position:absolute; top:4px; left:4px; background:#1c0a14; color:#fff; font-size:9px; font-weight:700; padding:1px 5px; border-radius:6px; }
+  .seat video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .seat .avatar-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .seat .silhouette{ width:46%; height:46%; color:#8a3a5a; }
+  .seat .silhouette svg{ width:100%; height:100%; fill:currentColor; }
+  .seat .mic{ position:absolute; bottom:4px; left:50%; transform:translateX(-50%); font-size:11px; color:var(--pink-soft,#ffd6e8); opacity:.9; }
+  .seat .mic.muted{ color:var(--bad); }
+  .seat .name{ position:absolute; bottom:3px; left:4px; right:4px; font-size:8px; color:var(--cream); text-align:center; background:rgba(0,0,0,.4); border-radius:6px; padding:1px 0; display:none; }
+  .seat.occupied .name{ display:block; }
+  .seat.mine{ border-color:var(--gold); box-shadow:0 0 14px -3px rgba(244,197,66,.9); }
+  .seat.leader{ grid-column:2; border-radius:50%; border:2px solid var(--pink); background:#0d0410; box-shadow:0 0 0 4px rgba(255,47,135,.18), 0 0 20px -2px rgba(255,47,135,.9); }
+  .seat.leader .crown-badge{ position:absolute; top:2px; left:50%; transform:translateX(-50%); font-size:15px; z-index:2; }
+  .seat.leader .num{ display:none; }
+  .seat.leader .silhouette{ padding-top:6px; }
+  .seat.leader .mic{ color:var(--gold); bottom:14px; }
+  .seat.leader .tag{ position:absolute; bottom:2px; left:50%; transform:translateX(-50%); white-space:nowrap; color:var(--pink-2); font-size:6.5px; font-weight:800; letter-spacing:.03em; }
+  .seat.leader.occupied .tag{ display:none; }
+  .seat.leader.occupied .name{ display:block; bottom:3px; }
+  .seat.locked{ cursor:not-allowed; }
+
+  .chat-box{ margin-top:14px; background:rgba(28,10,20,.55); border:1px solid var(--line); border-radius:14px; padding:8px 10px; }
+  .chat-messages{ max-height:110px; min-height:56px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; justify-content:flex-end; }
+  .chat-messages:empty::before{ content:"Nenhuma mensagem ainda — diga oi! 👋"; color:var(--muted); font-size:11px; font-style:italic; }
+  .chat-line{ font-size:11.5px; line-height:1.3; word-break:break-word; }
+  .chat-line b{ margin-right:4px; }
+  .chat-input-row{ margin-top:8px; display:flex; align-items:center; gap:8px; background:rgba(0,0,0,.25); border-radius:999px; padding:4px 4px 4px 12px; }
+  .chat-input-row input{ flex:1; background:none; border:none; outline:none; color:var(--cream); font-family:var(--font-body); font-size:12px; }
+  .chat-input-row input::placeholder{ color:var(--muted); }
+  .chat-input-row button{ flex:0 0 auto; width:30px; height:30px; border-radius:50%; border:none; background:var(--pink); color:#fff; font-size:13px; cursor:pointer; }
+
+  .bar{ position:fixed; left:0; right:0; bottom:0; margin:0 auto; max-width:480px; background:rgba(20,8,16,.92); border-top:1px solid var(--line); padding:12px 8px calc(10px + env(safe-area-inset-bottom,0px)); display:flex; justify-content:space-around; z-index:50; }
+  .bar button{ background:none; border:none; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:3px; font-family:var(--font-body); font-size:9px; cursor:pointer; padding:2px; }
+  .bar button .i{ width:46px; height:46px; border-radius:50%; background:rgba(255,111,174,.12); border:1px solid var(--pink); display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .bar button .lbl{ margin-top:1px; }
+  .bar button .st{ font-size:7.5px; font-weight:700; }
+  .bar button .st.on{ color:var(--good); }
+  .bar button .st.off{ color:var(--bad); }
+
+  .status-line{ text-align:center; margin-top:8px; color:var(--muted); font-size:10px; }
+
+  /* ---- Modal de presentes ---- */
+  .modal-back{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-end; justify-content:center; z-index:200; }
+  .modal-back.active{ display:flex; }
+  .modal-card{ width:100%; max-width:480px; background:#150910; border-radius:18px 18px 0 0; padding:14px 14px 18px; position:relative; max-height:40vh; overflow-y:auto; border-top:1px solid var(--line); }
+  .modal-card h3{ margin:2px 0 2px; font-family:var(--font-display); color:var(--cream); font-size:16px; }
+  .modal-card .sheet-close{ position:absolute; right:12px; top:12px; background:rgba(255,255,255,.08); border:0; color:#fff; width:26px; height:26px; border-radius:50%; font-size:14px; cursor:pointer; }
+  .gift-target-strip{ display:flex; gap:8px; overflow-x:auto; margin:10px 0 4px; padding-bottom:4px; }
+  .gift-target-avatar{ flex:0 0 auto; width:44px; text-align:center; cursor:pointer; opacity:.55; }
+  .gift-target-avatar.active{ opacity:1; }
+  .gift-target-avatar img,.gift-target-avatar .ph{ width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid transparent; display:block; margin:0 auto; background:#2c1420; }
+  .gift-target-avatar.active img,.gift-target-avatar.active .ph{ border-color:var(--gold); }
+  .gift-target-avatar .nm{ font-size:8.5px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .gift-picker-grid{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:12px; }
+  .gift-cat-tabs{ display:flex; gap:14px; margin-top:10px; border-bottom:1px solid var(--line); }
+  .gift-cat-tab{ background:none; border:none; color:var(--muted); font-family:var(--font-body); font-size:12.5px; font-weight:700; padding:0 0 8px; cursor:pointer; border-bottom:2px solid transparent; }
+  .gift-cat-tab.active{ color:var(--cream); border-bottom-color:var(--pink); }
+  .gift-item{ min-width:0; background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; overflow:hidden; }
+  .gift-item.selected{ border:2px solid var(--gold); }
+  .gift-send-row{ display:flex; justify-content:flex-end; margin-top:12px; position:sticky; bottom:-18px; padding:10px 0 4px; background:#150910; }
+  .gift-send-btn{ background:var(--pink); color:#fff; border:0; border-radius:999px; padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer; }
+  .gift-send-btn:disabled{ opacity:.4; cursor:default; }
+  .combo-send-btn{ position:fixed; right:18px; bottom:220px; width:72px; height:72px; border-radius:50%; background:var(--pink); border:4px solid var(--gold); color:#fff; font-size:32px; z-index:300; display:none; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(255,47,135,.25); }
+  .combo-send-count{ position:absolute; top:-6px; right:-6px; background:var(--gold); color:#4a1b0c; font-size:11px; font-weight:700; border-radius:10px; padding:1px 7px; }
+  .gift-fly{ position:fixed; font-size:44px; z-index:301; pointer-events:none; transition:all 1.3s cubic-bezier(.2,.7,.3,1); filter:drop-shadow(0 0 6px rgba(0,0,0,.6)); }
+  .seat.gift-hit{ animation:seatGiftPulse .8s ease-out; }
+  @keyframes seatGiftPulse{ 0%{ box-shadow:0 0 0 0 rgba(255,211,77,.9); } 100%{ box-shadow:0 0 0 22px rgba(255,211,77,0); } }
+  .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
+  .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
+  .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
+  .gift-item .pr{ font-size:11px; color:var(--gold); margin-top:2px; }
+  .gift-emoji-fly{ position:fixed; z-index:999; font-size:34px; pointer-events:none; animation:giftFly 1.6s ease-out forwards; }
+  @keyframes giftFly{ 0%{ transform:translateY(0) scale(.6); opacity:0; } 15%{ opacity:1; transform:scale(1);} 100%{ transform:translateY(-160px) scale(1.3); opacity:0; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div style="display:flex; flex-direction:column; align-items:center; flex:0 0 auto;">
+      <div class="room-photo-box" onclick="pickRoomPhoto()">
+        <img id="room-photo-img" alt="">
+        <div class="ph" id="room-photo-ph">🎬</div>
+        <div class="edit" id="room-photo-edit">✏️</div>
+      </div>
+      <div class="room-trophy-box">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f4c542" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h2a2 2 0 0 1 2 2 4 4 0 0 1-4 4"/><path d="M7 5H5a2 2 0 0 0-2 2 4 4 0 0 0 4 4"/></svg>
+        <span id="room-gift-total">0</span>
+      </div>
+    </div>
+    <input type="file" id="room-photo-input" accept="image/*" style="display:none;">
+
+    <div class="head">
+      <h1><span class="wave">·|||·</span><span id="room-title-text">SALA DE ÁUDIO E VÍDEO</span><button id="edit-name-btn" onclick="editRoomName()">✏️</button><span class="wave">·|||·</span></h1>
+      <div class="premium">✦ PREMIUM ✦</div>
+      <div class="cap-pill" id="cap-pill">9 LUGARES</div>
+    </div>
+
+    <div class="top-right">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="coin-pill"><span class="c">$</span><span id="balance">—</span></div>
+        <button class="power-btn-top" onclick="leaveRoom()" title="Sair da sala">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/></svg>
+        </button>
+      </div>
+      <div class="icon-row">
+        <button onclick="soon('Ranking')"><span class="i">🏆</span>Rank.</button>
+        <button onclick="openGiftPicker()"><span class="i">🎁</span>Pres.</button>
+        <button onclick="soon('Configurações')"><span class="i">⚙️</span>Conf.</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="seat-grid" id="seat-grid"></div>
+
+  <div class="chat-box">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" maxlength="200" placeholder="Digite sua mensagem...">
+      <button onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button id="btn-mic" onclick="toggleMic()"><span class="i">🎤</span><span class="lbl">Microfone</span><span class="st on" id="mic-st">Ligado</span></button>
+    <button id="btn-cam" onclick="toggleCam()"><span class="i">📷</span><span class="lbl">Câmera</span><span class="st off" id="cam-st">Desligada</span></button>
+    <button onclick="openGiftPicker()"><span class="i" id="bar-gift-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ff6fae" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8"/></svg></span><span class="lbl">Presente</span></button>
+    <button id="btn-spk" onclick="toggleSpeaker()"><span class="i">🔊</span><span class="lbl">Alto-falante</span><span class="st on" id="spk-st">Ligado</span></button>
+    <button onclick="clearChat()"><span class="i">🧹</span><span class="lbl">Limpar</span></button>
+  </div>
+
+  <div class="status-line" id="status-line">Entrando na sala…</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal-back" id="modal-gift">
+  <div class="modal-card">
+    <button class="sheet-close" onclick="closeGiftModal()">✕</button>
+    <h3>Enviar presente</h3>
+    <p style="margin:0;font-size:12px;color:var(--muted);">Seu saldo: <span id="gift-modal-balance">0</span> moedas</p>
+    <div class="gift-target-strip" id="gift-target-strip"></div>
+    <div class="gift-cat-tabs" id="gift-cat-tabs"></div>
+    <div class="gift-picker-grid" id="gift-picker-grid"></div>
+    <div class="gift-send-row"><button class="gift-send-btn" id="gift-send-btn" disabled onclick="startComboSend()">Enviar</button></div>
+  </div>
+</div>
+<button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
+
+
+<script>
+const SUPABASE_URL = "https://tnlssnevrgdknapqyssg.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_4Z1zOfzG2FZuNa0i2IC_5w_WH9t6DFT";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const ROOM_KEY = new URLSearchParams(window.location.search).get("room") || "video-10";
+const LEADER_SEAT = 5;
+// ATENÇÃO: se a coluna da foto de perfil no seu profiles tiver outro nome,
+// ajuste também na edge function enter-seat-room (mesmo comentário lá).
+let CAPACITY = 9;
+let ROOM_NAME = "SALA DE ÁUDIO E VÍDEO";
+let ROOM_PHOTO = null;
+
+let myUserId = null;
+let myDisplayName = null;
+let mySeatNumber = null;
+let amLeader = false;
+let callObject = null;
+let micOn = true;
+let camOn = false;
+let speakerOn = true;
+let roomGiftTotal = 0;
+let processedRoomGiftIds = new Set();
+let seatsState = {}; // seat_number -> {user_id, display_name, avatar_url, is_leader, mic_on, cam_on}
+let avatarFramesById = {};
+async function loadAvatarFramesCatalog(){
+  if(Object.keys(avatarFramesById).length) return;
+  const { data } = await sb.from("avatar_frames").select("*");
+  (data||[]).forEach(f => { avatarFramesById[f.id] = f; });
+}
+
+function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
+function soon(label){ showToast((label||"Isso") + " chega em breve por aqui."); }
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+async function callEdgeFunction(name, body){
+  const { data: sessionData } = await sb.auth.getSession();
+  const token = sessionData && sessionData.session ? sessionData.session.access_token : null;
+  if(!token) throw new Error("Sessão expirada, entre novamente no app.");
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
+    method:"POST",
+    headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
+    body: JSON.stringify(body||{}),
+  });
+  const j = await res.json();
+  if(!res.ok) throw new Error((j && j.error && (j.error.message||j.error)) || "Erro no servidor.");
+  return j;
+}
+
+// ---------- Header (foto e nome da sala) ----------
+function renderHeader(){
+  document.getElementById("room-title-text").textContent = ROOM_NAME;
+  document.getElementById("cap-pill").textContent = CAPACITY + " LUGARES";
+  const img = document.getElementById("room-photo-img");
+  const ph = document.getElementById("room-photo-ph");
+  if(ROOM_PHOTO){ img.src = ROOM_PHOTO; img.style.display="block"; ph.style.display="none"; }
+  else { img.style.display="none"; ph.style.display="flex"; }
+  document.getElementById("edit-name-btn").style.display = amLeader ? "inline-block" : "none";
+  document.getElementById("room-photo-edit").style.display = amLeader ? "flex" : "none";
+}
+
+function pickRoomPhoto(){
+  if(!amLeader){ showToast("Só o dono da sala pode trocar a foto."); return; }
+  document.getElementById("room-photo-input").click();
+}
+document.getElementById("room-photo-input").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    const dataUrl = reader.result;
+    const { error } = await sb.from("seat_rooms").update({ photo_url: dataUrl }).eq("room_key", ROOM_KEY);
+    if(error){ showToast("Erro ao salvar foto: "+error.message); return; }
+    ROOM_PHOTO = dataUrl;
+    renderHeader();
+  };
+  reader.readAsDataURL(file);
+});
+
+async function editRoomName(){
+  if(!amLeader){ showToast("Só o dono da sala pode renomear."); return; }
+  const val = prompt("Nome da sala:", ROOM_NAME);
+  if(!val || !val.trim()) return;
+  const { error } = await sb.from("seat_rooms").update({ name: val.trim() }).eq("room_key", ROOM_KEY);
+  if(error){ showToast("Erro ao salvar nome: "+error.message); return; }
+  ROOM_NAME = val.trim();
+  renderHeader();
+}
+
+// ---------- Assentos ----------
+function renderSeatGrid(){
+  const grid = document.getElementById("seat-grid");
+  grid.innerHTML = "";
+  for(let n=1; n<=CAPACITY; n++){
+    const seat = document.createElement("div");
+    const info = seatsState[n];
+    const isLeaderSeat = n === LEADER_SEAT;
+    const locked = isLeaderSeat && !amLeader;
+    seat.className = "seat"
+      + (isLeaderSeat?" leader":"")
+      + (info?" occupied":"")
+      + (info && info.user_id===myUserId?" mine":"")
+      + (locked?" locked":"")
+      + (info && info.has_frame ? " has-frame" : "");
+    seat.id = "seat-"+n;
+    let inner = "";
+    if(isLeaderSeat) inner += `<div class="crown-badge">👑</div>`;
+    inner += `<div class="num">${n}</div>`;
+    inner += `<video id="vid-${n}" autoplay playsinline muted style="display:none;"></video>`;
+    inner += `<img class="avatar-photo" id="ph-${n}" style="display:${info && info.avatar_url ? "block":"none"};" src="${info && info.avatar_url ? info.avatar_url : ""}">`;
+    inner += `<div class="silhouette" id="sil-${n}" style="display:${info && info.avatar_url ? "none":"flex"};"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
+    inner += `<div class="mic${info && info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info ? (info.mic_on===false?"🔇":"🎙️") : ""}</div>`;
+    inner += `<div class="name">${info ? (info.display_name||"—") : ""}</div>`;
+    if(isLeaderSeat) inner += `<div class="tag">LÍDER DA SALA</div>`;
+    seat.innerHTML = inner;
+    seat.onclick = () => onSeatClick(n, info, locked);
+    grid.appendChild(seat);
+  }
+}
+
+async function onSeatClick(n, info, locked){
+  if(info){
+    if(info.user_id) openGiftPicker(n);
+    return;
+  }
+  if(locked){ showToast("Assento reservado para o dono da sala."); return; }
+  if(mySeatNumber === n) return;
+  if(mySeatNumber === null) return; // ainda entrando na sala
+  try{
+    const res = await callEdgeFunction("move-seat", { room_key: ROOM_KEY, seat_number: n });
+    mySeatNumber = res.seat_number;
+    await loadSeatsFromDb();
+  }catch(e){ showToast("Não foi possível trocar de assento: " + e.message); }
+}
+
+async function loadSeatsFromDb(){
+  const { data } = await sb.from("seat_room_seats").select("*").eq("room_key", ROOM_KEY);
+  seatsState = {};
+  (data||[]).forEach(row=>{ seatsState[row.seat_number] = row; });
+  const userIds = (data||[]).map(r=>r.user_id).filter(Boolean);
+  if(userIds.length){
+    try{
+      const { data: photoRows } = await sb.from("photos").select("profile_id, path, position").in("profile_id", userIds).order("position");
+      const firstPhotoByUser = {};
+      (photoRows||[]).forEach(p=>{ if(!(p.profile_id in firstPhotoByUser)) firstPhotoByUser[p.profile_id] = p.path; });
+      Object.values(seatsState).forEach(seat=>{
+        const path = firstPhotoByUser[seat.user_id];
+        if(path) seat.avatar_url = sb.storage.from("profile-photos").getPublicUrl(path).data.publicUrl;
+      });
+    }catch(e){ /* segue mostrando a silhueta se a foto não carregar */ }
+    try{
+      await loadAvatarFramesCatalog();
+      const { data: frameRows } = await sb.from("profiles").select("id, equipped_frame_id").in("id", userIds);
+      const frameByUser = {};
+      (frameRows||[]).forEach(p=>{ if(p.equipped_frame_id) frameByUser[p.id] = p.equipped_frame_id; });
+      Object.values(seatsState).forEach(seat=>{
+        const frameId = frameByUser[seat.user_id];
+        seat.has_frame = !!(frameId && avatarFramesById[frameId]);
+      });
+    }catch(e){ /* segue sem moldura se não conseguir carregar */ }
+  }
+  renderSeatGrid();
+}
+
+function subscribeRealtime(){
+  sb.channel("seat-room-"+ROOM_KEY)
+    .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_seats", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
+      loadSeatsFromDb();
+    })
+    .on("postgres_changes", { event:"INSERT", schema:"public", table:"seat_room_gifts", filter:`room_key=eq.${ROOM_KEY}` }, (payload)=>{
+      addToRoomGiftTotal(payload.new);
+    })
+    .subscribe();
+}
+
+async function loadRoomGiftTotal(){
+  const { data } = await sb.from("seat_room_gifts").select("id, price").eq("room_key", ROOM_KEY);
+  roomGiftTotal = 0;
+  processedRoomGiftIds = new Set();
+  (data||[]).forEach(row=>{
+    roomGiftTotal += Number(row.price||0);
+    if(row.id) processedRoomGiftIds.add(row.id);
+  });
+  document.getElementById("room-gift-total").textContent = fmt(roomGiftTotal);
+}
+
+function addToRoomGiftTotal(g){
+  if(g.id){
+    if(processedRoomGiftIds.has(g.id)) return;
+    processedRoomGiftIds.add(g.id);
+  }
+  roomGiftTotal += Number(g.price||0);
+  document.getElementById("room-gift-total").textContent = fmt(roomGiftTotal);
+}
+
+function attachTrack(participant){
+  if(!participant) return;
+  const seatNum = participant.local ? mySeatNumber : findSeatByDailyName(participant.user_name);
+  if(!seatNum) return;
+  const videoEl = document.getElementById("vid-"+seatNum);
+  const silEl = document.getElementById("sil-"+seatNum);
+  const phEl = document.getElementById("ph-"+seatNum);
+  if(!videoEl) return;
+  const info = seatsState[seatNum];
+  const videoTrack = participant.tracks && participant.tracks.video;
+  if(videoTrack && videoTrack.state==="playable" && videoTrack.persistentTrack){
+    const stream = new MediaStream([videoTrack.persistentTrack]);
+    videoEl.srcObject = stream;
+    videoEl.style.display = "block";
+    if(silEl) silEl.style.display = "none";
+    if(phEl) phEl.style.display = "none";
+  } else {
+    videoEl.style.display = "none";
+    if(info && info.avatar_url){
+      if(phEl) phEl.style.display = "block";
+      if(silEl) silEl.style.display = "none";
+    } else {
+      if(phEl) phEl.style.display = "none";
+      if(silEl) silEl.style.display = "block";
+    }
+  }
+}
+function findSeatByDailyName(name){
+  for(const n in seatsState){ if(seatsState[n].display_name === name) return n; }
+  return null;
+}
+
+async function joinDaily(res){
+  callObject = window.DailyIframe.createCallObject();
+  callObject.on("error", e=>console.error("Daily error:", e));
+  ["joined-meeting","participant-updated","track-started","track-stopped","participant-joined","participant-left"].forEach(ev=>{
+    callObject.on(ev, ()=>{
+      const p = callObject.participants();
+      Object.values(p).forEach(attachTrack);
+    });
+  });
+  await callObject.join({ url: res.room_url, token: res.token, startVideoOff: !camOn, startAudioOff: false });
+}
+
+function toggleMic(){
+  if(!callObject) return;
+  micOn = !micOn;
+  callObject.setLocalAudio(micOn);
+  document.getElementById("mic-st").textContent = micOn ? "Ligado" : "Desligado";
+  document.getElementById("mic-st").className = "st " + (micOn?"on":"off");
+  sb.from("seat_room_seats").update({ mic_on: micOn }).eq("room_key", ROOM_KEY).eq("user_id", myUserId).then(()=>{});
+}
+
+function toggleCam(){
+  if(!callObject) return;
+  camOn = !camOn;
+  callObject.setLocalVideo(camOn);
+  document.getElementById("cam-st").textContent = camOn ? "Ligada" : "Desligada";
+  document.getElementById("cam-st").className = "st " + (camOn?"on":"off");
+  sb.from("seat_room_seats").update({ cam_on: camOn }).eq("room_key", ROOM_KEY).eq("user_id", myUserId).then(()=>{});
+}
+
+function toggleSpeaker(){
+  speakerOn = !speakerOn;
+  document.querySelectorAll("video").forEach(v=>{ v.muted = !speakerOn; });
+  document.getElementById("spk-st").textContent = speakerOn ? "Ligado" : "Desligado";
+  document.getElementById("spk-st").className = "st " + (speakerOn?"on":"off");
+}
+
+async function leaveRoom(){
+  try{
+    if(callObject){ try{ callObject.leave(); callObject.destroy(); }catch(e){} callObject=null; }
+    await callEdgeFunction("leave-seat-room", { room_key: ROOM_KEY });
+  }catch(e){ console.error(e); }
+  window.location.href = "index.html";
+}
+
+function leaveBeacon(){
+  if(!myUserId) return;
+  sb.auth.getSession().then(({data})=>{
+    const token = data && data.session ? data.session.access_token : null;
+    if(!token) return;
+    fetch(`${SUPABASE_URL}/functions/v1/leave-seat-room`, {
+      method:"POST", keepalive:true,
+      headers:{ "Content-Type":"application/json", "Authorization":`Bearer ${token}` },
+      body: JSON.stringify({ room_key: ROOM_KEY }),
+    }).catch(()=>{});
+  });
+}
+window.addEventListener("beforeunload", leaveBeacon);
+
+// ---------- Chat ----------
+function colorFor(id){
+  const colors = ["#ff6fae","#57d68d","#f4c542","#7fd1ff","#c99bff"];
+  let h = 0;
+  for(const c of String(id||"")) h = (h + c.charCodeAt(0)) % colors.length;
+  return colors[h];
+}
+function renderChat(rows){
+  const box = document.getElementById("chat-messages");
+  box.innerHTML = rows.map(m =>
+    `<div class="chat-line"><b style="color:${colorFor(m.user_id)}">${escapeHtml(m.display_name||"—")}</b>${escapeHtml(m.message)}</div>`
+  ).join("");
+  box.scrollTop = box.scrollHeight;
+}
+async function loadChat(){
+  const { data } = await sb.from("seat_room_messages").select("*").eq("room_key", ROOM_KEY).order("created_at",{ ascending:true }).limit(50);
+  renderChat(data||[]);
+}
+async function sendChat(){
+  const input = document.getElementById("chat-input");
+  const msg = input.value.trim();
+  if(!msg || !myUserId) return;
+  input.value = "";
+  const { error } = await sb.from("seat_room_messages").insert({ room_key: ROOM_KEY, user_id: myUserId, display_name: myDisplayName, message: msg });
+  if(error){ showToast("Erro ao enviar: " + error.message); return; }
+  await loadChat();
+}
+document.getElementById("chat-input").addEventListener("keydown", (e)=>{ if(e.key==="Enter") sendChat(); });
+async function clearChat(){
+  if(!amLeader){ showToast("Só o dono da sala pode limpar o chat."); return; }
+  if(!confirm("Limpar todo o chat da sala?")) return;
+  const { error } = await sb.from("seat_room_messages").delete().eq("room_key", ROOM_KEY);
+  if(error){ showToast("Erro ao limpar: " + error.message); return; }
+  await loadChat();
+}
+function subscribeChatRealtime(){
+  sb.channel("chat-"+ROOM_KEY)
+    .on("postgres_changes", { event:"*", schema:"public", table:"seat_room_messages", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
+      loadChat();
+    })
+    .subscribe();
+  // Reforço: caso o realtime não esteja habilitado pra essa tabela no Supabase, o chat ainda atualiza sozinho.
+  setInterval(loadChat, 4000);
+}
+
+// ---------- Presentes (envio para qualquer assento) ----------
+let giftPickerData = [];
+let giftTargetSeat = null;
+let giftPickerActiveCat = "geral";
+
+function categorizeGift(g){
+  return g.category === "sorte" ? "sorte" : "geral";
+}
+function renderGiftCatTabs(){
+  const hasSorte = giftPickerData.some(g=>categorizeGift(g)==="sorte");
+  const tabs = [{key:"geral", label:"Em geral"}];
+  if(hasSorte) tabs.push({key:"sorte", label:"Sorte"});
+  const wrap = document.getElementById("gift-cat-tabs");
+  wrap.innerHTML = tabs.map(t=>`<button type="button" class="gift-cat-tab${t.key===giftPickerActiveCat?" active":""}" onclick="selectGiftCat('${t.key}')">${t.label}</button>`).join("");
+}
+function selectGiftCat(key){
+  giftPickerActiveCat = key;
+  renderGiftCatTabs();
+  renderGiftGrid();
+}
+
+function occupiedSeatsExceptMe(){
+  return Object.entries(seatsState)
+    .map(([n, info]) => ({ n: Number(n), info }))
+    .filter(o => o.info && o.info.user_id);
+}
+
+async function loadGiftButtonIcon(){
+  try{
+    const { data } = await sb.from("gifts").select("emoji").eq("name", "Caçadora").limit(1).single();
+    if(data && data.emoji){
+      const iconEl = document.getElementById("bar-gift-icon");
+      if(iconEl) iconEl.innerHTML = `<img src="${data.emoji}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    }
+  }catch(e){ /* mantém o ícone padrão se não achar */ }
+}
+
+async function openGiftPicker(targetSeat){
+  giftTargetSeat = (typeof targetSeat === "number") ? targetSeat : null;
+  const { data: profileNow } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
+  document.getElementById("gift-modal-balance").textContent = fmt(profileNow ? profileNow.balance : 0);
+  renderGiftTargets();
+  if(!giftPickerData.length){
+    const { data: gifts } = await sb.from("gifts").select("*").eq("active", true).order("price", { ascending:true });
+    giftPickerData = gifts || [];
+  }
+  giftPickerActiveCat = "geral";
+  selectedGift = null;
+  document.getElementById("gift-send-btn").disabled = true;
+  renderGiftCatTabs();
+  renderGiftGrid();
+  document.getElementById("modal-gift").classList.add("active");
+}
+function closeGiftModal(){
+  document.getElementById("modal-gift").classList.remove("active");
+}
+
+function renderGiftTargets(){
+  const strip = document.getElementById("gift-target-strip");
+  const seats = occupiedSeatsExceptMe();
+  if(!seats.length){
+    strip.innerHTML = `<div style="font-size:11px;color:var(--muted);">Ninguém mais na sala ainda pra receber presente.</div>`;
+    return;
+  }
+  if(giftTargetSeat === null) giftTargetSeat = seats[0].n;
+  strip.innerHTML = seats.map(o => `
+    <div class="gift-target-avatar${o.n===giftTargetSeat?" active":""}" onclick="selectGiftTarget(${o.n})">
+      ${o.info.avatar_url ? `<img src="${o.info.avatar_url}">` : `<div class="ph">🙂</div>`}
+      <div class="nm">${o.info.user_id===myUserId ? "Você" : escapeHtml(o.info.display_name||("Assento "+o.n))}</div>
+    </div>
+  `).join("");
+}
+function selectGiftTarget(n){
+  giftTargetSeat = n;
+  renderGiftTargets();
+}
+
+let selectedGift = null;
+
+function renderGiftGrid(){
+  const grid = document.getElementById("gift-picker-grid");
+  const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
+  grid.innerHTML = list.map(g => {
+    const img = g.emoji && g.emoji.length > 4
+      ? `<img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))">`
+      : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
+    const isSelected = selectedGift && selectedGift.id === g.id;
+    return `<div class="gift-item${isSelected?" selected":""}" onclick='selectGift(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
+      ${img}
+      <div class="nm">${escapeHtml(g.name)}</div>
+      <div class="pr">🪙 ${fmt(g.price)}</div>
+    </div>`;
+  }).join("");
+}
+
+function selectGift(gift){
+  selectedGift = gift;
+  document.getElementById("gift-send-btn").disabled = false;
+  renderGiftGrid();
+}
+
+let comboCount = 0;
+let comboHideTimer = null;
+
+function startComboSend(){
+  if(!selectedGift || giftTargetSeat === null) return;
+  closeGiftModal();
+  comboCount = 0;
+  const comboBtn = document.getElementById("combo-send-btn");
+  comboBtn.style.display = "flex";
+  comboSendTap();
+}
+
+function comboSendTap(){
+  comboCount++;
+  const countEl = document.getElementById("combo-send-count");
+  countEl.style.display = "block";
+  countEl.textContent = comboCount;
+  sendGiftNow(selectedGift);
+  flyFromComboToSeat();
+  clearTimeout(comboHideTimer);
+  comboHideTimer = setTimeout(hideComboSend, 3000);
+}
+
+function hideComboSend(){
+  document.getElementById("combo-send-btn").style.display = "none";
+  document.getElementById("combo-send-count").style.display = "none";
+  comboCount = 0;
+  selectedGift = null;
+}
+
+function flyFromComboToSeat(){
+  const comboBtn = document.getElementById("combo-send-btn");
+  const seatEl = document.getElementById("seat-"+giftTargetSeat);
+  if(!seatEl) return;
+  const start = comboBtn.getBoundingClientRect();
+  const end = seatEl.getBoundingClientRect();
+  const fly = document.createElement("div");
+  fly.className = "gift-fly";
+  const isImg = selectedGift && selectedGift.emoji && selectedGift.emoji.length > 4;
+  if(isImg){
+    fly.innerHTML = `<img src="${selectedGift.emoji}" style="width:82px;height:82px;object-fit:contain;display:block;">`;
+  } else {
+    fly.textContent = (selectedGift && selectedGift.emoji) ? selectedGift.emoji : "🎁";
+  }
+  fly.style.left = start.left + start.width/2 - 41 + "px";
+  fly.style.top = start.top + start.height/2 - 41 + "px";
+  document.body.appendChild(fly);
+  requestAnimationFrame(()=>{
+    fly.style.left = end.left + end.width/2 - 41 + "px";
+    fly.style.top = end.top + end.height/2 - 41 + "px";
+    fly.style.transform = "scale(.8)";
+    fly.style.opacity = "0.9";
+  });
+  setTimeout(()=>{
+    fly.remove();
+    seatEl.classList.add("gift-hit");
+    setTimeout(()=>seatEl.classList.remove("gift-hit"), 800);
+  }, 1350);
+}
+
+async function sendGiftNow(gift){
+  if(giftTargetSeat === null){ showToast("Escolha pra quem enviar."); return; }
+  try{
+    const { data, error } = await sb.rpc("send_seat_gift", {
+      p_room_key: ROOM_KEY, p_seat_number: giftTargetSeat, p_gift_id: gift.id
+    });
+    if(error) throw error;
+    closeGiftModal();
+    loadRoomGiftTotal();
+    const { data: profile } = await sb.from("profiles").select("balance").eq("id", myUserId).single();
+    document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+  }catch(e){
+    showToast("Não foi possível enviar: " + e.message);
+  }
+}
+
+function flyGiftEmoji(emoji){
+  const el = document.createElement("div");
+  el.className = "gift-emoji-fly";
+  el.textContent = emoji && emoji.length <= 4 ? emoji : "🎁";
+  el.style.left = (40 + Math.random()*20) + "%";
+  el.style.bottom = "120px";
+  document.body.appendChild(el);
+  setTimeout(()=> el.remove(), 1700);
+}
+
+function subscribeGiftsRealtime(){
+  sb.channel("seat-gifts-"+ROOM_KEY)
+    .on("postgres_changes", { event:"INSERT", schema:"public", table:"seat_room_gifts", filter:`room_key=eq.${ROOM_KEY}` }, (payload)=>{
+      const g = payload.new;
+      flyGiftEmoji(g.gift_emoji);
+      showToast((g.receiver_id===myUserId ? "Você recebeu" : "Assento "+g.seat_number+" recebeu") + " " + g.gift_name + " 🎁");
+    })
+    .subscribe();
+}
+
+// ---------- Init ----------
+async function init(){
+  const { data: auth } = await sb.auth.getUser();
+  if(!auth || !auth.user){ window.location.href="index.html"; return; }
+  myUserId = auth.user.id;
+
+  const { data: profile } = await sb.from("profiles").select("balance, name").eq("id", myUserId).single();
+  document.getElementById("balance").textContent = fmt(profile ? profile.balance : 0);
+  myDisplayName = profile ? profile.name : "—";
+
+  const { data: room } = await sb.from("seat_rooms").select("*").eq("room_key", ROOM_KEY).single();
+  if(room){
+    CAPACITY = room.capacity || 9;
+    ROOM_NAME = room.name || ROOM_NAME;
+    ROOM_PHOTO = room.photo_url || null;
+  }
+
+  try{
+    const res = await callEdgeFunction("enter-seat-room", { room_key: ROOM_KEY });
+    mySeatNumber = res.seat_number;
+    amLeader = res.is_leader;
+    camOn = amLeader; // dono entra com câmera ligada por padrão
+    document.getElementById("cam-st").textContent = camOn ? "Ligada" : "Desligada";
+    document.getElementById("cam-st").className = "st " + (camOn?"on":"off");
+    document.getElementById("status-line").textContent = amLeader
+      ? "Você criou esta sala — está no assento do líder."
+      : "Você entrou no assento " + mySeatNumber + ".";
+    renderHeader();
+    await loadSeatsFromDb();
+    await loadRoomGiftTotal();
+    loadGiftButtonIcon();
+    subscribeRealtime();
+    subscribeGiftsRealtime();
+    await loadChat();
+    subscribeChatRealtime();
+    await joinDaily(res);
+  }catch(e){
+    document.getElementById("status-line").textContent = "Não foi possível entrar: " + e.message;
+  }
+}
+init();
+</script>
+</body>
+</html>
