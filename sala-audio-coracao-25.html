@@ -275,7 +275,7 @@ const SUPABASE_URL = "https://tnlssnevrgdknapqyssg.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_4Z1zOfzG2FZuNa0i2IC_5w_WH9t6DFT";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const ROOM_KEY = "coracao-25";
+const ROOM_KEY = new URLSearchParams(window.location.search).get("room") || "coracao-25";
 // Sala de áudio: sem assento fixo de líder — qualquer assento vazio pode ser ocupado por qualquer pessoa.
 let CAPACITY = 25;
 let ROOM_NAME = "SALA DE ÁUDIO";

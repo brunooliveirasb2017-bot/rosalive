@@ -202,7 +202,7 @@ const SUPABASE_URL = "https://tnlssnevrgdknapqyssg.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_4Z1zOfzG2FZuNa0i2IC_5w_WH9t6DFT";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const ROOM_KEY = "video-10";
+const ROOM_KEY = new URLSearchParams(window.location.search).get("room") || "video-10";
 const LEADER_SEAT = 5;
 // ATENÇÃO: se a coluna da foto de perfil no seu profiles tiver outro nome,
 // ajuste também na edge function enter-seat-room (mesmo comentário lá).

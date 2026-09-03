@@ -1365,32 +1365,32 @@ async function renderHome(){
     grid.appendChild(card);
   });
 
-  // Salas com assentos (áudio coração e vídeo) — só aparecem quando têm pelo menos 1 pessoa sentada.
+  // Salas com assentos (áudio coração e vídeo) — agora uma por streamer.
+  // Fica no feed mesmo vazia; só some depois de 7 dias sem ninguém entrar.
   let seatRoomCards = 0;
   try{
+    const sevenDaysAgoIso = new Date(Date.now() - 7*24*60*60*1000).toISOString();
+    const { data: roomsMeta } = await sb.from("seat_rooms").select("*").gt("last_active_at", sevenDaysAgoIso);
     const { data: seatRows } = await sb.from("seat_room_seats").select("room_key");
     const counts = {};
     (seatRows||[]).forEach(r=>{ counts[r.room_key] = (counts[r.room_key]||0) + 1; });
-    const activeKeys = Object.keys(counts).filter(k=>counts[k] > 0);
-    if(activeKeys.length){
-      const { data: roomsMeta } = await sb.from("seat_rooms").select("*").in("room_key", activeKeys);
-      (roomsMeta||[]).forEach(room=>{
-        const key = room.room_key;
-        const occupied = counts[key] || 0;
-        const isVideo = key === "video-10";
-        const url = isVideo ? "sala-audio-video-10.html" : "sala-audio-coracao-25.html";
-        const capacity = room.capacity || (isVideo ? 10 : 25);
-        const card = document.createElement("div");
-        card.className = "live-card";
-        card.onclick = ()=>{ window.location.href = url; };
-        const thumb = room.photo_url
-          ? `<img src="${room.photo_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
-          : `<div class="avatar-glow">${isVideo ? "🎥" : "🎙️"}</div>`;
-        card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${room.name || (isVideo ? "Sala de Vídeo" : "Sala de Áudio")}</b><span>${occupied}/${capacity} na sala</span></div>`;
-        grid.appendChild(card);
-        seatRoomCards++;
-      });
-    }
+    (roomsMeta||[]).forEach(room=>{
+      const key = room.room_key;
+      const occupied = counts[key] || 0;
+      const isVideo = room.kind === "video";
+      const url = isVideo ? "sala-audio-video-10.html" : "sala-audio-coracao-25.html";
+      const capacity = room.capacity || (isVideo ? 9 : 25);
+      const card = document.createElement("div");
+      card.className = "live-card";
+      card.onclick = ()=>{ window.location.href = url + "?room=" + encodeURIComponent(key); };
+      const thumb = room.photo_url
+        ? `<img src="${room.photo_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
+        : `<div class="avatar-glow">${isVideo ? "🎥" : "🎙️"}</div>`;
+      const badge = occupied > 0 ? `<div class="live-badge"><span class="dot"></span> AO VIVO</div>` : "";
+      card.innerHTML = `${thumb}${badge}<div class="live-meta"><b>${room.name || (isVideo ? "Sala de Vídeo" : "Sala de Áudio")}</b><span>${occupied}/${capacity} na sala</span></div>`;
+      grid.appendChild(card);
+      seatRoomCards++;
+    });
   }catch(e){
     // Tabelas seat_rooms/seat_room_seats ainda não acessíveis daqui — ignora silenciosamente.
   }
@@ -2156,11 +2156,17 @@ function setRoomSelectType(type){
   document.getElementById("room-type-video").classList.toggle("selected", type==="video");
   document.getElementById("room-type-audio").classList.toggle("selected", type==="audio");
 }
-function confirmRoomSelectAndGoLive(){
-  if(roomSelectType === "video"){
-    window.location.href = "sala-audio-video-10.html";
-  }else{
-    window.location.href = "sala-audio-coracao-25.html";
+async function confirmRoomSelectAndGoLive(){
+  const url = roomSelectType === "video" ? "sala-audio-video-10.html" : "sala-audio-coracao-25.html";
+  try{
+    const { data: roomKey, error } = await sb.rpc("ensure_my_room", { p_kind: roomSelectType });
+    if(error || !roomKey){
+      alert("Não foi possível abrir sua sala, tente de novo.");
+      return;
+    }
+    window.location.href = url + "?room=" + encodeURIComponent(roomKey);
+  }catch(e){
+    alert("Não foi possível abrir sua sala, tente de novo.");
   }
 }
 
