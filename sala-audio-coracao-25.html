@@ -50,6 +50,10 @@
 
   .seat-grid{ margin-top:26px; display:grid; grid-template-columns:repeat(5,1fr); gap:20px 5px; }
   .seat{ position:relative; aspect-ratio:1/1; border-radius:50%; border:1.5px solid var(--pink); background:linear-gradient(160deg,#4a1130,#22101c 75%); overflow:visible; display:flex; align-items:center; justify-content:center; box-shadow:0 0 10px -3px rgba(255,47,135,.7); cursor:pointer; }
+  .seat .avatar-frame-ring{ position:absolute; inset:-16%; width:132%; height:132%; z-index:0; pointer-events:none; animation:framePulse 2.4s ease-in-out infinite; }
+  .seat .avatar-frame-shine{ position:absolute; inset:-16%; width:132%; height:132%; z-index:0; pointer-events:none; background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.95) 50%, transparent 65%); background-size:300% 300%; -webkit-mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-size:100% 100%; mask-repeat:no-repeat; mix-blend-mode:screen; animation:frameShine 3s linear infinite; }
+  @keyframes framePulse{ 0%,100%{ filter:brightness(1) drop-shadow(0 0 2px rgba(255,255,255,.5)); } 50%{ filter:brightness(1.15) drop-shadow(0 0 8px rgba(255,255,255,.85)); } }
+  @keyframes frameShine{ 0%{ background-position:-120% -120%; } 100%{ background-position:120% 120%; } }
   .seat-photo-mask{ position:absolute; inset:0; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; }
   .seat .num{ position:absolute; top:-6px; left:-6px; background:#1c0a14; color:#fff; font-size:10px; font-weight:700; padding:2px 5px; border-radius:8px; border:1px solid var(--pink); z-index:2; }
   .seat .avatar-photo{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
@@ -289,6 +293,12 @@ let callObject = null;
 let micOn = true;
 let speakerOn = true;
 let seatsState = {}; // seat_number -> {user_id, display_name, avatar_url, is_leader, mic_on}
+let avatarFramesById = {};
+async function loadAvatarFramesCatalog(){
+  if(Object.keys(avatarFramesById).length) return;
+  const { data } = await sb.from("avatar_frames").select("*");
+  (data||[]).forEach(f => { avatarFramesById[f.id] = f; });
+}
 let giftTotalsByUser = {}; // user_id -> soma de moedas recebidas (presentes "em geral") nesta sala
 let roomGiftTotal = 0; // soma de todas as moedas recebidas na sala
 let processedGiftIds = new Set(); // evita contar o mesmo presente duas vezes (local + realtime)
@@ -377,6 +387,10 @@ function renderSeatGrid(){
     inner += `<img class="avatar-photo" id="ph-${n}" style="display:${info && info.avatar_url ? "block":"none"};" src="${info && info.avatar_url ? info.avatar_url : ""}">`;
     inner += `<div class="silhouette" id="sil-${n}" style="display:${info && info.avatar_url ? "none":"flex"};"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>`;
     inner += `</div>`;
+    if(info && info.frame_image_url){
+      inner += `<img class="avatar-frame-ring" src="${info.frame_image_url}">`;
+      inner += `<div class="avatar-frame-shine" style="-webkit-mask-image:url('${info.frame_image_url}'); mask-image:url('${info.frame_image_url}');"></div>`;
+    }
     if(info) inner += `<div class="mic${info.mic_on===false ? " muted":""}" id="mic-icon-${n}">${info.mic_on===false?"🔇":"🎙️"}</div>`;
     inner += `<div class="name">${info ? ("🪙 " + fmt(giftTotalsByUser[info.user_id]||0)) : ""}</div>`;
     seat.innerHTML = inner;
@@ -415,6 +429,16 @@ async function loadSeatsFromDb(){
         if(path) seat.avatar_url = sb.storage.from("profile-photos").getPublicUrl(path).data.publicUrl;
       });
     }catch(e){ /* segue mostrando a silhueta se a foto não carregar */ }
+    try{
+      await loadAvatarFramesCatalog();
+      const { data: frameRows } = await sb.from("profiles").select("id, equipped_frame_id").in("id", userIds);
+      const frameByUser = {};
+      (frameRows||[]).forEach(p=>{ if(p.equipped_frame_id) frameByUser[p.id] = p.equipped_frame_id; });
+      Object.values(seatsState).forEach(seat=>{
+        const frameId = frameByUser[seat.user_id];
+        seat.frame_image_url = frameId && avatarFramesById[frameId] ? avatarFramesById[frameId].image_url : null;
+      });
+    }catch(e){ /* segue sem moldura se não conseguir carregar */ }
   }
   renderSeatGrid();
 }

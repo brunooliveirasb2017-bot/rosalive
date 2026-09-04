@@ -74,6 +74,22 @@
 
   .live-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
   .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .grid-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .shop-frame-card{ background:var(--card,#1c1424); border-radius:14px; padding:10px 6px 12px; text-align:center; }
+  .shop-frame-name{ font-size:11.5px; margin-top:8px; line-height:1.2; min-height:27px; }
+  .shop-frame-price{ font-size:11px; color:var(--muted); margin-top:2px; }
+  .shop-frame-btn{ margin-top:8px; width:100%; border:none; border-radius:8px; padding:6px 0; font-size:11.5px; font-weight:600; cursor:pointer; }
+  .shop-frame-btn.buy{ background:linear-gradient(135deg,#ffb03c,#ff3c8c); color:#fff; }
+  .shop-frame-btn.equip{ background:rgba(255,255,255,.12); color:#fff; }
+  .shop-frame-btn.equipped{ background:rgba(46,204,113,.2); color:#2ecc71; }
+
+  .avatar-frame{ position:relative; display:inline-block; }
+  .avatar-frame .avatar-frame-photo{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:58%; height:58%; border-radius:50%; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#2a1e33; z-index:1; }
+  .avatar-frame .avatar-frame-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .avatar-frame-ring{ position:absolute; inset:0; width:100%; height:100%; z-index:2; pointer-events:none; animation:framePulse 2.4s ease-in-out infinite; }
+  .avatar-frame-shine{ position:absolute; inset:0; width:100%; height:100%; z-index:3; pointer-events:none; background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.95) 50%, transparent 65%); background-size:300% 300%; -webkit-mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-size:100% 100%; mask-repeat:no-repeat; mix-blend-mode:screen; animation:frameShine 3s linear infinite; }
+  @keyframes framePulse{ 0%,100%{ filter:brightness(1) drop-shadow(0 0 2px rgba(255,255,255,.5)); } 50%{ filter:brightness(1.15) drop-shadow(0 0 8px rgba(255,255,255,.85)); } }
+  @keyframes frameShine{ 0%{ background-position:-120% -120%; } 100%{ background-position:120% 120%; } }
   .coin-pack{ background:linear-gradient(135deg, #3a0f22, #1e0a14 75%); border:1px solid var(--line); border-radius:16px; padding:16px; text-align:center; }
   .coin-pack .amt{ font-family:var(--font-display); font-size:20px; }
   .coin-pack .price{ margin-top:6px; color:var(--pink-soft); font-size:13px; }
@@ -509,7 +525,18 @@
 
       <div id="creator-settings"></div>
 
+      <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="openShop()">🖼️ Loja de Molduras</button>
       <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="logoutUser()" data-i18n="btn_logout">Sair / trocar de perfil</button>
+    </div>
+
+    <div class="screen" id="scr-shop" style="padding:0 20px; display:none;">
+      <button class="btn btn-ghost btn-sm" onclick="showAppScreen('scr-profile')">← Voltar</button>
+      <h2 style="margin-top:12px;">Loja</h2>
+      <p style="margin-top:4px; font-size:12.5px; color:var(--muted);">Quadro de avatar — molduras animadas pra sua foto</p>
+      <div style="margin-top:10px; display:flex; align-items:center; gap:6px;">
+        <span style="font-size:15px;">🪙</span><b id="shop-balance">0</b>
+      </div>
+      <div class="grid-3" id="shop-frames-grid" style="margin-top:12px;"></div>
     </div>
 
     <div class="screen" id="scr-room-select" style="padding:0 20px; display:none;">
@@ -1084,6 +1111,7 @@ async function refreshCurrentUser(){
   profile.emoji = profile.type === "female" ? "💃" : "🕺";
   profile.gender = profile.type === "female" ? "Feminino" : "Masculino";
   currentUser = profile;
+  await loadAvatarFramesCatalog();
   return profile;
 }
 
@@ -2108,11 +2136,10 @@ async function saveBank(){
 
 function renderProfile(){
   const avatarEl = document.getElementById("profile-emoji");
-  if((currentUser.photos||[]).length > 0){
-    avatarEl.innerHTML = `<img src="${currentUser.photos[0].url}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`;
-  } else {
-    avatarEl.textContent = currentUser.emoji;
-  }
+  const photoInner = (currentUser.photos||[]).length > 0
+    ? `<img class="avatar-frame-photo" src="${currentUser.photos[0].url}">`
+    : `<div class="avatar-frame-photo" style="font-size:32px;">${currentUser.emoji}</div>`;
+  avatarEl.innerHTML = avatarFrameHtml(photoInner, currentUser.equipped_frame_id, 76);
   document.getElementById("profile-name").textContent = currentUser.name;
   document.getElementById("profile-id").textContent = currentUser.display_id;
   document.getElementById("profile-age").textContent = currentUser.age;
@@ -2126,6 +2153,69 @@ function renderProfile(){
 }
 
 function unlockedTiers(level){ return PRICE_TIERS.slice(0, Math.min(level, PRICE_TIERS.length)); }
+
+/* ===== Loja de Molduras (Quadro de avatar) ===== */
+let avatarFramesById = {};
+let myFrameIds = new Set();
+async function loadAvatarFramesCatalog(){
+  if(Object.keys(avatarFramesById).length) return;
+  const { data } = await sb.from("avatar_frames").select("*").order("price", { ascending: true });
+  (data||[]).forEach(f => { avatarFramesById[f.id] = f; });
+}
+function avatarFrameHtml(innerHtml, frameId, sizePx){
+  const frame = frameId ? avatarFramesById[frameId] : null;
+  if(!frame || !frame.image_url){
+    return `<div class="avatar-frame" style="width:${sizePx}px;height:${sizePx}px;">${innerHtml}</div>`;
+  }
+  return `<div class="avatar-frame has-frame" style="width:${sizePx}px;height:${sizePx}px;">
+    ${innerHtml}
+    <img class="avatar-frame-ring" src="${frame.image_url}">
+    <div class="avatar-frame-shine" style="-webkit-mask-image:url('${frame.image_url}'); mask-image:url('${frame.image_url}');"></div>
+  </div>`;
+}
+async function openShop(){
+  showAppScreen("scr-shop");
+  await loadAvatarFramesCatalog();
+  const { data: mine } = await sb.from("profile_frames").select("frame_id").eq("profile_id", currentUser.id);
+  myFrameIds = new Set((mine||[]).map(r=>r.frame_id));
+  document.getElementById("shop-balance").textContent = fmt(currentUser.balance);
+  renderShopGrid();
+}
+function renderShopGrid(){
+  const grid = document.getElementById("shop-frames-grid");
+  grid.innerHTML = "";
+  Object.values(avatarFramesById).forEach(frame => {
+    const owned = myFrameIds.has(frame.id);
+    const equipped = currentUser.equipped_frame_id === frame.id;
+    const photo = `<div class="avatar-frame-photo" style="font-size:26px;">${currentUser.emoji||"🙂"}</div>`;
+    const btnLabel = equipped ? "Equipada" : (owned ? "Equipar" : "Comprar");
+    const btnClass = equipped ? "equipped" : (owned ? "equip" : "buy");
+    const card = document.createElement("div");
+    card.className = "shop-frame-card";
+    card.innerHTML = `
+      <div style="display:flex; justify-content:center;">${avatarFrameHtml(photo, frame.id, 64)}</div>
+      <div class="shop-frame-name">${frame.name}</div>
+      <div class="shop-frame-price">🪙 ${fmt(frame.price)}</div>
+      <button class="shop-frame-btn ${btnClass}" ${equipped?"disabled":""}>${btnLabel}</button>
+    `;
+    card.querySelector("button").onclick = () => buyOrEquipFrame(frame.id);
+    grid.appendChild(card);
+  });
+}
+async function buyOrEquipFrame(frameId){
+  const owned = myFrameIds.has(frameId);
+  if(!owned){
+    const frame = avatarFramesById[frameId];
+    if(!confirm(`Comprar "${frame.name}" por 🪙 ${fmt(frame.price)}?`)) return;
+  }
+  const { error } = await sb.rpc("buy_avatar_frame", { p_frame_id: frameId });
+  if(error){ alert(error.message || "Não foi possível concluir."); return; }
+  myFrameIds.add(frameId);
+  await refreshCurrentUser();
+  document.getElementById("shop-balance").textContent = fmt(currentUser.balance);
+  renderShopGrid();
+  renderProfile();
+}
 
 let broadcastCallObject = null;
 let myLiveSessionId = null;
