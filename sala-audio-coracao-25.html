@@ -126,6 +126,11 @@
   .lucky-chest svg{ width:100%; height:100%; filter:drop-shadow(0 0 16px rgba(255,211,77,.85)); }
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
+  .gift-icon-wrap{ position:relative; width:38px; height:38px; display:block; margin:0 auto; }
+  .gift-icon-wrap .gift-icon-img{ margin:0; animation:giftGlow 2.4s ease-in-out infinite; }
+  .gift-icon-wrap .gift-icon-shine{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.95) 50%, transparent 65%); background-size:300% 300%; -webkit-mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-size:100% 100%; mask-repeat:no-repeat; mix-blend-mode:screen; animation:giftShine 3s linear infinite; }
+  @keyframes giftGlow{ 0%,100%{ filter:brightness(1) drop-shadow(0 0 1px rgba(255,255,255,.4)); } 50%{ filter:brightness(1.12) drop-shadow(0 0 5px rgba(255,255,255,.75)); } }
+  @keyframes giftShine{ 0%{ background-position:-120% -120%; } 100%{ background-position:120% 120%; } }
   .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
   .gift-item .pr{ font-size:11px; color:var(--gold); margin-top:2px; }
   .gift-emoji-fly{ position:fixed; z-index:999; font-size:34px; pointer-events:none; animation:giftFly 1.6s ease-out forwards; }
@@ -616,10 +621,11 @@ function renderGiftCatTabs(){
   const wrap = document.getElementById("gift-cat-tabs");
   wrap.innerHTML = tabs.map(t=>`<button type="button" class="gift-cat-tab${t.key===giftPickerActiveCat?" active":""}" onclick="selectGiftCat('${t.key}')">${t.label}</button>`).join("");
 }
-function selectGiftCat(key){
+async function selectGiftCat(key){
   giftPickerActiveCat = key;
   if(giftPickerActiveCat !== "sorte" && giftTargetSeat === "all") giftTargetSeat = null;
   renderGiftCatTabs();
+  if(key === "mochila") await loadBackpack();
   renderGiftGrid();
   renderGiftTargets();
 }
@@ -680,11 +686,11 @@ let selectedGift = null;
 
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
-  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = backpack.length ? backpack.map((x,i)=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.icon||"🎁"}</div><div class="info"><b>${escapeHtml(x.name)}</b><small>Prêmio da Bomba LV.${x.level} • ${fmt(x.value)} moedas</small></div><button onclick="sendBackpackItem(${i})">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos na bomba aparecerão aqui.</div>`; return; }
+  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = myBackpack.length ? myBackpack.map(x=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>Prêmio da Bomba • 🪙 ${fmt(x.gift_value)} moedas</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos na bomba aparecerão aqui.</div>`; return; }
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
   grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
-      ? `<img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))">`
+      ? `<div class="gift-icon-wrap"><img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.parentElement.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))"><div class="gift-icon-shine" style="-webkit-mask-image:url('${g.emoji}'); mask-image:url('${g.emoji}');"></div></div>`
       : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
     const isSelected = selectedGift && selectedGift.id === g.id;
     return `<div class="gift-item${isSelected?" selected":""}" onclick='selectGift(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
@@ -883,14 +889,35 @@ const BOMB_LEVELS = [
   {level:3, threshold:400000, prizes:[{v:8000,q:4},{v:4000,q:4},{v:2000,q:8},{v:400,q:40},{v:40,q:120},{v:20,q:200}]}
 ];
 let bombState={active:false,level:0,eventId:null,startedAt:0,endedAt:0,claimed:false,timer:null,exploded:false};
-let backpack=JSON.parse(localStorage.getItem("rosalive_backpack")||"[]");
+let myBackpack = [];
+async function loadBackpack(){
+  const { data } = await sb.from("player_backpack").select("*").eq("user_id", myUserId).order("created_at", { ascending: false });
+  myBackpack = data || [];
+}
+function renderBackpack(){
+  const el = document.getElementById("backpack-list");
+  if(!el) return;
+  if(!myBackpack.length){ el.innerHTML = '<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos na bomba aparecerão aqui.</div>'; return; }
+  el.innerHTML = myBackpack.map(x => `<div class="backpack-item"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>🪙 ${fmt(x.gift_value||0)} • prêmio da Bomba</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("");
+}
+async function openBackpack(){ document.getElementById("modal-backpack").classList.add("active"); await loadBackpack(); renderBackpack(); }
 function bombTotalPrize(level){return level.prizes.reduce((a,p)=>a+p.v*p.q,0)}
 function getBombLevelForTrophy(t){let unlocked=0;for(const b of BOMB_LEVELS)if(t>=b.threshold)unlocked=b.level;return unlocked}
-function renderBackpack(){const el=document.getElementById("backpack-list");if(!el)return;if(!backpack.length){el.innerHTML='<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos na bomba aparecerão aqui.</div>';return}el.innerHTML=backpack.map((x,i)=>`<div class="backpack-item"><div class="ico">${x.icon||"🎁"}</div><div class="info"><b>${escapeHtml(x.name)}</b><small>${fmt(x.value||0)} moedas • prêmio da Bomba LV.${x.level}</small></div><button onclick="sendBackpackItem(${i})">Enviar</button></div>`).join('')}
-function openBackpack(){document.getElementById('modal-backpack').classList.add('active');renderBackpack()}
 function closeBackpack(){document.getElementById('modal-backpack').classList.remove('active')}
-function addBackpackItem(level,value){const icons=['💎','🌹','👑','💖','🎁','✨'];const item={level,value,name:'Presente da Bomba',icon:icons[Math.floor(Math.random()*icons.length)]};backpack.push(item);localStorage.setItem('rosalive_backpack',JSON.stringify(backpack));renderBackpack()}
-function sendBackpackItem(i){const item=backpack[i];if(!item)return;showToast('A transferência de presentes da Mochila será ligada ao sistema real de presentes na próxima etapa.');}
+async function sendBackpackItem(itemId){
+  if(giftTargetSeat === null){ showToast("Escolha um assento pra enviar o presente."); return; }
+  const seatNum = giftTargetSeat === "all" ? null : giftTargetSeat;
+  const targetInfo = seatNum !== null ? seatsState[seatNum] : null;
+  const receiverId = targetInfo ? targetInfo.user_id : myUserId;
+  try{
+    const { error } = await sb.rpc("send_backpack_gift", { p_item_id: itemId, p_room_key: ROOM_KEY, p_seat_number: seatNum, p_receiver_id: receiverId });
+    if(error) throw error;
+    await loadBackpack();
+    renderBackpack();
+    renderGiftGrid();
+    showToast("Presente enviado! 🎁");
+  }catch(e){ showToast("Não foi possível enviar: " + (e.message||e)); }
+}
 function renderBombPrizes(){const b=BOMB_LEVELS[bombState.level-1];const grid=document.getElementById('bomb-prize-grid');grid.innerHTML=b.prizes.map(p=>`<div class="bomb-prize"><strong>🪙 ${fmt(p.v)}</strong>${p.q} prêmio(s)</div>`).join('')}
 function showBombFromEvent(ev){
   if(!ev || !ev.level || !ev.started_at) return;
@@ -958,7 +985,12 @@ async function claimBombPrize(){
     const result=data||{}; const value=Number(result.prize||0);
     bombState.claimed=true;
     btn.textContent='PRÊMIO PEGADO';
-    showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
+    if(result.is_gift){
+      showToast(`🎉 Você contribuiu mais e ganhou o presente "${result.gift_name||"especial"}"! Ele foi pra sua Mochila 🎒`);
+      await loadBackpack();
+    }else{
+      showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
+    }
     const {data:profile}=await sb.from('profiles').select('balance,name').eq('id',myUserId).single();
     const balanceEl=document.getElementById('balance'); if(balanceEl) balanceEl.textContent=fmt(profile?.balance||0);
     updateBombWinner(bombState.eventId);
