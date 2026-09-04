@@ -618,7 +618,6 @@ function renderGiftCatTabs(){
 }
 function selectGiftCat(key){
   giftPickerActiveCat = key;
-  if(key === "mochila"){ renderGiftCatTabs(); renderBackpack(); return; }
   if(giftPickerActiveCat !== "sorte" && giftTargetSeat === "all") giftTargetSeat = null;
   renderGiftCatTabs();
   renderGiftGrid();
