@@ -127,6 +127,10 @@
   .gift-item .gift-icon-img{ width:38px; height:38px; object-fit:cover; border-radius:8px; display:block; margin:0 auto; }
   .gift-item .em-fallback{ font-size:30px; height:38px; display:flex; align-items:center; justify-content:center; }
   .gift-icon-wrap{ position:relative; width:38px; height:38px; display:block; margin:0 auto; }
+  .gift-icon-wrap .gift-icon-img{ margin:0; animation:giftGlow 2.4s ease-in-out infinite; }
+  .gift-icon-wrap .gift-icon-shine{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; background:linear-gradient(120deg, transparent 35%, rgba(255,255,255,.95) 50%, transparent 65%); background-size:300% 300%; -webkit-mask-size:100% 100%; -webkit-mask-repeat:no-repeat; mask-size:100% 100%; mask-repeat:no-repeat; mix-blend-mode:screen; animation:giftShine 3s linear infinite; }
+  @keyframes giftGlow{ 0%,100%{ filter:brightness(1) drop-shadow(0 0 1px rgba(255,255,255,.4)); } 50%{ filter:brightness(1.12) drop-shadow(0 0 5px rgba(255,255,255,.75)); } }
+  @keyframes giftShine{ 0%{ background-position:-120% -120%; } 100%{ background-position:120% 120%; } }
   .gift-item .nm{ font-size:10px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--cream); }
   .gift-item .pr{ font-size:11px; color:var(--gold); margin-top:2px; }
   .gift-emoji-fly{ position:fixed; z-index:999; font-size:34px; pointer-events:none; animation:giftFly 1.6s ease-out forwards; }
@@ -686,7 +690,7 @@ function renderGiftGrid(){
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
   grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
-      ? `<div class="gift-icon-wrap"><img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.parentElement.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))"></div>`
+      ? `<div class="gift-icon-wrap"><img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.parentElement.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))"><div class="gift-icon-shine" style="-webkit-mask-image:url('${g.emoji}'); mask-image:url('${g.emoji}');"></div></div>`
       : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
     const isSelected = selectedGift && selectedGift.id === g.id;
     return `<div class="gift-item${isSelected?" selected":""}" onclick='selectGift(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
