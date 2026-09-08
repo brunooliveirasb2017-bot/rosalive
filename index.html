@@ -350,7 +350,7 @@
     <div style="font-family:var(--font-body);font-weight:600;font-size:22px;letter-spacing:.5em;color:#f2ede0;margin-top:2px;">LIVE</div>
     <p style="color:#a89a7c;font-size:14px;margin-top:22px;">Conectando pessoas<br>em tempo real</p>
     <div style="font-size:20px;margin-top:8px;">❤️</div>
-    <div style="margin-top:34px;display:inline-block;padding:10px 28px;border:1px solid rgba(244,197,66,.4);border-radius:999px;color:#f4c542;font-size:12px;letter-spacing:.05em;">Carregando...</div>
+    <div data-i18n="loading_text" style="margin-top:34px;display:inline-block;padding:10px 28px;border:1px solid rgba(244,197,66,.4);border-radius:999px;color:#f4c542;font-size:12px;letter-spacing:.05em;">Carregando...</div>
   </div>
 </div>
 <script>
@@ -373,12 +373,27 @@
   <div id="mode-app" class="phone">
 
     <div class="screen active" id="scr-splash" style="padding:0 20px;">
-      <div class="lang-switcher" id="lang-switcher" style="display:flex; gap:8px; justify-content:center; margin:6px 0 14px;">
+      <div class="lang-switcher" id="lang-switcher" style="display:flex; gap:6px; justify-content:center; margin:6px 0 14px; flex-wrap:wrap; max-width:320px; margin-left:auto; margin-right:auto;">
         <button class="lang-flag" data-lang="pt" onclick="setLanguage('pt')" title="Português">🇧🇷</button>
         <button class="lang-flag" data-lang="en" onclick="setLanguage('en')" title="English">🇺🇸</button>
+        <button class="lang-flag" data-lang="es" onclick="setLanguage('es')" title="Español">🇪🇸</button>
+        <button class="lang-flag" data-lang="fr" onclick="setLanguage('fr')" title="Français">🇫🇷</button>
+        <button class="lang-flag" data-lang="de" onclick="setLanguage('de')" title="Deutsch">🇩🇪</button>
+        <button class="lang-flag" data-lang="it" onclick="setLanguage('it')" title="Italiano">🇮🇹</button>
+        <button class="lang-flag" data-lang="nl" onclick="setLanguage('nl')" title="Nederlands">🇳🇱</button>
+        <button class="lang-flag" data-lang="pl" onclick="setLanguage('pl')" title="Polski">🇵🇱</button>
+        <button class="lang-flag" data-lang="ru" onclick="setLanguage('ru')" title="Русский">🇷🇺</button>
+        <button class="lang-flag" data-lang="tr" onclick="setLanguage('tr')" title="Türkçe">🇹🇷</button>
+        <button class="lang-flag" data-lang="ar" onclick="setLanguage('ar')" title="العربية">🇸🇦</button>
+        <button class="lang-flag" data-lang="zh" onclick="setLanguage('zh')" title="中文">🇨🇳</button>
+        <button class="lang-flag" data-lang="ja" onclick="setLanguage('ja')" title="日本語">🇯🇵</button>
+        <button class="lang-flag" data-lang="ko" onclick="setLanguage('ko')" title="한국어">🇰🇷</button>
+        <button class="lang-flag" data-lang="th" onclick="setLanguage('th')" title="ไทย">🇹🇭</button>
+        <button class="lang-flag" data-lang="vi" onclick="setLanguage('vi')" title="Tiếng Việt">🇻🇳</button>
         <button class="lang-flag" data-lang="id" onclick="setLanguage('id')" title="Bahasa Indonesia">🇮🇩</button>
         <button class="lang-flag" data-lang="hi" onclick="setLanguage('hi')" title="हिन्दी">🇮🇳</button>
-        <button class="lang-flag" data-lang="vi" onclick="setLanguage('vi')" title="Tiếng Việt">🇻🇳</button>
+        <button class="lang-flag" data-lang="bn" onclick="setLanguage('bn')" title="বাংলা">🇧🇩</button>
+        <button class="lang-flag" data-lang="fil" onclick="setLanguage('fil')" title="Filipino">🇵🇭</button>
       </div>
       <div class="eyebrow" data-i18n="welcome_eyebrow">Bem-vindo</div>
       <h1 style="font-size:24px;" data-i18n="welcome_title">Lives e presentes,<br>tudo em um só app.</h1>
@@ -425,6 +440,9 @@
               <option value="RU">🇷🇺 Rússia</option>
               <option value="NG">🇳🇬 Nigéria</option>
               <option value="ZA">🇿🇦 África do Sul</option>
+              <option value="NL">🇳🇱 Países Baixos</option>
+              <option value="PL">🇵🇱 Polônia</option>
+              <option value="BD">🇧🇩 Bangladesh</option>
               <option value="OT">🌎 Outro</option>
             </select>
           </div>
@@ -890,7 +908,8 @@ const I18N = {
     btn_settings:"⚙️ Configurações", settings_title:"Configurações", settings_language:"Idioma",
     btn_logout:"Sair / trocar de perfil",
     broadcast_title:"AO VIVO", btn_stop_broadcast:"⏹️ Encerrar transmissão",
-        tab_lives:"Lives", tab_wallet:"Carteira", tab_profile:"Perfil"
+        tab_lives:"Lives", tab_wallet:"Carteira", tab_profile:"Perfil",
+    viewers_suffix:"assistindo", nobody_live:"Ninguém ao vivo agora. Volte daqui a pouco!", loading_text:"Carregando...", video_room_label:"Sala de Vídeo", audio_room_label:"Sala de Áudio", go_live_btn:"🔴 Ir ao vivo", status_you_are_live:"Você está ao vivo agora.", status_you_are_not_live:"Você não está ao vivo.", room_open_error:"Não foi possível abrir sua sala, tente de novo.", no_packages:"Nenhum pacote disponível para o seu país ainda.", loading_packages:"Carregando pacotes...", order_sent_msg:"Pedido enviado! Assim que o pagamento for confirmado, as moedas caem na sua carteira.", btn_equip:"Equipar", btn_equipped:"Equipada", btn_buy_generic:"Comprar", login_error_msg:"E-mail ou senha incorretos.", name_required_msg:"Nome é obrigatório.", age_required_msg:"É preciso ter 18 anos ou mais para se cadastrar.", password_min_msg:"A senha precisa ter pelo menos 8 caracteres.", account_created_msg:"Conta criada! Verifique seu e-mail para confirmar antes de entrar.", account_blocked_msg:"Esta conta foi bloqueada pelo administrador.", profile_load_error_msg:"Não foi possível carregar seu perfil.", photo_approved_msg:"✅ Foto aprovada! Você já pode ir ao vivo.", bank_saved_msg:"Dados bancários salvos com segurança no seu perfil.", confirm_age_policy_msg:"Confirme que é maior de 18 e aceite a Política de Privacidade para continuar.", in_room_suffix:"na sala", btn_view_my_broadcast:"📡 Ver minha transmissão", broadcast_eyebrow:"Transmissão ao vivo", my_album_eyebrow:"Meu álbum (até 5 fotos)", my_album_sub:"Essas fotos aparecem para qualquer homem que clicar no seu perfil.", earnings_eyebrow:"Seu nível de ganhos", earnings_sub:"Você recebe automaticamente e sobe de nível conforme acumula ganhos líquidos com presentes.", per_hour_live:"por hora ao vivo", level_label:"nível", change_photo_label:"Trocar foto", err_image_only:"Envie apenas arquivos de imagem.", btn_continue:"Continuar", no_purchases_yet:"Nenhuma compra ainda.", no_history_yet:"Nenhuma movimentação ainda.", package_not_found:"Pacote não encontrado.", face_verified_badge:"Rosto verificado", verification_pending_badge:"Verificação pendente", photo_pending_msg:"⏳ Sua foto está em análise. Você poderá transmitir assim que for aprovada pelo administrador.", photo_rejected_msg:"❌ Essa foto foi recusada pelo administrador. Escolha outra foto para continuar.", change_photo_anytime:"Você pode trocar sua foto quando quiser."
   },
   en: {
     welcome_eyebrow:"Welcome", welcome_title:"Live streams and gifts,<br>all in one app.",
@@ -926,7 +945,8 @@ const I18N = {
     btn_settings:"⚙️ Settings", settings_title:"Settings", settings_language:"Language",
     btn_logout:"Log out / switch profile",
     broadcast_title:"My stream", btn_stop_broadcast:"⏹️ End stream",
-        tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profile"
+        tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profile",
+    viewers_suffix:"watching", nobody_live:"Nobody's live right now. Check back soon!", loading_text:"Loading...", video_room_label:"Video Room", audio_room_label:"Audio Room", go_live_btn:"🔴 Go live", status_you_are_live:"You are live right now.", status_you_are_not_live:"You are not live.", room_open_error:"Couldn't open your room, please try again.", no_packages:"No packages available for your country yet.", loading_packages:"Loading packages...", order_sent_msg:"Order sent! As soon as payment is confirmed, the coins will land in your wallet.", btn_equip:"Equip", btn_equipped:"Equipped", btn_buy_generic:"Buy", login_error_msg:"Incorrect email or password.", name_required_msg:"Name is required.", age_required_msg:"You must be 18 or older to sign up.", password_min_msg:"Password must be at least 8 characters.", account_created_msg:"Account created! Check your email to confirm before logging in.", account_blocked_msg:"This account has been blocked by the administrator.", profile_load_error_msg:"Couldn't load your profile.", photo_approved_msg:"✅ Photo approved! You can go live now.", bank_saved_msg:"Bank details saved securely to your profile.", confirm_age_policy_msg:"Confirm you are over 18 and accept the Privacy Policy to continue.", in_room_suffix:"in room", btn_view_my_broadcast:"📡 View my broadcast", broadcast_eyebrow:"Live broadcast", my_album_eyebrow:"My album (up to 5 photos)", my_album_sub:"These photos appear to any man who clicks on your profile.", earnings_eyebrow:"Your earnings level", earnings_sub:"You're paid automatically and level up as you accumulate net earnings from gifts.", per_hour_live:"per hour live", level_label:"level", change_photo_label:"Change photo", err_image_only:"Please upload image files only.", btn_continue:"Continue", no_purchases_yet:"No purchases yet.", no_history_yet:"No activity yet.", package_not_found:"Package not found.", face_verified_badge:"Face verified", verification_pending_badge:"Verification pending", photo_pending_msg:"⏳ Your photo is under review. You'll be able to go live once it's approved by the administrator.", photo_rejected_msg:"❌ This photo was rejected by the administrator. Choose another photo to continue.", change_photo_anytime:"You can change your photo anytime."
   },
   id: {
     welcome_eyebrow:"Selamat datang", welcome_title:"Siaran langsung & hadiah,<br>semua dalam satu aplikasi.",
@@ -962,7 +982,8 @@ const I18N = {
     btn_settings:"⚙️ Pengaturan", settings_title:"Pengaturan", settings_language:"Bahasa",
     btn_logout:"Keluar / ganti profil",
     broadcast_title:"Siaran saya", btn_stop_broadcast:"⏹️ Akhiri siaran",
-        tab_lives:"Siaran", tab_wallet:"Dompet", tab_profile:"Profil"
+        tab_lives:"Siaran", tab_wallet:"Dompet", tab_profile:"Profil",
+    viewers_suffix:"menonton", nobody_live:"Belum ada yang live sekarang. Coba lagi nanti!", loading_text:"Memuat...", video_room_label:"Ruang Video", audio_room_label:"Ruang Audio", go_live_btn:"🔴 Mulai live", status_you_are_live:"Anda sedang live sekarang.", status_you_are_not_live:"Anda tidak sedang live.", room_open_error:"Tidak dapat membuka ruangan Anda, coba lagi.", no_packages:"Belum ada paket tersedia untuk negara Anda.", loading_packages:"Memuat paket...", order_sent_msg:"Pesanan terkirim! Setelah pembayaran dikonfirmasi, koin akan masuk ke dompet Anda.", btn_equip:"Pakai", btn_equipped:"Terpakai", btn_buy_generic:"Beli", login_error_msg:"Email atau kata sandi salah.", name_required_msg:"Nama wajib diisi.", age_required_msg:"Anda harus berusia 18 tahun atau lebih untuk mendaftar.", password_min_msg:"Kata sandi harus minimal 8 karakter.", account_created_msg:"Akun dibuat! Periksa email Anda untuk konfirmasi sebelum masuk.", account_blocked_msg:"Akun ini telah diblokir oleh administrator.", profile_load_error_msg:"Tidak dapat memuat profil Anda.", photo_approved_msg:"✅ Foto disetujui! Anda sudah bisa live.", bank_saved_msg:"Data bank disimpan dengan aman di profil Anda.", confirm_age_policy_msg:"Konfirmasi bahwa Anda berusia di atas 18 tahun dan setujui Kebijakan Privasi untuk melanjutkan.", in_room_suffix:"di ruangan", btn_view_my_broadcast:"📡 Lihat siaran saya", broadcast_eyebrow:"Siaran langsung", my_album_eyebrow:"Album saya (hingga 5 foto)", my_album_sub:"Foto-foto ini muncul untuk pria mana pun yang mengklik profil Anda.", earnings_eyebrow:"Level penghasilan Anda", earnings_sub:"Anda dibayar otomatis dan naik level seiring akumulasi penghasilan bersih dari hadiah.", per_hour_live:"per jam live", level_label:"level", change_photo_label:"Ganti foto", err_image_only:"Silakan unggah file gambar saja.", btn_continue:"Lanjutkan", no_purchases_yet:"Belum ada pembelian.", no_history_yet:"Belum ada aktivitas.", package_not_found:"Paket tidak ditemukan.", face_verified_badge:"Wajah terverifikasi", verification_pending_badge:"Verifikasi tertunda", photo_pending_msg:"⏳ Foto Anda sedang ditinjau. Anda bisa live setelah disetujui oleh administrator.", photo_rejected_msg:"❌ Foto ini ditolak oleh administrator. Pilih foto lain untuk melanjutkan.", change_photo_anytime:"Anda bisa mengganti foto kapan saja."
   },
   hi: {
     welcome_eyebrow:"स्वागत है", welcome_title:"लाइव और गिफ़्ट,<br>एक ही ऐप में।",
@@ -998,7 +1019,8 @@ const I18N = {
     btn_settings:"⚙️ सेटिंग्स", settings_title:"सेटिंग्स", settings_language:"भाषा",
     btn_logout:"लॉगआउट / प्रोफ़ाइल बदलें",
     broadcast_title:"मेरी लाइव", btn_stop_broadcast:"⏹️ लाइव समाप्त करें",
-        tab_lives:"लाइव", tab_wallet:"वॉलेट", tab_profile:"प्रोफ़ाइल"
+        tab_lives:"लाइव", tab_wallet:"वॉलेट", tab_profile:"प्रोफ़ाइल",
+    viewers_suffix:"देख रहे हैं", nobody_live:"अभी कोई लाइव नहीं है। थोड़ी देर बाद देखें!", loading_text:"लोड हो रहा है...", video_room_label:"वीडियो रूम", audio_room_label:"ऑडियो रूम", go_live_btn:"🔴 लाइव जाएं", status_you_are_live:"आप अभी लाइव हैं।", status_you_are_not_live:"आप लाइव नहीं हैं।", room_open_error:"आपका रूम नहीं खुल सका, फिर से कोशिश करें।", no_packages:"आपके देश के लिए अभी कोई पैकेज उपलब्ध नहीं है।", loading_packages:"पैकेज लोड हो रहे हैं...", order_sent_msg:"ऑर्डर भेजा गया! भुगतान की पुष्टि होते ही सिक्के आपके वॉलेट में आ जाएंगे।", btn_equip:"लगाएं", btn_equipped:"लगाया गया", btn_buy_generic:"खरीदें", login_error_msg:"ईमेल या पासवर्ड गलत है।", name_required_msg:"नाम आवश्यक है।", age_required_msg:"साइन अप करने के लिए आपकी उम्र 18 या उससे अधिक होनी चाहिए।", password_min_msg:"पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।", account_created_msg:"खाता बन गया! लॉगिन करने से पहले पुष्टि के लिए अपना ईमेल देखें।", account_blocked_msg:"इस खाते को व्यवस्थापक द्वारा ब्लॉक कर दिया गया है।", profile_load_error_msg:"आपकी प्रोफ़ाइल लोड नहीं हो सकी।", photo_approved_msg:"✅ फ़ोटो स्वीकृत! अब आप लाइव जा सकते हैं।", bank_saved_msg:"बैंक विवरण सुरक्षित रूप से आपकी प्रोफ़ाइल में सहेजा गया।", confirm_age_policy_msg:"जारी रखने के लिए पुष्टि करें कि आप 18 से ऊपर हैं और गोपनीयता नीति स्वीकार करें।", in_room_suffix:"रूम में", btn_view_my_broadcast:"📡 मेरा प्रसारण देखें", broadcast_eyebrow:"लाइव प्रसारण", my_album_eyebrow:"मेरा एल्बम (5 फ़ोटो तक)", my_album_sub:"ये फ़ोटो किसी भी पुरुष को दिखेंगी जो आपकी प्रोफ़ाइल पर क्लिक करेगा।", earnings_eyebrow:"आपका कमाई स्तर", earnings_sub:"आपको स्वतः भुगतान मिलता है और उपहारों से शुद्ध कमाई जमा होने पर स्तर बढ़ता है।", per_hour_live:"प्रति घंटा लाइव", level_label:"स्तर", change_photo_label:"फ़ोटो बदलें", err_image_only:"कृपया केवल इमेज फ़ाइलें अपलोड करें।", btn_continue:"जारी रखें", no_purchases_yet:"अभी तक कोई खरीदारी नहीं।", no_history_yet:"अभी तक कोई गतिविधि नहीं।", package_not_found:"पैकेज नहीं मिला।", face_verified_badge:"चेहरा सत्यापित", verification_pending_badge:"सत्यापन लंबित", photo_pending_msg:"⏳ आपकी फ़ोटो की समीक्षा हो रही है। व्यवस्थापक द्वारा अनुमोदित होते ही आप लाइव जा सकेंगी।", photo_rejected_msg:"❌ यह फ़ोटो व्यवस्थापक द्वारा अस्वीकृत की गई। जारी रखने के लिए दूसरी फ़ोटो चुनें।", change_photo_anytime:"आप कभी भी अपनी फ़ोटो बदल सकती हैं।"
   },
   vi: {
     welcome_eyebrow:"Chào mừng", welcome_title:"Livestream & quà tặng,<br>tất cả trong một ứng dụng.",
@@ -1034,7 +1056,8 @@ const I18N = {
     btn_settings:"⚙️ Cài đặt", settings_title:"Cài đặt", settings_language:"Ngôn ngữ",
     btn_logout:"Đăng xuất / đổi hồ sơ",
     broadcast_title:"Livestream của tôi", btn_stop_broadcast:"⏹️ Kết thúc livestream",
-        tab_lives:"Livestream", tab_wallet:"Ví", tab_profile:"Hồ sơ"
+        tab_lives:"Livestream", tab_wallet:"Ví", tab_profile:"Hồ sơ",
+    viewers_suffix:"đang xem", nobody_live:"Chưa có ai livestream lúc này. Quay lại sau nhé!", loading_text:"Đang tải...", video_room_label:"Phòng Video", audio_room_label:"Phòng Âm thanh", go_live_btn:"🔴 Bắt đầu live", status_you_are_live:"Bạn đang livestream.", status_you_are_not_live:"Bạn hiện không livestream.", room_open_error:"Không thể mở phòng của bạn, vui lòng thử lại.", no_packages:"Chưa có gói nào cho quốc gia của bạn.", loading_packages:"Đang tải các gói...", order_sent_msg:"Đã gửi đơn hàng! Ngay khi thanh toán được xác nhận, xu sẽ vào ví của bạn.", btn_equip:"Trang bị", btn_equipped:"Đã trang bị", btn_buy_generic:"Mua", login_error_msg:"Email hoặc mật khẩu không đúng.", name_required_msg:"Tên là bắt buộc.", age_required_msg:"Bạn phải từ 18 tuổi trở lên để đăng ký.", password_min_msg:"Mật khẩu phải có ít nhất 8 ký tự.", account_created_msg:"Đã tạo tài khoản! Kiểm tra email để xác nhận trước khi đăng nhập.", account_blocked_msg:"Tài khoản này đã bị quản trị viên chặn.", profile_load_error_msg:"Không thể tải hồ sơ của bạn.", photo_approved_msg:"✅ Ảnh đã được duyệt! Bạn có thể livestream ngay.", bank_saved_msg:"Thông tin ngân hàng đã được lưu an toàn vào hồ sơ của bạn.", confirm_age_policy_msg:"Xác nhận bạn trên 18 tuổi và chấp nhận Chính sách quyền riêng tư để tiếp tục.", in_room_suffix:"trong phòng", btn_view_my_broadcast:"📡 Xem buổi phát của tôi", broadcast_eyebrow:"Phát trực tiếp", my_album_eyebrow:"Album của tôi (tối đa 5 ảnh)", my_album_sub:"Những ảnh này hiển thị cho bất kỳ người đàn ông nào nhấp vào hồ sơ của bạn.", earnings_eyebrow:"Cấp độ thu nhập của bạn", earnings_sub:"Bạn được trả tự động và lên cấp khi tích lũy thu nhập ròng từ quà tặng.", per_hour_live:"mỗi giờ live", level_label:"cấp", change_photo_label:"Đổi ảnh", err_image_only:"Vui lòng chỉ tải lên tệp hình ảnh.", btn_continue:"Tiếp tục", no_purchases_yet:"Chưa có giao dịch mua nào.", no_history_yet:"Chưa có hoạt động nào.", package_not_found:"Không tìm thấy gói.", face_verified_badge:"Đã xác minh khuôn mặt", verification_pending_badge:"Đang chờ xác minh", photo_pending_msg:"⏳ Ảnh của bạn đang được xem xét. Bạn có thể livestream ngay khi được quản trị viên phê duyệt.", photo_rejected_msg:"❌ Ảnh này đã bị quản trị viên từ chối. Chọn ảnh khác để tiếp tục.", change_photo_anytime:"Bạn có thể đổi ảnh bất cứ lúc nào."
   },
   es: {
     welcome_eyebrow:"Bienvenido/a", welcome_title:"Transmisiones en vivo y regalos,<br>todo en una sola app.",
@@ -1070,7 +1093,8 @@ const I18N = {
     btn_settings:"⚙️ Configuración", settings_title:"Configuración", settings_language:"Idioma",
     btn_logout:"Cerrar sesión / cambiar perfil",
     broadcast_title:"EN VIVO", btn_stop_broadcast:"⏹️ Terminar transmisión",
-    tab_lives:"Lives", tab_wallet:"Billetera", tab_profile:"Perfil"
+    tab_lives:"Lives", tab_wallet:"Billetera", tab_profile:"Perfil",
+    viewers_suffix:"viendo", nobody_live:"Nadie está en vivo ahora. ¡Vuelve pronto!", loading_text:"Cargando...", video_room_label:"Sala de Video", audio_room_label:"Sala de Audio", go_live_btn:"🔴 Ir en vivo", status_you_are_live:"Estás en vivo ahora.", status_you_are_not_live:"No estás en vivo.", room_open_error:"No se pudo abrir tu sala, inténtalo de nuevo.", no_packages:"Aún no hay paquetes disponibles para tu país.", loading_packages:"Cargando paquetes...", order_sent_msg:"¡Pedido enviado! En cuanto se confirme el pago, las monedas llegarán a tu billetera.", btn_equip:"Equipar", btn_equipped:"Equipado", btn_buy_generic:"Comprar", login_error_msg:"Correo o contraseña incorrectos.", name_required_msg:"El nombre es obligatorio.", age_required_msg:"Debes tener 18 años o más para registrarte.", password_min_msg:"La contraseña debe tener al menos 8 caracteres.", account_created_msg:"¡Cuenta creada! Revisa tu correo para confirmar antes de iniciar sesión.", account_blocked_msg:"Esta cuenta ha sido bloqueada por el administrador.", profile_load_error_msg:"No se pudo cargar tu perfil.", photo_approved_msg:"✅ ¡Foto aprobada! Ya puedes transmitir en vivo.", bank_saved_msg:"Datos bancarios guardados de forma segura en tu perfil.", confirm_age_policy_msg:"Confirma que eres mayor de 18 años y acepta la Política de Privacidad para continuar.", in_room_suffix:"en la sala", btn_view_my_broadcast:"📡 Ver mi transmisión", broadcast_eyebrow:"Transmisión en vivo", my_album_eyebrow:"Mi álbum (hasta 5 fotos)", my_album_sub:"Estas fotos aparecen para cualquier hombre que haga clic en tu perfil.", earnings_eyebrow:"Tu nivel de ganancias", earnings_sub:"Recibes pagos automáticamente y subes de nivel a medida que acumulas ganancias netas por regalos.", per_hour_live:"por hora en vivo", level_label:"nivel", change_photo_label:"Cambiar foto", err_image_only:"Sube solo archivos de imagen.", btn_continue:"Continuar", no_purchases_yet:"Aún no hay compras.", no_history_yet:"Aún no hay movimientos.", package_not_found:"Paquete no encontrado.", face_verified_badge:"Rostro verificado", verification_pending_badge:"Verificación pendiente", photo_pending_msg:"⏳ Tu foto está en revisión. Podrás transmitir en cuanto sea aprobada por el administrador.", photo_rejected_msg:"❌ Esta foto fue rechazada por el administrador. Elige otra foto para continuar.", change_photo_anytime:"Puedes cambiar tu foto cuando quieras."
   },
   fr: {
     welcome_eyebrow:"Bienvenue", welcome_title:"Lives et cadeaux,<br>tout dans une seule app.",
@@ -1106,7 +1130,8 @@ const I18N = {
     btn_settings:"⚙️ Paramètres", settings_title:"Paramètres", settings_language:"Langue",
     btn_logout:"Se déconnecter / changer de profil",
     broadcast_title:"EN DIRECT", btn_stop_broadcast:"⏹️ Arrêter la diffusion",
-    tab_lives:"Lives", tab_wallet:"Portefeuille", tab_profile:"Profil"
+    tab_lives:"Lives", tab_wallet:"Portefeuille", tab_profile:"Profil",
+    viewers_suffix:"en train de regarder", nobody_live:"Personne n'est en direct pour le moment. Revenez bientôt !", loading_text:"Chargement...", video_room_label:"Salle Vidéo", audio_room_label:"Salle Audio", go_live_btn:"🔴 Passer en direct", status_you_are_live:"Vous êtes en direct actuellement.", status_you_are_not_live:"Vous n'êtes pas en direct.", room_open_error:"Impossible d'ouvrir votre salle, réessayez.", no_packages:"Aucun forfait disponible pour votre pays pour l'instant.", loading_packages:"Chargement des forfaits...", order_sent_msg:"Commande envoyée ! Dès que le paiement sera confirmé, les pièces arriveront dans votre portefeuille.", btn_equip:"Équiper", btn_equipped:"Équipé", btn_buy_generic:"Acheter", login_error_msg:"E-mail ou mot de passe incorrect.", name_required_msg:"Le nom est obligatoire.", age_required_msg:"Vous devez avoir 18 ans ou plus pour vous inscrire.", password_min_msg:"Le mot de passe doit contenir au moins 8 caractères.", account_created_msg:"Compte créé ! Vérifiez votre e-mail pour confirmer avant de vous connecter.", account_blocked_msg:"Ce compte a été bloqué par l'administrateur.", profile_load_error_msg:"Impossible de charger votre profil.", photo_approved_msg:"✅ Photo approuvée ! Vous pouvez maintenant passer en direct.", bank_saved_msg:"Coordonnées bancaires enregistrées en toute sécurité sur votre profil.", confirm_age_policy_msg:"Confirmez que vous avez plus de 18 ans et acceptez la Politique de confidentialité pour continuer.", in_room_suffix:"dans la salle", btn_view_my_broadcast:"📡 Voir ma diffusion", broadcast_eyebrow:"Diffusion en direct", my_album_eyebrow:"Mon album (jusqu'à 5 photos)", my_album_sub:"Ces photos apparaissent pour tout homme qui clique sur votre profil.", earnings_eyebrow:"Votre niveau de gains", earnings_sub:"Vous êtes payée automatiquement et montez de niveau en accumulant des gains nets grâce aux cadeaux.", per_hour_live:"par heure en direct", level_label:"niveau", change_photo_label:"Changer la photo", err_image_only:"Veuillez importer uniquement des fichiers image.", btn_continue:"Continuer", no_purchases_yet:"Aucun achat pour le moment.", no_history_yet:"Aucune activité pour le moment.", package_not_found:"Forfait introuvable.", face_verified_badge:"Visage vérifié", verification_pending_badge:"Vérification en attente", photo_pending_msg:"⏳ Votre photo est en cours d'examen. Vous pourrez passer en direct dès qu'elle sera approuvée par l'administrateur.", photo_rejected_msg:"❌ Cette photo a été refusée par l'administrateur. Choisissez une autre photo pour continuer.", change_photo_anytime:"Vous pouvez changer votre photo à tout moment."
   },
   zh: {
     welcome_eyebrow:"欢迎", welcome_title:"直播与礼物，<br>一个应用全搞定。",
@@ -1142,7 +1167,8 @@ const I18N = {
     btn_settings:"⚙️ 设置", settings_title:"设置", settings_language:"语言",
     btn_logout:"退出登录 / 切换资料",
     broadcast_title:"直播中", btn_stop_broadcast:"⏹️ 结束直播",
-    tab_lives:"直播", tab_wallet:"钱包", tab_profile:"我的"
+    tab_lives:"直播", tab_wallet:"钱包", tab_profile:"我的",
+    viewers_suffix:"观看中", nobody_live:"目前没有人直播。请稍后再来看看！", loading_text:"加载中...", video_room_label:"视频房间", audio_room_label:"语音房间", go_live_btn:"🔴 开始直播", status_you_are_live:"您正在直播中。", status_you_are_not_live:"您目前未直播。", room_open_error:"无法打开您的房间，请重试。", no_packages:"您所在的国家/地区暂无可用套餐。", loading_packages:"正在加载套餐...", order_sent_msg:"订单已发送！付款确认后，金币将进入您的钱包。", btn_equip:"装备", btn_equipped:"已装备", btn_buy_generic:"购买", login_error_msg:"邮箱或密码错误。", name_required_msg:"姓名为必填项。", age_required_msg:"您必须年满18岁才能注册。", password_min_msg:"密码至少需要8个字符。", account_created_msg:"账户已创建！请查看邮箱进行确认后再登录。", account_blocked_msg:"该账户已被管理员封禁。", profile_load_error_msg:"无法加载您的资料。", photo_approved_msg:"✅ 照片已通过审核！您现在可以开始直播了。", bank_saved_msg:"银行信息已安全保存到您的资料中。", confirm_age_policy_msg:"请确认您已年满18岁并接受隐私政策以继续。", in_room_suffix:"在房间", btn_view_my_broadcast:"📡 查看我的直播", broadcast_eyebrow:"直播", my_album_eyebrow:"我的相册（最多5张照片）", my_album_sub:"任何点击您资料的男性都会看到这些照片。", earnings_eyebrow:"您的收益等级", earnings_sub:"您会自动获得收益，并随着礼物净收入的累积而升级。", per_hour_live:"每小时直播", level_label:"等级", change_photo_label:"更换照片", err_image_only:"请仅上传图片文件。", btn_continue:"继续", no_purchases_yet:"暂无购买记录。", no_history_yet:"暂无动态。", package_not_found:"未找到套餐。", face_verified_badge:"人脸已验证", verification_pending_badge:"验证待处理", photo_pending_msg:"⏳ 您的照片正在审核中。管理员批准后您就可以开始直播。", photo_rejected_msg:"❌ 此照片已被管理员拒绝。请选择其他照片继续。", change_photo_anytime:"您可以随时更换照片。"
   },
   ar: {
     welcome_eyebrow:"مرحبًا", welcome_title:"بث مباشر وهدايا،<br>كل ذلك في تطبيق واحد.",
@@ -1178,7 +1204,8 @@ const I18N = {
     btn_settings:"⚙️ الإعدادات", settings_title:"الإعدادات", settings_language:"اللغة",
     btn_logout:"تسجيل الخروج / تبديل الملف الشخصي",
     broadcast_title:"مباشر", btn_stop_broadcast:"⏹️ إنهاء البث",
-    tab_lives:"البث المباشر", tab_wallet:"المحفظة", tab_profile:"الملف الشخصي"
+    tab_lives:"البث المباشر", tab_wallet:"المحفظة", tab_profile:"الملف الشخصي",
+    viewers_suffix:"يشاهدون", nobody_live:"لا يوجد أحد يبث مباشرة الآن. عد قريبًا!", loading_text:"جارٍ التحميل...", video_room_label:"غرفة الفيديو", audio_room_label:"غرفة الصوت", go_live_btn:"🔴 بدء البث المباشر", status_you_are_live:"أنت تبث مباشرة الآن.", status_you_are_not_live:"أنت لست في بث مباشر.", room_open_error:"تعذر فتح غرفتك، حاول مرة أخرى.", no_packages:"لا توجد باقات متاحة لبلدك بعد.", loading_packages:"جارٍ تحميل الباقات...", order_sent_msg:"تم إرسال الطلب! بمجرد تأكيد الدفع، ستصل العملات إلى محفظتك.", btn_equip:"تجهيز", btn_equipped:"مُجهّز", btn_buy_generic:"شراء", login_error_msg:"البريد الإلكتروني أو كلمة المرور غير صحيحة.", name_required_msg:"الاسم مطلوب.", age_required_msg:"يجب أن يكون عمرك 18 عامًا أو أكثر للتسجيل.", password_min_msg:"يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.", account_created_msg:"تم إنشاء الحساب! تحقق من بريدك الإلكتروني للتأكيد قبل تسجيل الدخول.", account_blocked_msg:"تم حظر هذا الحساب من قبل المسؤول.", profile_load_error_msg:"تعذر تحميل ملفك الشخصي.", photo_approved_msg:"✅ تمت الموافقة على الصورة! يمكنك الآن البث المباشر.", bank_saved_msg:"تم حفظ البيانات المصرفية بأمان في ملفك الشخصي.", confirm_age_policy_msg:"أكد أن عمرك يزيد عن 18 عامًا ووافق على سياسة الخصوصية للمتابعة.", in_room_suffix:"في الغرفة", btn_view_my_broadcast:"📡 عرض بثي", broadcast_eyebrow:"البث المباشر", my_album_eyebrow:"ألبومي (حتى 5 صور)", my_album_sub:"تظهر هذه الصور لأي رجل ينقر على ملفك الشخصي.", earnings_eyebrow:"مستوى أرباحك", earnings_sub:"يتم دفع أرباحك تلقائيًا وترتقي في المستوى مع تراكم صافي أرباحك من الهدايا.", per_hour_live:"لكل ساعة بث", level_label:"المستوى", change_photo_label:"تغيير الصورة", err_image_only:"يرجى تحميل ملفات الصور فقط.", btn_continue:"متابعة", no_purchases_yet:"لا توجد مشتريات بعد.", no_history_yet:"لا يوجد نشاط بعد.", package_not_found:"الباقة غير موجودة.", face_verified_badge:"تم التحقق من الوجه", verification_pending_badge:"التحقق قيد الانتظار", photo_pending_msg:"⏳ صورتك قيد المراجعة. ستتمكنين من البث المباشر بمجرد موافقة المسؤول.", photo_rejected_msg:"❌ تم رفض هذه الصورة من قبل المسؤول. اختاري صورة أخرى للمتابعة.", change_photo_anytime:"يمكنك تغيير صورتك في أي وقت."
   },
   ru: {
     welcome_eyebrow:"Добро пожаловать", welcome_title:"Прямые эфиры и подарки —<br>всё в одном приложении.",
@@ -1214,7 +1241,8 @@ const I18N = {
     btn_settings:"⚙️ Настройки", settings_title:"Настройки", settings_language:"Язык",
     btn_logout:"Выйти / сменить профиль",
     broadcast_title:"В ЭФИРЕ", btn_stop_broadcast:"⏹️ Завершить эфир",
-    tab_lives:"Эфиры", tab_wallet:"Кошелёк", tab_profile:"Профиль"
+    tab_lives:"Эфиры", tab_wallet:"Кошелёк", tab_profile:"Профиль",
+    viewers_suffix:"смотрят", nobody_live:"Сейчас никто не в эфире. Загляните позже!", loading_text:"Загрузка...", video_room_label:"Видеокомната", audio_room_label:"Аудиокомната", go_live_btn:"🔴 Выйти в эфир", status_you_are_live:"Вы сейчас в эфире.", status_you_are_not_live:"Вы не в эфире.", room_open_error:"Не удалось открыть вашу комнату, попробуйте снова.", no_packages:"Для вашей страны пока нет доступных пакетов.", loading_packages:"Загрузка пакетов...", order_sent_msg:"Заказ отправлен! Как только оплата подтвердится, монеты появятся в вашем кошельке.", btn_equip:"Надеть", btn_equipped:"Надето", btn_buy_generic:"Купить", login_error_msg:"Неверный email или пароль.", name_required_msg:"Имя обязательно.", age_required_msg:"Вам должно быть 18 лет или больше для регистрации.", password_min_msg:"Пароль должен содержать не менее 8 символов.", account_created_msg:"Аккаунт создан! Проверьте почту для подтверждения перед входом.", account_blocked_msg:"Этот аккаунт заблокирован администратором.", profile_load_error_msg:"Не удалось загрузить ваш профиль.", photo_approved_msg:"✅ Фото одобрено! Теперь вы можете выйти в эфир.", bank_saved_msg:"Банковские данные надёжно сохранены в вашем профиле.", confirm_age_policy_msg:"Подтвердите, что вам больше 18 лет, и примите Политику конфиденциальности, чтобы продолжить.", in_room_suffix:"в комнате", btn_view_my_broadcast:"📡 Смотреть мою трансляцию", broadcast_eyebrow:"Прямой эфир", my_album_eyebrow:"Мой альбом (до 5 фото)", my_album_sub:"Эти фото видит любой мужчина, который откроет ваш профиль.", earnings_eyebrow:"Ваш уровень заработка", earnings_sub:"Вы получаете оплату автоматически и повышаете уровень по мере накопления чистого заработка от подарков.", per_hour_live:"за час эфира", level_label:"уровень", change_photo_label:"Сменить фото", err_image_only:"Пожалуйста, загружайте только файлы изображений.", btn_continue:"Продолжить", no_purchases_yet:"Пока нет покупок.", no_history_yet:"Пока нет операций.", package_not_found:"Пакет не найден.", face_verified_badge:"Лицо подтверждено", verification_pending_badge:"Проверка на рассмотрении", photo_pending_msg:"⏳ Ваше фото на проверке. Вы сможете выйти в эфир, как только администратор одобрит его.", photo_rejected_msg:"❌ Это фото отклонено администратором. Выберите другое фото, чтобы продолжить.", change_photo_anytime:"Вы можете сменить фото в любое время."
   },
   de: {
     welcome_eyebrow:"Willkommen", welcome_title:"Livestreams und Geschenke,<br>alles in einer App.",
@@ -1250,7 +1278,8 @@ const I18N = {
     btn_settings:"⚙️ Einstellungen", settings_title:"Einstellungen", settings_language:"Sprache",
     btn_logout:"Abmelden / Profil wechseln",
     broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Stream beenden",
-    tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profil"
+    tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profil",
+    viewers_suffix:"schauen zu", nobody_live:"Gerade ist niemand live. Schau später wieder vorbei!", loading_text:"Wird geladen...", video_room_label:"Video-Raum", audio_room_label:"Audio-Raum", go_live_btn:"🔴 Live gehen", status_you_are_live:"Du bist gerade live.", status_you_are_not_live:"Du bist nicht live.", room_open_error:"Dein Raum konnte nicht geöffnet werden, versuche es erneut.", no_packages:"Für dein Land sind noch keine Pakete verfügbar.", loading_packages:"Pakete werden geladen...", order_sent_msg:"Bestellung gesendet! Sobald die Zahlung bestätigt ist, landen die Münzen in deiner Brieftasche.", btn_equip:"Ausrüsten", btn_equipped:"Ausgerüstet", btn_buy_generic:"Kaufen", login_error_msg:"Falsche E-Mail oder falsches Passwort.", name_required_msg:"Name ist erforderlich.", age_required_msg:"Du musst mindestens 18 Jahre alt sein, um dich anzumelden.", password_min_msg:"Das Passwort muss mindestens 8 Zeichen haben.", account_created_msg:"Konto erstellt! Bestätige deine E-Mail, bevor du dich anmeldest.", account_blocked_msg:"Dieses Konto wurde vom Administrator gesperrt.", profile_load_error_msg:"Dein Profil konnte nicht geladen werden.", photo_approved_msg:"✅ Foto genehmigt! Du kannst jetzt live gehen.", bank_saved_msg:"Bankdaten sicher in deinem Profil gespeichert.", confirm_age_policy_msg:"Bestätige, dass du über 18 bist, und akzeptiere die Datenschutzrichtlinie, um fortzufahren.", in_room_suffix:"im Raum", btn_view_my_broadcast:"📡 Meine Übertragung ansehen", broadcast_eyebrow:"Live-Übertragung", my_album_eyebrow:"Mein Album (bis zu 5 Fotos)", my_album_sub:"Diese Fotos werden jedem Mann angezeigt, der auf dein Profil klickt.", earnings_eyebrow:"Dein Verdienstlevel", earnings_sub:"Du wirst automatisch bezahlt und steigst im Level auf, während du Nettoeinnahmen aus Geschenken ansammelst.", per_hour_live:"pro Stunde live", level_label:"Level", change_photo_label:"Foto ändern", err_image_only:"Bitte lade nur Bilddateien hoch.", btn_continue:"Weiter", no_purchases_yet:"Noch keine Käufe.", no_history_yet:"Noch keine Aktivität.", package_not_found:"Paket nicht gefunden.", face_verified_badge:"Gesicht verifiziert", verification_pending_badge:"Verifizierung ausstehend", photo_pending_msg:"⏳ Dein Foto wird geprüft. Du kannst live gehen, sobald es vom Administrator genehmigt wurde.", photo_rejected_msg:"❌ Dieses Foto wurde vom Administrator abgelehnt. Wähle ein anderes Foto, um fortzufahren.", change_photo_anytime:"Du kannst dein Foto jederzeit ändern."
   },
   it: {
     welcome_eyebrow:"Benvenuto/a", welcome_title:"Live e regali,<br>tutto in un'unica app.",
@@ -1286,7 +1315,8 @@ const I18N = {
     btn_settings:"⚙️ Impostazioni", settings_title:"Impostazioni", settings_language:"Lingua",
     btn_logout:"Esci / cambia profilo",
     broadcast_title:"IN DIRETTA", btn_stop_broadcast:"⏹️ Termina trasmissione",
-    tab_lives:"Live", tab_wallet:"Portafoglio", tab_profile:"Profilo"
+    tab_lives:"Live", tab_wallet:"Portafoglio", tab_profile:"Profilo",
+    viewers_suffix:"in visione", nobody_live:"Nessuno è in diretta ora. Torna più tardi!", loading_text:"Caricamento...", video_room_label:"Stanza Video", audio_room_label:"Stanza Audio", go_live_btn:"🔴 Vai in diretta", status_you_are_live:"Sei in diretta ora.", status_you_are_not_live:"Non sei in diretta.", room_open_error:"Impossibile aprire la tua stanza, riprova.", no_packages:"Nessun pacchetto disponibile per il tuo paese al momento.", loading_packages:"Caricamento pacchetti...", order_sent_msg:"Ordine inviato! Non appena il pagamento sarà confermato, le monete arriveranno nel tuo portafoglio.", btn_equip:"Equipaggia", btn_equipped:"Equipaggiato", btn_buy_generic:"Compra", login_error_msg:"Email o password errati.", name_required_msg:"Il nome è obbligatorio.", age_required_msg:"Devi avere almeno 18 anni per registrarti.", password_min_msg:"La password deve contenere almeno 8 caratteri.", account_created_msg:"Account creato! Controlla la tua email per confermare prima di accedere.", account_blocked_msg:"Questo account è stato bloccato dall'amministratore.", profile_load_error_msg:"Impossibile caricare il tuo profilo.", photo_approved_msg:"✅ Foto approvata! Ora puoi andare in diretta.", bank_saved_msg:"Dati bancari salvati in modo sicuro nel tuo profilo.", confirm_age_policy_msg:"Conferma di avere più di 18 anni e accetta l'Informativa sulla Privacy per continuare.", in_room_suffix:"nella stanza", btn_view_my_broadcast:"📡 Vedi la mia diretta", broadcast_eyebrow:"Diretta streaming", my_album_eyebrow:"Il mio album (fino a 5 foto)", my_album_sub:"Queste foto sono visibili a qualsiasi uomo che clicchi sul tuo profilo.", earnings_eyebrow:"Il tuo livello di guadagno", earnings_sub:"Vieni pagata automaticamente e sali di livello accumulando guadagni netti dai regali.", per_hour_live:"all'ora in diretta", level_label:"livello", change_photo_label:"Cambia foto", err_image_only:"Carica solo file immagine.", btn_continue:"Continua", no_purchases_yet:"Ancora nessun acquisto.", no_history_yet:"Ancora nessuna attività.", package_not_found:"Pacchetto non trovato.", face_verified_badge:"Volto verificato", verification_pending_badge:"Verifica in corso", photo_pending_msg:"⏳ La tua foto è in fase di revisione. Potrai andare in diretta non appena sarà approvata dall'amministratore.", photo_rejected_msg:"❌ Questa foto è stata rifiutata dall'amministratore. Scegli un'altra foto per continuare.", change_photo_anytime:"Puoi cambiare la tua foto quando vuoi."
   },
   ja: {
     welcome_eyebrow:"ようこそ", welcome_title:"ライブ配信とギフト、<br>すべてが1つのアプリに。",
@@ -1322,7 +1352,8 @@ const I18N = {
     btn_settings:"⚙️ 設定", settings_title:"設定", settings_language:"言語",
     btn_logout:"ログアウト / プロフィールを切り替え",
     broadcast_title:"ライブ中", btn_stop_broadcast:"⏹️ 配信を終了",
-    tab_lives:"ライブ", tab_wallet:"ウォレット", tab_profile:"プロフィール"
+    tab_lives:"ライブ", tab_wallet:"ウォレット", tab_profile:"プロフィール",
+    viewers_suffix:"視聴中", nobody_live:"現在誰もライブ配信していません。またあとで見てね！", loading_text:"読み込み中...", video_room_label:"ビデオルーム", audio_room_label:"オーディオルーム", go_live_btn:"🔴 ライブ配信を始める", status_you_are_live:"現在ライブ配信中です。", status_you_are_not_live:"ライブ配信していません。", room_open_error:"ルームを開けませんでした。もう一度お試しください。", no_packages:"お住まいの国向けのパッケージはまだありません。", loading_packages:"パッケージを読み込み中...", order_sent_msg:"注文を送信しました！お支払いが確認され次第、コインがウォレットに届きます。", btn_equip:"装備する", btn_equipped:"装備済み", btn_buy_generic:"購入", login_error_msg:"メールアドレスまたはパスワードが正しくありません。", name_required_msg:"名前は必須です。", age_required_msg:"登録するには18歳以上である必要があります。", password_min_msg:"パスワードは8文字以上である必要があります。", account_created_msg:"アカウントが作成されました！ログイン前にメールを確認してください。", account_blocked_msg:"このアカウントは管理者によりブロックされています。", profile_load_error_msg:"プロフィールを読み込めませんでした。", photo_approved_msg:"✅ 写真が承認されました！ライブ配信を開始できます。", bank_saved_msg:"銀行情報がプロフィールに安全に保存されました。", confirm_age_policy_msg:"18歳以上であることを確認し、プライバシーポリシーに同意して続行してください。", in_room_suffix:"ルーム内", btn_view_my_broadcast:"📡 自分の配信を見る", broadcast_eyebrow:"ライブ配信", my_album_eyebrow:"マイアルバム（最大5枚）", my_album_sub:"これらの写真は、あなたのプロフィールをクリックした男性に表示されます。", earnings_eyebrow:"あなたの収益レベル", earnings_sub:"ギフトからの純利益が貯まると自動的に支払われ、レベルが上がります。", per_hour_live:"ライブ1時間あたり", level_label:"レベル", change_photo_label:"写真を変更", err_image_only:"画像ファイルのみアップロードしてください。", btn_continue:"続ける", no_purchases_yet:"まだ購入はありません。", no_history_yet:"まだ履歴はありません。", package_not_found:"パッケージが見つかりません。", face_verified_badge:"顔認証済み", verification_pending_badge:"認証待ち", photo_pending_msg:"⏳ 写真は審査中です。管理者の承認後にライブ配信できます。", photo_rejected_msg:"❌ この写真は管理者により却下されました。続けるには別の写真を選んでください。", change_photo_anytime:"写真はいつでも変更できます。"
   },
   ko: {
     welcome_eyebrow:"환영합니다", welcome_title:"라이브 방송과 선물,<br>하나의 앱에서 모두.",
@@ -1358,7 +1389,8 @@ const I18N = {
     btn_settings:"⚙️ 설정", settings_title:"설정", settings_language:"언어",
     btn_logout:"로그아웃 / 프로필 전환",
     broadcast_title:"라이브", btn_stop_broadcast:"⏹️ 방송 종료",
-    tab_lives:"라이브", tab_wallet:"지갑", tab_profile:"프로필"
+    tab_lives:"라이브", tab_wallet:"지갑", tab_profile:"프로필",
+    viewers_suffix:"시청 중", nobody_live:"지금은 아무도 라이브 방송을 하고 있지 않아요. 나중에 다시 확인해 주세요!", loading_text:"로딩 중...", video_room_label:"비디오룸", audio_room_label:"오디오룸", go_live_btn:"🔴 라이브 시작", status_you_are_live:"지금 라이브 방송 중입니다.", status_you_are_not_live:"라이브 방송 중이 아닙니다.", room_open_error:"방을 열 수 없습니다. 다시 시도해 주세요.", no_packages:"아직 회원님 국가에 사용 가능한 패키지가 없습니다.", loading_packages:"패키지 불러오는 중...", order_sent_msg:"주문이 전송되었습니다! 결제가 확인되는 즉시 코인이 지갑에 도착합니다.", btn_equip:"장착", btn_equipped:"장착됨", btn_buy_generic:"구매", login_error_msg:"이메일 또는 비밀번호가 올바르지 않습니다.", name_required_msg:"이름은 필수입니다.", age_required_msg:"가입하려면 18세 이상이어야 합니다.", password_min_msg:"비밀번호는 최소 8자 이상이어야 합니다.", account_created_msg:"계정이 생성되었습니다! 로그인하기 전에 이메일을 확인해 주세요.", account_blocked_msg:"이 계정은 관리자에 의해 차단되었습니다.", profile_load_error_msg:"프로필을 불러올 수 없습니다.", photo_approved_msg:"✅ 사진이 승인되었습니다! 이제 라이브 방송을 시작할 수 있습니다.", bank_saved_msg:"은행 정보가 프로필에 안전하게 저장되었습니다.", confirm_age_policy_msg:"계속하려면 18세 이상임을 확인하고 개인정보 처리방침에 동의해 주세요.", in_room_suffix:"방 안", btn_view_my_broadcast:"📡 내 방송 보기", broadcast_eyebrow:"라이브 방송", my_album_eyebrow:"내 앨범 (최대 5장)", my_album_sub:"이 사진은 회원님 프로필을 클릭하는 모든 남성에게 표시됩니다.", earnings_eyebrow:"수익 레벨", earnings_sub:"선물로 얻은 순수익이 쌓이면 자동으로 지급되고 레벨이 올라갑니다.", per_hour_live:"라이브 시간당", level_label:"레벨", change_photo_label:"사진 변경", err_image_only:"이미지 파일만 업로드해 주세요.", btn_continue:"계속", no_purchases_yet:"아직 구매 내역이 없습니다.", no_history_yet:"아직 내역이 없습니다.", package_not_found:"패키지를 찾을 수 없습니다.", face_verified_badge:"얼굴 인증됨", verification_pending_badge:"인증 대기 중", photo_pending_msg:"⏳ 사진이 검토 중입니다. 관리자가 승인하면 라이브 방송을 시작할 수 있습니다.", photo_rejected_msg:"❌ 이 사진은 관리자에 의해 거부되었습니다. 계속하려면 다른 사진을 선택하세요.", change_photo_anytime:"사진은 언제든지 변경할 수 있습니다."
   },
   tr: {
     welcome_eyebrow:"Hoş geldin", welcome_title:"Canlı yayınlar ve hediyeler,<br>hepsi tek bir uygulamada.",
@@ -1394,7 +1426,8 @@ const I18N = {
     btn_settings:"⚙️ Ayarlar", settings_title:"Ayarlar", settings_language:"Dil",
     btn_logout:"Çıkış yap / profil değiştir",
     broadcast_title:"CANLI", btn_stop_broadcast:"⏹️ Yayını sonlandır",
-    tab_lives:"Canlılar", tab_wallet:"Cüzdan", tab_profile:"Profil"
+    tab_lives:"Canlılar", tab_wallet:"Cüzdan", tab_profile:"Profil",
+    viewers_suffix:"izliyor", nobody_live:"Şu anda kimse canlı yayında değil. Daha sonra tekrar kontrol edin!", loading_text:"Yükleniyor...", video_room_label:"Video Odası", audio_room_label:"Ses Odası", go_live_btn:"🔴 Canlı yayına geç", status_you_are_live:"Şu anda canlı yayındasın.", status_you_are_not_live:"Canlı yayında değilsin.", room_open_error:"Odan açılamadı, tekrar dene.", no_packages:"Ülkeniz için henüz paket bulunmuyor.", loading_packages:"Paketler yükleniyor...", order_sent_msg:"Sipariş gönderildi! Ödeme onaylanır onaylanmaz jetonlar cüzdanına düşecek.", btn_equip:"Kuşan", btn_equipped:"Kuşanıldı", btn_buy_generic:"Satın al", login_error_msg:"E-posta veya şifre hatalı.", name_required_msg:"İsim zorunludur.", age_required_msg:"Kayıt olmak için 18 yaşında veya daha büyük olmalısınız.", password_min_msg:"Şifre en az 8 karakter olmalıdır.", account_created_msg:"Hesap oluşturuldu! Giriş yapmadan önce e-postanızı onaylayın.", account_blocked_msg:"Bu hesap yönetici tarafından engellendi.", profile_load_error_msg:"Profiliniz yüklenemedi.", photo_approved_msg:"✅ Fotoğraf onaylandı! Artık canlı yayına geçebilirsiniz.", bank_saved_msg:"Banka bilgileri profilinize güvenli şekilde kaydedildi.", confirm_age_policy_msg:"Devam etmek için 18 yaşından büyük olduğunuzu onaylayın ve Gizlilik Politikasını kabul edin.", in_room_suffix:"odada", btn_view_my_broadcast:"📡 Yayınımı görüntüle", broadcast_eyebrow:"Canlı yayın", my_album_eyebrow:"Albümüm (5 fotoğrafa kadar)", my_album_sub:"Bu fotoğraflar profilinize tıklayan her erkeğe gösterilir.", earnings_eyebrow:"Kazanç seviyeniz", earnings_sub:"Hediyelerden elde ettiğiniz net kazanç biriktikçe otomatik olarak ödeme alır ve seviye atlarsınız.", per_hour_live:"canlı saat başına", level_label:"seviye", change_photo_label:"Fotoğrafı değiştir", err_image_only:"Lütfen yalnızca resim dosyası yükleyin.", btn_continue:"Devam et", no_purchases_yet:"Henüz satın alma yok.", no_history_yet:"Henüz hareket yok.", package_not_found:"Paket bulunamadı.", face_verified_badge:"Yüz doğrulandı", verification_pending_badge:"Doğrulama bekliyor", photo_pending_msg:"⏳ Fotoğrafınız inceleniyor. Yönetici onayladıktan sonra canlı yayına geçebilirsiniz.", photo_rejected_msg:"❌ Bu fotoğraf yönetici tarafından reddedildi. Devam etmek için başka bir fotoğraf seçin.", change_photo_anytime:"Fotoğrafınızı istediğiniz zaman değiştirebilirsiniz."
   },
   pl: {
     welcome_eyebrow:"Witamy", welcome_title:"Transmisje na żywo i prezenty,<br>wszystko w jednej aplikacji.",
@@ -1430,7 +1463,8 @@ const I18N = {
     btn_settings:"⚙️ Ustawienia", settings_title:"Ustawienia", settings_language:"Język",
     btn_logout:"Wyloguj się / zmień profil",
     broadcast_title:"NA ŻYWO", btn_stop_broadcast:"⏹️ Zakończ transmisję",
-    tab_lives:"Live", tab_wallet:"Portfel", tab_profile:"Profil"
+    tab_lives:"Live", tab_wallet:"Portfel", tab_profile:"Profil",
+    viewers_suffix:"ogląda", nobody_live:"Nikt teraz nie transmituje na żywo. Zajrzyj tu później!", loading_text:"Ładowanie...", video_room_label:"Pokój wideo", audio_room_label:"Pokój audio", go_live_btn:"🔴 Rozpocznij live", status_you_are_live:"Jesteś teraz na żywo.", status_you_are_not_live:"Nie jesteś na żywo.", room_open_error:"Nie udało się otworzyć twojego pokoju, spróbuj ponownie.", no_packages:"Brak dostępnych pakietów dla twojego kraju.", loading_packages:"Ładowanie pakietów...", order_sent_msg:"Zamówienie wysłane! Gdy tylko płatność zostanie potwierdzona, monety trafią do twojego portfela.", btn_equip:"Załóż", btn_equipped:"Założone", btn_buy_generic:"Kup", login_error_msg:"Nieprawidłowy e-mail lub hasło.", name_required_msg:"Imię jest wymagane.", age_required_msg:"Musisz mieć co najmniej 18 lat, aby się zarejestrować.", password_min_msg:"Hasło musi mieć co najmniej 8 znaków.", account_created_msg:"Konto utworzone! Sprawdź e-mail, aby potwierdzić przed zalogowaniem.", account_blocked_msg:"To konto zostało zablokowane przez administratora.", profile_load_error_msg:"Nie udało się załadować twojego profilu.", photo_approved_msg:"✅ Zdjęcie zatwierdzone! Możesz teraz rozpocząć transmisję na żywo.", bank_saved_msg:"Dane bankowe zapisane bezpiecznie w twoim profilu.", confirm_age_policy_msg:"Potwierdź, że masz ukończone 18 lat i zaakceptuj Politykę prywatności, aby kontynuować.", in_room_suffix:"w pokoju", btn_view_my_broadcast:"📡 Zobacz moją transmisję", broadcast_eyebrow:"Transmisja na żywo", my_album_eyebrow:"Mój album (do 5 zdjęć)", my_album_sub:"Te zdjęcia widzi każdy mężczyzna, który kliknie twój profil.", earnings_eyebrow:"Twój poziom zarobków", earnings_sub:"Otrzymujesz wypłatę automatycznie i awansujesz na wyższy poziom w miarę gromadzenia zarobków netto z prezentów.", per_hour_live:"za godzinę na żywo", level_label:"poziom", change_photo_label:"Zmień zdjęcie", err_image_only:"Prześlij tylko pliki graficzne.", btn_continue:"Kontynuuj", no_purchases_yet:"Brak zakupów.", no_history_yet:"Brak historii.", package_not_found:"Nie znaleziono pakietu.", face_verified_badge:"Twarz zweryfikowana", verification_pending_badge:"Weryfikacja w toku", photo_pending_msg:"⏳ Twoje zdjęcie jest sprawdzane. Będziesz mogła nadawać na żywo po zatwierdzeniu przez administratora.", photo_rejected_msg:"❌ To zdjęcie zostało odrzucone przez administratora. Wybierz inne zdjęcie, aby kontynuować.", change_photo_anytime:"Możesz zmienić zdjęcie w dowolnym momencie."
   },
   nl: {
     welcome_eyebrow:"Welkom", welcome_title:"Livestreams en cadeaus,<br>alles in één app.",
@@ -1466,7 +1500,8 @@ const I18N = {
     btn_settings:"⚙️ Instellingen", settings_title:"Instellingen", settings_language:"Taal",
     btn_logout:"Uitloggen / profiel wisselen",
     broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Stream beëindigen",
-    tab_lives:"Lives", tab_wallet:"Portemonnee", tab_profile:"Profiel"
+    tab_lives:"Lives", tab_wallet:"Portemonnee", tab_profile:"Profiel",
+    viewers_suffix:"kijken", nobody_live:"Niemand is nu live. Kom later terug!", loading_text:"Laden...", video_room_label:"Videoruimte", audio_room_label:"Audioruimte", go_live_btn:"🔴 Ga live", status_you_are_live:"Je bent nu live.", status_you_are_not_live:"Je bent niet live.", room_open_error:"Kon je kamer niet openen, probeer het opnieuw.", no_packages:"Nog geen pakketten beschikbaar voor jouw land.", loading_packages:"Pakketten laden...", order_sent_msg:"Bestelling verzonden! Zodra de betaling is bevestigd, komen de munten in je portemonnee.", btn_equip:"Uitrusten", btn_equipped:"Uitgerust", btn_buy_generic:"Kopen", login_error_msg:"Onjuist e-mailadres of wachtwoord.", name_required_msg:"Naam is verplicht.", age_required_msg:"Je moet 18 jaar of ouder zijn om je aan te melden.", password_min_msg:"Wachtwoord moet minstens 8 tekens bevatten.", account_created_msg:"Account aangemaakt! Controleer je e-mail om te bevestigen voordat je inlogt.", account_blocked_msg:"Dit account is geblokkeerd door de beheerder.", profile_load_error_msg:"Kon je profiel niet laden.", photo_approved_msg:"✅ Foto goedgekeurd! Je kunt nu live gaan.", bank_saved_msg:"Bankgegevens veilig opgeslagen in je profiel.", confirm_age_policy_msg:"Bevestig dat je ouder bent dan 18 en accepteer het Privacybeleid om door te gaan.", in_room_suffix:"in de ruimte", btn_view_my_broadcast:"📡 Bekijk mijn uitzending", broadcast_eyebrow:"Live-uitzending", my_album_eyebrow:"Mijn album (tot 5 foto's)", my_album_sub:"Deze foto's zijn zichtbaar voor elke man die op jouw profiel klikt.", earnings_eyebrow:"Jouw verdienniveau", earnings_sub:"Je wordt automatisch uitbetaald en stijgt in niveau naarmate je netto inkomsten uit cadeaus opbouwt.", per_hour_live:"per uur live", level_label:"niveau", change_photo_label:"Foto wijzigen", err_image_only:"Upload alleen afbeeldingsbestanden.", btn_continue:"Doorgaan", no_purchases_yet:"Nog geen aankopen.", no_history_yet:"Nog geen activiteit.", package_not_found:"Pakket niet gevonden.", face_verified_badge:"Gezicht geverifieerd", verification_pending_badge:"Verificatie in behandeling", photo_pending_msg:"⏳ Je foto wordt beoordeeld. Je kunt live gaan zodra deze is goedgekeurd door de beheerder.", photo_rejected_msg:"❌ Deze foto is afgekeurd door de beheerder. Kies een andere foto om door te gaan.", change_photo_anytime:"Je kunt je foto op elk moment wijzigen."
   },
   th: {
     welcome_eyebrow:"ยินดีต้อนรับ", welcome_title:"ไลฟ์สดและของขวัญ<br>ครบจบในแอปเดียว",
@@ -1502,7 +1537,8 @@ const I18N = {
     btn_settings:"⚙️ การตั้งค่า", settings_title:"การตั้งค่า", settings_language:"ภาษา",
     btn_logout:"ออกจากระบบ / เปลี่ยนโปรไฟล์",
     broadcast_title:"ไลฟ์สด", btn_stop_broadcast:"⏹️ สิ้นสุดการไลฟ์สด",
-    tab_lives:"ไลฟ์สด", tab_wallet:"กระเป๋าเงิน", tab_profile:"โปรไฟล์"
+    tab_lives:"ไลฟ์สด", tab_wallet:"กระเป๋าเงิน", tab_profile:"โปรไฟล์",
+    viewers_suffix:"กำลังดู", nobody_live:"ยังไม่มีใครไลฟ์อยู่ตอนนี้ กลับมาดูใหม่เร็วๆ นี้!", loading_text:"กำลังโหลด...", video_room_label:"ห้องวิดีโอ", audio_room_label:"ห้องเสียง", go_live_btn:"🔴 เริ่มไลฟ์", status_you_are_live:"คุณกำลังไลฟ์อยู่ตอนนี้", status_you_are_not_live:"คุณไม่ได้ไลฟ์อยู่", room_open_error:"ไม่สามารถเปิดห้องของคุณได้ ลองอีกครั้ง", no_packages:"ยังไม่มีแพ็กเกจสำหรับประเทศของคุณ", loading_packages:"กำลังโหลดแพ็กเกจ...", order_sent_msg:"ส่งคำสั่งซื้อแล้ว! เมื่อยืนยันการชำระเงิน เหรียญจะเข้ากระเป๋าเงินของคุณ", btn_equip:"สวมใส่", btn_equipped:"สวมใส่แล้ว", btn_buy_generic:"ซื้อ", login_error_msg:"อีเมลหรือรหัสผ่านไม่ถูกต้อง", name_required_msg:"กรุณากรอกชื่อ", age_required_msg:"คุณต้องมีอายุ 18 ปีขึ้นไปจึงจะสมัครได้", password_min_msg:"รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร", account_created_msg:"สร้างบัญชีแล้ว! ตรวจสอบอีเมลเพื่อยืนยันก่อนเข้าสู่ระบบ", account_blocked_msg:"บัญชีนี้ถูกบล็อกโดยผู้ดูแลระบบ", profile_load_error_msg:"ไม่สามารถโหลดโปรไฟล์ของคุณได้", photo_approved_msg:"✅ อนุมัติรูปภาพแล้ว! ตอนนี้คุณสามารถไลฟ์ได้", bank_saved_msg:"บันทึกข้อมูลธนาคารในโปรไฟล์ของคุณอย่างปลอดภัยแล้ว", confirm_age_policy_msg:"ยืนยันว่าคุณอายุเกิน 18 ปีและยอมรับนโยบายความเป็นส่วนตัวเพื่อดำเนินการต่อ", in_room_suffix:"ในห้อง", btn_view_my_broadcast:"📡 ดูการถ่ายทอดของฉัน", broadcast_eyebrow:"การถ่ายทอดสด", my_album_eyebrow:"อัลบั้มของฉัน (สูงสุด 5 รูป)", my_album_sub:"รูปเหล่านี้จะแสดงให้ผู้ชายทุกคนที่คลิกโปรไฟล์ของคุณเห็น", earnings_eyebrow:"ระดับรายได้ของคุณ", earnings_sub:"คุณจะได้รับเงินโดยอัตโนมัติและเลื่อนระดับเมื่อสะสมรายได้สุทธิจากของขวัญ", per_hour_live:"ต่อชั่วโมงไลฟ์", level_label:"ระดับ", change_photo_label:"เปลี่ยนรูปภาพ", err_image_only:"กรุณาอัปโหลดเฉพาะไฟล์รูปภาพ", btn_continue:"ดำเนินการต่อ", no_purchases_yet:"ยังไม่มีการซื้อ", no_history_yet:"ยังไม่มีความเคลื่อนไหว", package_not_found:"ไม่พบแพ็กเกจ", face_verified_badge:"ยืนยันใบหน้าแล้ว", verification_pending_badge:"รอการยืนยัน", photo_pending_msg:"⏳ รูปภาพของคุณกำลังถูกตรวจสอบ คุณจะสามารถไลฟ์ได้เมื่อผู้ดูแลระบบอนุมัติแล้ว", photo_rejected_msg:"❌ รูปนี้ถูกปฏิเสธโดยผู้ดูแลระบบ กรุณาเลือกรูปอื่นเพื่อดำเนินการต่อ", change_photo_anytime:"คุณสามารถเปลี่ยนรูปภาพได้ทุกเมื่อ"
   },
   bn: {
     welcome_eyebrow:"স্বাগতম", welcome_title:"লাইভ ও উপহার,<br>সব একটি অ্যাপেই।",
@@ -1538,7 +1574,8 @@ const I18N = {
     btn_settings:"⚙️ সেটিংস", settings_title:"সেটিংস", settings_language:"ভাষা",
     btn_logout:"লগআউট / প্রোফাইল পরিবর্তন করুন",
     broadcast_title:"লাইভ", btn_stop_broadcast:"⏹️ সম্প্রচার শেষ করুন",
-    tab_lives:"লাইভ", tab_wallet:"ওয়ালেট", tab_profile:"প্রোফাইল"
+    tab_lives:"লাইভ", tab_wallet:"ওয়ালেট", tab_profile:"প্রোফাইল",
+    viewers_suffix:"দেখছেন", nobody_live:"এখন কেউ লাইভ নেই। একটু পরে আবার দেখুন!", loading_text:"লোড হচ্ছে...", video_room_label:"ভিডিও রুম", audio_room_label:"অডিও রুম", go_live_btn:"🔴 লাইভ যান", status_you_are_live:"আপনি এখন লাইভ আছেন।", status_you_are_not_live:"আপনি লাইভ নেই।", room_open_error:"আপনার রুম খোলা যায়নি, আবার চেষ্টা করুন।", no_packages:"আপনার দেশের জন্য এখনো কোনো প্যাকেজ নেই।", loading_packages:"প্যাকেজ লোড হচ্ছে...", order_sent_msg:"অর্ডার পাঠানো হয়েছে! পেমেন্ট নিশ্চিত হলেই কয়েন আপনার ওয়ালেটে চলে আসবে।", btn_equip:"পরুন", btn_equipped:"পরা হয়েছে", btn_buy_generic:"কিনুন", login_error_msg:"ইমেইল বা পাসওয়ার্ড ভুল।", name_required_msg:"নাম আবশ্যক।", age_required_msg:"নিবন্ধন করতে আপনার বয়স ১৮ বা তার বেশি হতে হবে।", password_min_msg:"পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।", account_created_msg:"অ্যাকাউন্ট তৈরি হয়েছে! লগইন করার আগে নিশ্চিত করতে আপনার ইমেইল দেখুন।", account_blocked_msg:"এই অ্যাকাউন্টটি প্রশাসক দ্বারা ব্লক করা হয়েছে।", profile_load_error_msg:"আপনার প্রোফাইল লোড করা যায়নি।", photo_approved_msg:"✅ ছবি অনুমোদিত হয়েছে! আপনি এখন লাইভ যেতে পারেন।", bank_saved_msg:"ব্যাংক তথ্য নিরাপদে আপনার প্রোফাইলে সংরক্ষিত হয়েছে।", confirm_age_policy_msg:"চালিয়ে যেতে নিশ্চিত করুন যে আপনার বয়স ১৮ এর বেশি এবং গোপনীয়তা নীতি গ্রহণ করুন।", in_room_suffix:"রুমে", btn_view_my_broadcast:"📡 আমার সম্প্রচার দেখুন", broadcast_eyebrow:"লাইভ সম্প্রচার", my_album_eyebrow:"আমার অ্যালবাম (৫টি পর্যন্ত ছবি)", my_album_sub:"আপনার প্রোফাইলে ক্লিক করা যেকোনো পুরুষের কাছে এই ছবিগুলো দেখা যাবে।", earnings_eyebrow:"আপনার আয়ের স্তর", earnings_sub:"উপহার থেকে নিট আয় জমা হওয়ার সাথে সাথে আপনি স্বয়ংক্রিয়ভাবে অর্থ পাবেন এবং স্তর বাড়বে।", per_hour_live:"প্রতি ঘণ্টা লাইভ", level_label:"স্তর", change_photo_label:"ছবি পরিবর্তন করুন", err_image_only:"শুধুমাত্র ছবি ফাইল আপলোড করুন।", btn_continue:"চালিয়ে যান", no_purchases_yet:"এখনো কোনো ক্রয় নেই।", no_history_yet:"এখনো কোনো কার্যকলাপ নেই।", package_not_found:"প্যাকেজ পাওয়া যায়নি।", face_verified_badge:"মুখ যাচাই করা হয়েছে", verification_pending_badge:"যাচাইকরণ মুলতুবি", photo_pending_msg:"⏳ আপনার ছবি পর্যালোচনাধীন। প্রশাসক অনুমোদন করলেই আপনি লাইভ যেতে পারবেন।", photo_rejected_msg:"❌ এই ছবিটি প্রশাসক দ্বারা প্রত্যাখ্যান করা হয়েছে। চালিয়ে যেতে অন্য ছবি বেছে নিন।", change_photo_anytime:"আপনি যেকোনো সময় আপনার ছবি পরিবর্তন করতে পারেন।"
   },
   fil: {
     welcome_eyebrow:"Maligayang pagdating", welcome_title:"Mga live stream at regalo,<br>lahat nasa isang app.",
@@ -1574,7 +1611,8 @@ const I18N = {
     btn_settings:"⚙️ Mga Setting", settings_title:"Mga Setting", settings_language:"Wika",
     btn_logout:"Mag-logout / magpalit ng profile",
     broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Itigil ang live",
-    tab_lives:"Mga Live", tab_wallet:"Wallet", tab_profile:"Profile"
+    tab_lives:"Mga Live", tab_wallet:"Wallet", tab_profile:"Profile",
+    viewers_suffix:"nanonood", nobody_live:"Walang live ngayon. Bumalik ka mamaya!", loading_text:"Naglo-load...", video_room_label:"Video Room", audio_room_label:"Audio Room", go_live_btn:"🔴 Mag-live", status_you_are_live:"Live ka ngayon.", status_you_are_not_live:"Hindi ka live.", room_open_error:"Hindi mabuksan ang iyong room, subukan ulit.", no_packages:"Wala pang available na package para sa bansa mo.", loading_packages:"Nilo-load ang mga package...", order_sent_msg:"Naipadala ang order! Kapag na-confirm na ang bayad, papasok agad ang coins sa wallet mo.", btn_equip:"Isuot", btn_equipped:"Nakasuot", btn_buy_generic:"Bilhin", login_error_msg:"Mali ang email o password.", name_required_msg:"Kailangan ng pangalan.", age_required_msg:"Dapat 18 taong gulang pataas para makapag-sign up.", password_min_msg:"Kailangang 8 karakter pataas ang password.", account_created_msg:"Nagawa na ang account! I-check ang email mo para kumpirmahin bago mag-login.", account_blocked_msg:"Na-block ang account na ito ng administrator.", profile_load_error_msg:"Hindi ma-load ang iyong profile.", photo_approved_msg:"✅ Na-approve ang larawan! Pwede ka nang mag-live.", bank_saved_msg:"Ligtas na na-save ang bank details sa iyong profile.", confirm_age_policy_msg:"Kumpirmahin na ikaw ay higit sa 18 taong gulang at tanggapin ang Patakaran sa Privacy para magpatuloy.", in_room_suffix:"nasa room", btn_view_my_broadcast:"📡 Tingnan ang aking broadcast", broadcast_eyebrow:"Live broadcast", my_album_eyebrow:"Aking album (hanggang 5 larawan)", my_album_sub:"Makikita ang mga larawang ito ng sinumang lalaking mag-click sa iyong profile.", earnings_eyebrow:"Antas ng kita mo", earnings_sub:"Awtomatiko kang babayaran at tataas ang antas habang naiipon ang net na kita mo mula sa mga regalo.", per_hour_live:"bawat oras ng live", level_label:"antas", change_photo_label:"Palitan ang larawan", err_image_only:"Mag-upload lamang ng image files.", btn_continue:"Magpatuloy", no_purchases_yet:"Wala pang binili.", no_history_yet:"Wala pang aktibidad.", package_not_found:"Hindi nahanap ang package.", face_verified_badge:"Na-verify ang mukha", verification_pending_badge:"Nakabinbin ang verification", photo_pending_msg:"⏳ Sinusuri pa ang iyong larawan. Makakapag-live ka na kapag na-approve ito ng administrator.", photo_rejected_msg:"❌ Tinanggihan ng administrator ang larawang ito. Pumili ng ibang larawan para magpatuloy.", change_photo_anytime:"Puwede mong palitan ang larawan mo anumang oras."
   }
 
 };
@@ -1603,10 +1641,15 @@ function applyLanguage(lang){
   try{ localStorage.setItem("zukilive_lang", lang); }catch(e){}
 }
 
+// Busca uma chave no dicionário do idioma atual, com fallback pro português.
+function t(key){
+  return (I18N[currentLang] && I18N[currentLang][key] !== undefined) ? I18N[currentLang][key] : (I18N.pt[key] || key);
+}
+
 function setLanguage(lang){
   applyLanguage(lang);
   // Se a pessoa ainda está no cadastro, já pré-seleciona o país correspondente à bandeira escolhida.
-  const countryMap = { pt:"BR", id:"ID", hi:"IN", vi:"VN", en:"OT", es:"ES", fr:"FR", zh:"CN", ar:"SA", ru:"RU", de:"DE", it:"IT", ja:"JP", ko:"KR", tr:"TR", th:"TH", fil:"PH" };
+  const countryMap = { pt:"BR", id:"ID", hi:"IN", vi:"VN", en:"OT", es:"ES", fr:"FR", zh:"CN", ar:"SA", ru:"RU", de:"DE", it:"IT", ja:"JP", ko:"KR", tr:"TR", th:"TH", fil:"PH", nl:"NL", pl:"PL", bn:"BD" };
   const countrySelect = document.getElementById("in-country");
   if(countrySelect && countryMap[lang]) countrySelect.value = countryMap[lang];
   if(document.getElementById("scr-settings") && document.getElementById("scr-settings").style.display !== "none"){
@@ -1679,8 +1722,8 @@ let activeLive = null;
 let aiHistory = [];
 let isAdmin = false;
 
-function countryFlag(code){ return { BR:"🇧🇷", ID:"🇮🇩", IN:"🇮🇳", OT:"🌎" }[code] || "🌎"; }
-function countryName(code){ return { BR:"Brasil", ID:"Indonésia", IN:"Índia", OT:"Outro" }[code] || "Outro"; }
+function countryFlag(code){ return { BR:"🇧🇷", PT:"🇵🇹", US:"🇺🇸", GB:"🇬🇧", ES:"🇪🇸", MX:"🇲🇽", AR:"🇦🇷", CO:"🇨🇴", FR:"🇫🇷", DE:"🇩🇪", IT:"🇮🇹", ID:"🇮🇩", IN:"🇮🇳", VN:"🇻🇳", CN:"🇨🇳", JP:"🇯🇵", KR:"🇰🇷", PH:"🇵🇭", TH:"🇹🇭", PK:"🇵🇰", SA:"🇸🇦", AE:"🇦🇪", RU:"🇷🇺", NG:"🇳🇬", ZA:"🇿🇦", NL:"🇳🇱", PL:"🇵🇱", BD:"🇧🇩", OT:"🌎" }[code] || "🌎"; }
+function countryName(code){ return { BR:"Brasil", PT:"Portugal", US:"Estados Unidos", GB:"Reino Unido", ES:"Espanha", MX:"México", AR:"Argentina", CO:"Colômbia", FR:"França", DE:"Alemanha", IT:"Itália", ID:"Indonésia", IN:"Índia", VN:"Vietnã", CN:"China", JP:"Japão", KR:"Coreia do Sul", PH:"Filipinas", TH:"Tailândia", PK:"Paquistão", SA:"Arábia Saudita", AE:"Emirados Árabes Unidos", RU:"Rússia", NG:"Nigéria", ZA:"África do Sul", NL:"Países Baixos", PL:"Polônia", BD:"Bangladesh", OT:"Outro" }[code] || "Outro"; }
 function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
 
 /* Busca a configuração pública (tiers de preço) só pra exibição —
@@ -1773,14 +1816,14 @@ async function submitAuth(){
   try{
     if(authMode === "register"){
       const name = document.getElementById("in-name").value.trim();
-      if(!name) throw new Error("Nome é obrigatório.");
+      if(!name) throw new Error(t('name_required_msg'));
       const age = parseInt(document.getElementById("in-age").value) || 0;
-      if(age < 18) throw new Error("É preciso ter 18 anos ou mais para se cadastrar.");
-      if(!document.getElementById("in-age-confirm").checked) throw new Error("Confirme que é maior de 18 e aceite a Política de Privacidade para continuar.");
+      if(age < 18) throw new Error(t('age_required_msg'));
+      if(!document.getElementById("in-age-confirm").checked) throw new Error(t('confirm_age_policy_msg'));
       const country = document.getElementById("in-country").value;
 
       let accessPassword = null;
-      if(password.length < 8) throw new Error("A senha precisa ter pelo menos 8 caracteres.");
+      if(password.length < 8) throw new Error(t('password_min_msg'));
       if(pendingRole === "female"){
         // Guarda também como access_password, para o admin poder ver/repor no painel se ela esquecer.
         accessPassword = password;
@@ -1793,7 +1836,7 @@ async function submitAuth(){
       if(error) throw new Error(error.message);
 
       if(!data.session){
-        banner.innerHTML = '<div class="banner banner-ok">Conta criada! Verifique seu e-mail para confirmar antes de entrar.</div>';
+        banner.innerHTML = `<div class="banner banner-ok">${t('account_created_msg')}</div>`;
         submitBtn.disabled = false;
         return;
       }
@@ -1801,10 +1844,10 @@ async function submitAuth(){
       if(pendingRole === "female"){ showAppScreen("scr-face"); submitBtn.disabled = false; return; }
     } else {
       const { error } = await sb.auth.signInWithPassword({ email, password });
-      if(error) throw new Error("E-mail ou senha incorretos.");
+      if(error) throw new Error(t('login_error_msg'));
       await refreshCurrentUser();
-      if(!currentUser) throw new Error("Não foi possível carregar seu perfil.");
-      if(!currentUser.active) { await sb.auth.signOut(); throw new Error("Esta conta foi bloqueada pelo administrador."); }
+      if(!currentUser) throw new Error(t('profile_load_error_msg'));
+      if(!currentUser.active) { await sb.auth.signOut(); throw new Error(t('account_blocked_msg')); }
     }
     banner.innerHTML = "";
     enterApp();
@@ -1823,8 +1866,8 @@ function runFaceScan(){
     await sb.from("profiles").update({ verified: true }).eq("id", currentUser.id);
     currentUser.verified = true;
     document.getElementById("face-frame").textContent = "✅";
-    document.getElementById("face-status").innerHTML = '<span class="badge-ok">Rosto verificado</span>';
-    document.getElementById("face-btn").textContent = "Continuar";
+    document.getElementById("face-status").innerHTML = `<span class="badge-ok">${t('face_verified_badge')}</span>`;
+    document.getElementById("face-btn").textContent = t('btn_continue');
     document.getElementById("face-btn").disabled = false;
     document.getElementById("face-btn").onclick = ()=>{ renderPhotoThumbs(); showAppScreen("scr-photos"); };
   }, 1500);
@@ -1838,7 +1881,7 @@ async function handlePhotoUpload(input){
   banner.innerHTML = "";
   if(files.length===0) return;
   for(const file of files){
-    if(!file.type.startsWith("image/")){ banner.innerHTML = '<div class="banner banner-err">Envie apenas arquivos de imagem.</div>'; continue; }
+    if(!file.type.startsWith("image/")){ banner.innerHTML = `<div class="banner banner-err">${t('err_image_only')}</div>`; continue; }
     try{
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
       const path = `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
@@ -1860,7 +1903,7 @@ async function replaceMalePhoto(input){
   const banner = document.getElementById("avatar-banner");
   if(!file) return;
   if(!file.type.startsWith("image/")){
-    if(banner) banner.innerHTML = '<div class="banner banner-err">Envie apenas arquivos de imagem.</div>';
+    if(banner) banner.innerHTML = `<div class="banner banner-err">${t('err_image_only')}</div>`;
     return;
   }
   if(banner) banner.innerHTML = '<div class="banner">Trocando foto...</div>';
@@ -1917,7 +1960,7 @@ function renderPhotoThumbs(){
   if(btn){
     const has = (currentUser.photos||[]).length > 0;
     btn.disabled = !has;
-    btn.textContent = has ? "Continuar" : "Envie pelo menos 1 foto para continuar";
+    btn.textContent = has ? t('btn_continue') : t('photos_btn');
   }
 }
 function continueFromPhotos(){
@@ -1986,7 +2029,7 @@ async function renderHome(){
     const coverUrl = (l.cover_status === "approved" && l.cover_path) ? sb.storage.from(PHOTOS_BUCKET).getPublicUrl(l.cover_path).data.publicUrl : null;
     const thumbUrl = coverUrl || (l.photos[0] ? l.photos[0].url : null);
     const thumb = thumbUrl ? `<img src="${thumbUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">` : `<div class="avatar-glow">${l.emoji}</div>`;
-    card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${countryFlag(l.country)} ${l.name}</b><span>${viewers} assistindo</span></div>`;
+    card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> ${t('live_badge')}</div><div class="live-meta"><b>${countryFlag(l.country)} ${l.name}</b><span>${viewers} ${t('viewers_suffix')}</span></div>`;
     grid.appendChild(card);
   });
 
@@ -2011,8 +2054,8 @@ async function renderHome(){
       const thumb = room.photo_url
         ? `<img src="${room.photo_url}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
         : `<div class="avatar-glow">${isVideo ? "🎥" : "🎙️"}</div>`;
-      const badge = occupied > 0 ? `<div class="live-badge"><span class="dot"></span> AO VIVO</div>` : "";
-      card.innerHTML = `${thumb}${badge}<div class="live-meta"><b>${room.name || (isVideo ? "Sala de Vídeo" : "Sala de Áudio")}</b><span>${occupied}/${capacity} na sala</span></div>`;
+      const badge = occupied > 0 ? `<div class="live-badge"><span class="dot"></span> ${t('live_badge')}</div>` : "";
+      card.innerHTML = `${thumb}${badge}<div class="live-meta"><b>${room.name || (isVideo ? t('video_room_label') : t('audio_room_label'))}</b><span>${occupied}/${capacity} ${t('in_room_suffix')}</span></div>`;
       grid.appendChild(card);
       seatRoomCards++;
     });
@@ -2020,7 +2063,7 @@ async function renderHome(){
     // Tabelas seat_rooms/seat_room_seats ainda não acessíveis daqui — ignora silenciosamente.
   }
 
-  if(lives.length===0 && seatRoomCards===0) grid.innerHTML = '<p style="grid-column:1/-1;">Ninguém ao vivo agora. Volte daqui a pouco!</p>';
+  if(lives.length===0 && seatRoomCards===0) grid.innerHTML = `<p style="grid-column:1/-1;">${t('nobody_live')}</p>`;
 }
 
 let liveCallObject = null;
@@ -2049,7 +2092,7 @@ async function openGiftPicker(){
   document.getElementById("gift-modal-balance").textContent = fmt(currentUser.balance);
   document.getElementById("gift-modal-banner").innerHTML = "";
   const grid = document.getElementById("gift-picker-grid");
-  grid.innerHTML = "<p>Carregando...</p>";
+  grid.innerHTML = `<p>${t('loading_text')}</p>`;
   const { data: gifts, error } = await sb.from("gifts").select("*").eq("active", true).order("price",{ascending:true});
   if(error){ grid.innerHTML = `<p>${error.message}</p>`; return; }
   giftPickerData = gifts || [];
@@ -2345,7 +2388,7 @@ function sendBroadcastChat(){
 async function openLive(l){
   activeLive = l;
   document.getElementById("live-title").textContent = `${countryFlag(l.country)} ${l.name}`;
-  document.getElementById("live-sub").textContent = `${Math.floor(Math.random()*400)+30} assistindo`;
+  document.getElementById("live-sub").textContent = `${Math.floor(Math.random()*400)+30} ${t('viewers_suffix')}`;
   const avatarEl = document.getElementById("live-avatar-sm");
   const avatarUrl = (l.photos && l.photos[0]) ? l.photos[0].url : null;
   if(avatarUrl){ avatarEl.style.backgroundImage = `url(${avatarUrl})`; avatarEl.textContent = ""; }
@@ -2541,7 +2584,7 @@ async function renderWallet(){
       div.innerHTML = `<div class="l"><b>🪙 ${fmt(p.coins)} moedas</b><span>${new Date(p.created_at).toLocaleString("pt-BR")}</span></div><div class="r">${statusLabel}</div>`;
       purchaseWrap.appendChild(div);
     });
-    if(!purchases || purchases.length===0) purchaseWrap.innerHTML = '<p>Nenhuma compra ainda.</p>';
+    if(!purchases || purchases.length===0) purchaseWrap.innerHTML = `<p>${t('no_purchases_yet')}</p>`;
   }
 
   const hist = document.getElementById("wallet-history");
@@ -2554,7 +2597,7 @@ async function renderWallet(){
     div.innerHTML = `<div class="l"><b>${t.reason}</b><span>${new Date(t.created_at).toLocaleString("pt-BR")}</span></div><div class="r" style="color:${t.direction==='credit'?'var(--good)':'var(--danger)'}">${sign} ${fmt(t.amount)}</div>`;
     hist.appendChild(div);
   });
-  if(!history || history.length===0) hist.innerHTML = '<p>Nenhuma movimentação ainda.</p>';
+  if(!history || history.length===0) hist.innerHTML = `<p>${t('no_history_yet')}</p>`;
 }
 
 async function renderBuyCoins(){
@@ -2565,7 +2608,7 @@ async function renderBuyCoins(){
   banner.innerHTML = `<div style="margin:8px 0;">${methods.map(m=>`<span class="method-chip">${m}</span>`).join("")}</div>`;
 
   const grid = document.getElementById("buycoins-grid");
-  grid.innerHTML = "<p>Carregando pacotes...</p>";
+  grid.innerHTML = `<p>${t('loading_packages')}</p>`;
   const { data: packages, error } = await sb.from("coin_packages").select("*").eq("country", country).eq("active", true).order("coins",{ascending:true});
   grid.innerHTML = "";
   if(error){ grid.innerHTML = `<p>Erro ao carregar pacotes: ${error.message}</p>`; return; }
@@ -2575,18 +2618,18 @@ async function renderBuyCoins(){
     div.innerHTML = `<div class="amt">🪙 ${fmt(pk.coins)}</div><div class="price">${pk.currency} ${Number(pk.price).toFixed(2)}</div><button class="btn btn-primary btn-sm btn-block" style="margin-top:10px;" onclick="buyCoinPackage('${pk.id}')">Comprar</button>`;
     grid.appendChild(div);
   });
-  if(!packages || packages.length===0) grid.innerHTML = "<p>Nenhum pacote disponível para o seu país ainda.</p>";
+  if(!packages || packages.length===0) grid.innerHTML = `<p>${t('no_packages')}</p>`;
 }
 
 async function buyCoinPackage(packageId){
   const banner = document.getElementById("buycoins-banner");
   const { data: pk, error: pkErr } = await sb.from("coin_packages").select("*").eq("id", packageId).single();
-  if(pkErr || !pk){ banner.innerHTML += '<div class="banner banner-err">Pacote não encontrado.</div>'; return; }
+  if(pkErr || !pk){ banner.innerHTML += `<div class="banner banner-err">${t('package_not_found')}</div>`; return; }
   const { error } = await sb.from("coin_purchases").insert({
     male_id: currentUser.id, package_id: pk.id, coins: pk.coins, price: pk.price, status: "pending",
   });
   if(error){ banner.innerHTML += `<div class="banner banner-err">${error.message}</div>`; return; }
-  banner.innerHTML += '<div class="banner banner-ok">Pedido enviado! Assim que o pagamento for confirmado, as moedas caem na sua carteira.</div>';
+  banner.innerHTML += `<div class="banner banner-ok">${t('order_sent_msg')}</div>`;
 }
 
 async function saveBank(){
@@ -2598,7 +2641,7 @@ async function saveBank(){
   const { error } = await sb.from("profiles").update(bank).eq("id", currentUser.id);
   if(error){ alert("Erro ao salvar: " + error.message); return; }
   Object.assign(currentUser, bank);
-  alert("Dados bancários salvos com segurança no seu perfil.");
+  alert(t('bank_saved_msg'));
 }
 
 function renderProfile(){
@@ -2613,7 +2656,7 @@ function renderProfile(){
   document.getElementById("profile-country").textContent = `${countryFlag(currentUser.country)} ${countryName(currentUser.country)}`;
   document.getElementById("profile-gender").textContent = currentUser.gender;
   let badges = currentUser.verified
-    ? '<span class="badge-ok">Rosto verificado</span>' : '<span class="badge-pending">Verificação pendente</span>';
+    ? `<span class="badge-ok">${t('face_verified_badge')}</span>` : `<span class="badge-pending">${t('verification_pending_badge')}</span>`;
   if(currentUser.type==="female") badges += `<span class="level-chip">⭐ Nível ${currentUser.level}</span>`;
   document.getElementById("profile-verified").innerHTML = badges;
   renderCreatorSettings();
@@ -2655,7 +2698,7 @@ function renderShopGrid(){
     const owned = myFrameIds.has(frame.id);
     const equipped = currentUser.equipped_frame_id === frame.id;
     const photo = `<div class="avatar-frame-photo" style="font-size:26px;">${currentUser.emoji||"🙂"}</div>`;
-    const btnLabel = equipped ? "Equipada" : (owned ? "Equipar" : "Comprar");
+    const btnLabel = equipped ? t('btn_equipped') : (owned ? t('btn_equip') : t('btn_buy_generic'));
     const btnClass = equipped ? "equipped" : (owned ? "equip" : "buy");
     const card = document.createElement("div");
     card.className = "shop-frame-card";
@@ -2718,12 +2761,12 @@ async function confirmRoomSelectAndGoLive(){
   try{
     const { data: roomKey, error } = await sb.rpc("ensure_my_room", { p_kind: roomSelectType });
     if(error || !roomKey){
-      alert("Não foi possível abrir sua sala, tente de novo.");
+      alert(t('room_open_error'));
       return;
     }
     window.location.href = url + "?room=" + encodeURIComponent(roomKey);
   }catch(e){
-    alert("Não foi possível abrir sua sala, tente de novo.");
+    alert(t('room_open_error'));
   }
 }
 
@@ -2751,13 +2794,13 @@ function renderCoverScreen(){
     previewWrap.style.display = "none";
   }
   if(currentUser.cover_status === "pending"){
-    banner.innerHTML = '<div class="banner">⏳ Sua foto está em análise. Você poderá transmitir assim que for aprovada pelo administrador.</div>';
+    banner.innerHTML = `<div class="banner">${t('photo_pending_msg')}</div>`;
     goBtn.disabled = true;
   } else if(currentUser.cover_status === "approved"){
-    banner.innerHTML = '<div class="banner banner-ok">✅ Foto aprovada! Você já pode ir ao vivo.</div>';
+    banner.innerHTML = `<div class="banner banner-ok">${t('photo_approved_msg')}</div>`;
     goBtn.disabled = false;
   } else if(currentUser.cover_status === "rejected"){
-    banner.innerHTML = '<div class="banner banner-err">❌ Essa foto foi recusada pelo administrador. Escolha outra foto para continuar.</div>';
+    banner.innerHTML = `<div class="banner banner-err">${t('photo_rejected_msg')}</div>`;
     goBtn.disabled = true;
   } else {
     banner.innerHTML = "";
@@ -2770,7 +2813,7 @@ async function handleCoverUpload(input){
   if(!file) return;
   const banner = document.getElementById("cover-status-banner");
   if(!file.type.startsWith("image/")){
-    banner.innerHTML = '<div class="banner banner-err">Envie apenas arquivos de imagem.</div>';
+    banner.innerHTML = `<div class="banner banner-err">${t('err_image_only')}</div>`;
     return;
   }
   banner.innerHTML = '<div class="banner">Analisando a imagem...</div>';
@@ -2818,21 +2861,21 @@ async function checkLiveStatus(){
     if(error) throw error;
     if(data){
       myLiveSessionId = data.id;
-      status.textContent = "Você está ao vivo agora.";
-      btn.textContent = "📡 Ver minha transmissão";
+      status.textContent = t('status_you_are_live');
+      btn.textContent = t('btn_view_my_broadcast');
       btn.onclick = ()=>showAppScreen("scr-broadcast");
     } else {
       myLiveSessionId = null;
-      status.textContent = "Você não está ao vivo.";
-      btn.textContent = "🔴 Ir ao vivo";
+      status.textContent = t('status_you_are_not_live');
+      btn.textContent = t('go_live_btn');
       btn.onclick = ()=>showAppScreen("scr-room-select");
     }
   }catch(e){
     console.error("checkLiveStatus falhou:", e);
     // Mesmo se essa checagem falhar, garante que o botão continua clicável para iniciar a live.
     myLiveSessionId = null;
-    status.textContent = "Você não está ao vivo.";
-    btn.textContent = "🔴 Ir ao vivo";
+    status.textContent = t('status_you_are_not_live');
+    btn.textContent = t('go_live_btn');
     btn.onclick = ()=>showAppScreen("scr-room-select");
   }
 }
@@ -2934,7 +2977,7 @@ function renderCreatorSettings(){
     wrap.innerHTML = `
       <div class="card" style="margin-top:16px;">
         <div class="eyebrow">Minha foto de perfil</div>
-        <p>Você pode trocar sua foto quando quiser.</p>
+        <p>${t('change_photo_anytime')}</p>
         <div id="avatar-banner"></div>
         <div class="photo-thumbs" id="profile-photo-thumbs"></div>
       </div>`;
@@ -2946,7 +2989,7 @@ function renderCreatorSettings(){
       div.className = "photo-thumb";
       div.innerHTML = `<img src="${p.url}">
         <label class="btn btn-outline btn-sm" style="position:absolute; bottom:3px; left:3px; right:3px; text-align:center; padding:4px 0; font-size:9px; cursor:pointer;">
-          Trocar foto<input type="file" accept="image/*" style="display:none;" onchange="replaceMalePhoto(this)">
+          ${t('change_photo_label')}<input type="file" accept="image/*" style="display:none;" onchange="replaceMalePhoto(this)">
         </label>`;
       thumbWrap.appendChild(div);
     } else {
@@ -2964,24 +3007,24 @@ function renderCreatorSettings(){
     const isSelected = currentUser.call_price === price;
     return `<div class="tier-btn ${isSelected?'selected':''} ${isUnlocked?'':'locked'}" ${isUnlocked?`onclick="setCallPrice(${price})"`:''}>
       <b>🪙 ${fmt(price)}</b>
-      <span>${isUnlocked ? "por hora ao vivo" : `nível ${idx+1} 🔒`}</span>
+      <span>${isUnlocked ? t('per_hour_live') : `${t('level_label')} ${idx+1} 🔒`}</span>
     </div>`;
   }).join("");
 
   wrap.innerHTML = `
     <div class="card" style="margin-top:16px;">
-      <div class="eyebrow">Transmissão ao vivo</div>
-      <p id="live-status-text">Você não está ao vivo.</p>
-      <button class="btn btn-primary btn-block" id="go-live-btn" onclick="showAppScreen('scr-room-select')">🔴 Ir ao vivo</button>
+      <div class="eyebrow">${t('broadcast_eyebrow')}</div>
+      <p id="live-status-text">${t('status_you_are_not_live')}</p>
+      <button class="btn btn-primary btn-block" id="go-live-btn" onclick="showAppScreen('scr-room-select')">${t('go_live_btn')}</button>
     </div>
     <div class="card" style="margin-top:16px;">
-      <div class="eyebrow">Meu álbum (até 5 fotos)</div>
-      <p>Essas fotos aparecem para qualquer homem que clicar no seu perfil.</p>
+      <div class="eyebrow">${t('my_album_eyebrow')}</div>
+      <p>${t('my_album_sub')}</p>
       <div class="photo-thumbs" id="profile-photo-thumbs"></div>
     </div>
     <div class="card">
-      <div class="eyebrow">Seu nível de ganhos</div>
-      <p>Você recebe automaticamente e sobe de nível conforme acumula ganhos líquidos com presentes.</p>
+      <div class="eyebrow">${t('earnings_eyebrow')}</div>
+      <p>${t('earnings_sub')}</p>
       <div class="tier-grid">${tiersHtml}</div>
     </div>`;
 
