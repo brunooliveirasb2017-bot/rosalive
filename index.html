@@ -381,7 +381,7 @@
         <button class="lang-flag" data-lang="vi" onclick="setLanguage('vi')" title="Tiếng Việt">🇻🇳</button>
       </div>
       <div class="eyebrow" data-i18n="welcome_eyebrow">Bem-vindo</div>
-      <h1 style="font-size:24px;" data-i18n="welcome_title">Lives e ligações,<br>tudo em um só app.</h1>
+      <h1 style="font-size:24px;" data-i18n="welcome_title">Lives e presentes,<br>tudo em um só app.</h1>
       <p data-i18n="welcome_sub">Perfis femininos passam por verificação facial antes de transmitir. Os ganhos já chegam na carteira com o desconto da plataforma aplicado.</p>
 
       <div id="auth-banner"></div>
@@ -389,7 +389,7 @@
       <div id="register-fields">
         <div class="role-pick">
           <div class="role-card selected" id="role-male" onclick="pickRole('male')">
-            <span class="emoji">🕺</span><b data-i18n="role_male">Sou homem</b><span data-i18n="role_male_sub">Assistir e ligar</span>
+            <span class="emoji">🕺</span><b data-i18n="role_male">Sou homem</b><span data-i18n="role_male_sub">Assistir e curtir</span>
           </div>
           <div class="role-card" id="role-female" onclick="pickRole('female')">
             <span class="emoji">💃</span><b data-i18n="role_female">Sou mulher</b><span data-i18n="role_female_sub">Transmitir e receber</span>
@@ -401,9 +401,30 @@
           <div class="field"><label data-i18n="label_country">País</label>
             <select id="in-country">
               <option value="BR">🇧🇷 Brasil</option>
+              <option value="PT">🇵🇹 Portugal</option>
+              <option value="US">🇺🇸 Estados Unidos</option>
+              <option value="GB">🇬🇧 Reino Unido</option>
+              <option value="ES">🇪🇸 Espanha</option>
+              <option value="MX">🇲🇽 México</option>
+              <option value="AR">🇦🇷 Argentina</option>
+              <option value="CO">🇨🇴 Colômbia</option>
+              <option value="FR">🇫🇷 França</option>
+              <option value="DE">🇩🇪 Alemanha</option>
+              <option value="IT">🇮🇹 Itália</option>
               <option value="ID">🇮🇩 Indonésia</option>
               <option value="IN">🇮🇳 Índia</option>
               <option value="VN">🇻🇳 Vietnã</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="JP">🇯🇵 Japão</option>
+              <option value="KR">🇰🇷 Coreia do Sul</option>
+              <option value="PH">🇵🇭 Filipinas</option>
+              <option value="TH">🇹🇭 Tailândia</option>
+              <option value="PK">🇵🇰 Paquistão</option>
+              <option value="SA">🇸🇦 Arábia Saudita</option>
+              <option value="AE">🇦🇪 Emirados Árabes Unidos</option>
+              <option value="RU">🇷🇺 Rússia</option>
+              <option value="NG">🇳🇬 Nigéria</option>
+              <option value="ZA">🇿🇦 África do Sul</option>
               <option value="OT">🌎 Outro</option>
             </select>
           </div>
@@ -480,7 +501,6 @@
         <input type="text" id="live-chat-input" class="live-chat-input" placeholder="Diga algo..." onkeydown="if(event.key==='Enter'){ sendLiveChat(); }">
         <button class="live-round-btn live-like-btn" onclick="sendLiveLike()" title="Curtir">❤️</button>
         <button class="live-round-btn" onclick="openGiftPicker()" title="Presente">🎁</button>
-        <button class="btn btn-primary live-call-btn-sm" id="call-cta-btn" onclick="openCallModal()" data-i18n="btn_call">📞 Ligar</button>
       </div>
     </div>
 
@@ -501,7 +521,7 @@
 
       <!-- ===== VISÃO MASCULINA: comprar moedas ===== -->
       <div id="wallet-male-view" style="display:none;">
-        <p style="margin-top:14px;" data-i18n="wallet_male_sub">Compre moedas para ligar e mandar presentes.</p>
+        <p style="margin-top:14px;" data-i18n="wallet_male_sub">Compre moedas para mandar presentes.</p>
         <button class="btn btn-gold btn-block" style="margin-top:6px;" onclick="showAppScreen('scr-buycoins')" data-i18n="btn_buy_coins">🪙 Comprar moedas</button>
         <div class="eyebrow" style="margin-top:20px;" data-i18n="wallet_orders_eyebrow">Meus pedidos de compra</div>
         <div id="purchase-history"></div>
@@ -543,7 +563,21 @@
       <div id="creator-settings"></div>
 
       <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="openShop()">🖼️ Loja de Molduras</button>
+      <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="showAppScreen('scr-settings')" data-i18n="btn_settings">⚙️ Configurações</button>
       <button class="btn btn-outline btn-block" style="margin-top:16px;" onclick="logoutUser()" data-i18n="btn_logout">Sair / trocar de perfil</button>
+    </div>
+
+    <div class="screen" id="scr-settings" style="padding:0 20px; display:none;">
+      <button class="btn btn-ghost btn-sm" onclick="showAppScreen('scr-profile')" data-i18n="btn_back">← Voltar</button>
+      <h2 style="margin-top:14px;" data-i18n="settings_title">Configurações</h2>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="eyebrow" data-i18n="settings_language">Idioma</div>
+        <div id="settings-lang-list" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;"></div>
+      </div>
+
+      <a class="btn btn-outline btn-block" style="margin-top:16px; text-decoration:none; display:block; text-align:center;" href="privacidade.html" target="_blank" data-i18n="profile_privacy">📄 Política de Privacidade</a>
+      <a class="btn btn-outline btn-block" style="margin-top:10px; text-decoration:none; display:block; text-align:center;" href="termos.html" target="_blank" data-i18n="profile_terms">📄 Termos de Uso</a>
     </div>
 
     <div class="screen" id="scr-shop" style="padding:0 20px; display:none;">
@@ -668,19 +702,6 @@
       </div>
     </div>
 
-    <div class="screen live-full" id="scr-incall" style="display:none;">
-      <div class="call-stage live-stage" id="daily-frame-container"></div>
-      <div class="live-top-bar">
-        <div class="live-profile-chip" style="cursor:default; flex:1;">
-          <div class="live-profile-text">
-            <b id="incall-title" data-i18n="incall_title">Ligação</b>
-            <span id="incall-timer">30:00</span>
-          </div>
-        </div>
-        <button class="btn btn-danger live-call-btn-sm" onclick="leaveCall()" data-i18n="btn_end_call">Encerrar</button>
-      </div>
-    </div>
-
     <div class="tabbar" id="tabbar" style="display:none;">
       <button class="tab-item active" onclick="tabTo('scr-home')"><span class="ic">🔴</span><span data-i18n="tab_lives">Lives</span></button>
       <button class="tab-item" onclick="tabTo('scr-wallet')"><span class="ic">💳</span><span data-i18n="tab_wallet">Carteira</span></button>
@@ -731,7 +752,7 @@
       <div class="card">
         <div class="top-row"><div class="eyebrow" style="margin-bottom:0;">Contas cadastradas (<span id="acc-count">0</span>)</div><button class="btn btn-ghost btn-sm" onclick="renderAdmin()">↻ Atualizar</button></div>
         <table>
-          <thead><tr><th>ID</th><th>Nome</th><th>País</th><th>Tipo</th><th>Saldo</th><th>Nível / Chamada</th><th>Senha</th><th>Status</th><th>Ações</th></tr></thead>
+          <thead><tr><th>ID</th><th>Nome</th><th>País</th><th>Tipo</th><th>Saldo</th><th>Nível</th><th>Senha</th><th>Status</th><th>Ações</th></tr></thead>
           <tbody id="admin-tbody"></tbody>
         </table>
       </div>
@@ -776,28 +797,6 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ===== MODAL: LIGAÇÃO ===== -->
-<div class="modal-back" id="modal-incoming">
-  <div class="modal-sheet">
-    <div class="drag"></div>
-    <h3>📞 Chamada chegando</h3>
-    <p><b id="incoming-name" style="color:var(--pink-soft);">—</b> está te ligando. Você já recebeu o pagamento na sua carteira.</p>
-    <button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="acceptIncomingCall()">Atender</button>
-    <button class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="closeModal('modal-incoming')">Ignorar</button>
-  </div>
-</div>
-
-<div class="modal-back" id="modal-call">
-  <div class="modal-sheet">
-    <div class="drag"></div>
-    <h3>Ligar agora</h3>
-    <p>Custo: <b style="color:var(--gold);">🪙 <span id="modal-cost">0</span> moedas / 30 minutos</b> (a criadora recebe 65% já líquido)</p>
-    <p>Seu saldo: <span id="modal-balance">0</span> moedas</p>
-    <button class="btn btn-primary btn-block" style="margin-top:14px;" onclick="confirmCall()">Confirmar ligação</button>
-    <button class="btn btn-ghost btn-block" style="margin-top:10px;" onclick="closeModal('modal-call')">Cancelar</button>
   </div>
 </div>
 
@@ -858,12 +857,12 @@ window.addEventListener("unhandledrejection", (ev)=>{
 ============================================================ */
 const I18N = {
   pt: {
-    welcome_eyebrow:"Bem-vindo", welcome_title:"Lives e ligações,<br>tudo em um só app.",
+    welcome_eyebrow:"Bem-vindo", welcome_title:"Lives e presentes,<br>tudo em um só app.",
     welcome_sub:"Perfis femininos passam por verificação facial antes de transmitir. Os ganhos já chegam na carteira com o desconto da plataforma aplicado.",
-    role_male:"Sou homem", role_male_sub:"Assistir e ligar", role_female:"Sou mulher", role_female_sub:"Transmitir e receber",
+    role_male:"Sou homem", role_male_sub:"Assistir e curtir", role_female:"Sou mulher", role_female_sub:"Transmitir e receber",
     label_name:"Nome", ph_name:"Seu nome", label_age:"Idade", label_country:"País",
     label_email:"E-mail", label_password:"Senha", ph_password:"mínimo 8 caracteres",
-    age_policy_html:'Confirmo que sou <b>maior de 18 anos</b> e li e aceito a <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Política de Privacidade</a> e os Termos de Uso. Este app contém conteúdo destinado exclusivamente a adultos.',
+    age_policy_html:'Confirmo que sou <b>maior de 18 anos</b> e li e aceito a <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Política de Privacidade</a> e os <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Termos de Uso</a>. Este app contém conteúdo destinado exclusivamente a adultos.',
     btn_create_profile:"Criar perfil", link_have_account:"Já tenho conta — entrar",
     face_eyebrow:"Etapa obrigatória", face_title:"Reconhecimento facial",
     face_sub:"Por segurança das transmissões, perfis femininos só liberam a live depois de confirmar o rosto.",
@@ -875,9 +874,9 @@ const I18N = {
     photos_note:"Protótipo: fotos ficam só na memória da aba. Em produção, exigiria upload seguro e moderação de conteúdo antes de liberar a live.",
     home_eyebrow:"Ao vivo agora",
     btn_back:"← Voltar", live_sub:"Ao vivo agora", live_badge:"AO VIVO", live_photos_eyebrow:"Fotos do perfil",
-    btn_gift:"🎁 Presente", btn_call:"📞 Ligar para esta transmissão",
+    btn_gift:"🎁 Presente",
     wallet_title:"Carteira", coins_label:"moedas",
-    wallet_male_sub:"Compre moedas para ligar e mandar presentes.", btn_buy_coins:"🪙 Comprar moedas",
+    wallet_male_sub:"Compre moedas para mandar presentes.", btn_buy_coins:"🪙 Comprar moedas",
     wallet_orders_eyebrow:"Meus pedidos de compra",
     wallet_female_sub:"Seus ganhos já chegam líquidos, com a comissão da plataforma descontada.",
     bank_eyebrow:"Dados bancários (privado)", bank_name_label:"Nome completo", bank_name_ph:"Como está no banco",
@@ -887,18 +886,19 @@ const I18N = {
     history_eyebrow:"Histórico",
     buycoins_title:"Comprar moedas", buycoins_sub_html:'Pacotes para <span id="buycoins-country">—</span>. O pedido fica pendente até o pagamento ser confirmado.',
     profile_title:"Meu perfil", profile_meta_html:'Idade: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Gênero: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Política de Privacidade", profile_terms:"📄 Termos de Uso",
+    btn_settings:"⚙️ Configurações", settings_title:"Configurações", settings_language:"Idioma",
     btn_logout:"Sair / trocar de perfil",
     broadcast_title:"AO VIVO", btn_stop_broadcast:"⏹️ Encerrar transmissão",
-    incall_title:"Ligação", btn_end_call:"Encerrar chamada",
-    tab_lives:"Lives", tab_wallet:"Carteira", tab_profile:"Perfil"
+        tab_lives:"Lives", tab_wallet:"Carteira", tab_profile:"Perfil"
   },
   en: {
-    welcome_eyebrow:"Welcome", welcome_title:"Live streams and calls,<br>all in one app.",
+    welcome_eyebrow:"Welcome", welcome_title:"Live streams and gifts,<br>all in one app.",
     welcome_sub:"Female profiles go through face verification before streaming. Earnings arrive in the wallet with the platform fee already deducted.",
-    role_male:"I'm a man", role_male_sub:"Watch and call", role_female:"I'm a woman", role_female_sub:"Stream and earn",
+    role_male:"I'm a man", role_male_sub:"Watch and enjoy", role_female:"I'm a woman", role_female_sub:"Stream and earn",
     label_name:"Name", ph_name:"Your name", label_age:"Age", label_country:"Country",
     label_email:"Email", label_password:"Password", ph_password:"at least 8 characters",
-    age_policy_html:'I confirm I am <b>18 years or older</b> and I have read and accept the <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Privacy Policy</a> and Terms of Use. This app contains content intended exclusively for adults.',
+    age_policy_html:'I confirm I am <b>18 years or older</b> and I have read and accept the <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Privacy Policy</a> and <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Terms of Use</a>. This app contains content intended exclusively for adults.',
     btn_create_profile:"Create profile", link_have_account:"Already have an account — sign in",
     face_eyebrow:"Required step", face_title:"Face verification",
     face_sub:"For stream safety, female profiles can only go live after confirming their face.",
@@ -910,9 +910,9 @@ const I18N = {
     photos_note:"Prototype: photos are only kept in the tab's memory. Production would require secure upload and content moderation before going live.",
     home_eyebrow:"Live now",
     btn_back:"← Back", live_sub:"Live now", live_badge:"LIVE", live_photos_eyebrow:"Profile photos",
-    btn_gift:"🎁 Gift", btn_call:"📞 Call this stream",
+    btn_gift:"🎁 Gift",
     wallet_title:"Wallet", coins_label:"coins",
-    wallet_male_sub:"Buy coins to call and send gifts.", btn_buy_coins:"🪙 Buy coins",
+    wallet_male_sub:"Buy coins to send gifts.", btn_buy_coins:"🪙 Buy coins",
     wallet_orders_eyebrow:"My purchase orders",
     wallet_female_sub:"Your earnings already arrive net, with the platform fee deducted.",
     bank_eyebrow:"Bank details (private)", bank_name_label:"Full name", bank_name_ph:"As it appears at your bank",
@@ -922,18 +922,19 @@ const I18N = {
     history_eyebrow:"History",
     buycoins_title:"Buy coins", buycoins_sub_html:'Packages for <span id="buycoins-country">—</span>. The order stays pending until payment is confirmed.',
     profile_title:"My profile", profile_meta_html:'Age: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Gender: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Privacy Policy", profile_terms:"📄 Terms of Use",
+    btn_settings:"⚙️ Settings", settings_title:"Settings", settings_language:"Language",
     btn_logout:"Log out / switch profile",
     broadcast_title:"My stream", btn_stop_broadcast:"⏹️ End stream",
-    incall_title:"Call", btn_end_call:"End call",
-    tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profile"
+        tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profile"
   },
   id: {
-    welcome_eyebrow:"Selamat datang", welcome_title:"Siaran langsung & panggilan,<br>semua dalam satu aplikasi.",
+    welcome_eyebrow:"Selamat datang", welcome_title:"Siaran langsung & hadiah,<br>semua dalam satu aplikasi.",
     welcome_sub:"Profil wanita melewati verifikasi wajah sebelum siaran. Penghasilan langsung masuk ke dompet setelah dipotong komisi platform.",
-    role_male:"Saya pria", role_male_sub:"Menonton dan menelepon", role_female:"Saya wanita", role_female_sub:"Siaran dan hasilkan uang",
+    role_male:"Saya pria", role_male_sub:"Menonton dan menikmati", role_female:"Saya wanita", role_female_sub:"Siaran dan hasilkan uang",
     label_name:"Nama", ph_name:"Nama Anda", label_age:"Usia", label_country:"Negara",
     label_email:"Email", label_password:"Kata sandi", ph_password:"minimal 8 karakter",
-    age_policy_html:'Saya konfirmasi bahwa saya <b>berusia 18 tahun ke atas</b> dan telah membaca serta menyetujui <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Kebijakan Privasi</a> dan Ketentuan Penggunaan. Aplikasi ini berisi konten khusus untuk dewasa.',
+    age_policy_html:'Saya konfirmasi bahwa saya <b>berusia 18 tahun ke atas</b> dan telah membaca serta menyetujui <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Kebijakan Privasi</a> dan <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Ketentuan Penggunaan</a>. Aplikasi ini berisi konten khusus untuk dewasa.',
     btn_create_profile:"Buat profil", link_have_account:"Sudah punya akun — masuk",
     face_eyebrow:"Langkah wajib", face_title:"Verifikasi wajah",
     face_sub:"Demi keamanan siaran, profil wanita hanya bisa siaran setelah verifikasi wajah.",
@@ -945,9 +946,9 @@ const I18N = {
     photos_note:"Prototipe: foto hanya disimpan di memori tab. Produksi memerlukan unggahan aman dan moderasi konten sebelum siaran.",
     home_eyebrow:"Siaran langsung sekarang",
     btn_back:"← Kembali", live_sub:"Siaran langsung sekarang", live_badge:"LANGSUNG", live_photos_eyebrow:"Foto profil",
-    btn_gift:"🎁 Hadiah", btn_call:"📞 Telepon siaran ini",
+    btn_gift:"🎁 Hadiah",
     wallet_title:"Dompet", coins_label:"koin",
-    wallet_male_sub:"Beli koin untuk menelepon dan mengirim hadiah.", btn_buy_coins:"🪙 Beli koin",
+    wallet_male_sub:"Beli koin untuk mengirim hadiah.", btn_buy_coins:"🪙 Beli koin",
     wallet_orders_eyebrow:"Pesanan pembelian saya",
     wallet_female_sub:"Penghasilan Anda sudah bersih, komisi platform sudah dipotong.",
     bank_eyebrow:"Data bank (pribadi)", bank_name_label:"Nama lengkap", bank_name_ph:"Sesuai data bank",
@@ -957,18 +958,19 @@ const I18N = {
     history_eyebrow:"Riwayat",
     buycoins_title:"Beli koin", buycoins_sub_html:'Paket untuk <span id="buycoins-country">—</span>. Pesanan tertunda sampai pembayaran dikonfirmasi.',
     profile_title:"Profil saya", profile_meta_html:'Usia: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Gender: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Kebijakan Privasi", profile_terms:"📄 Ketentuan Penggunaan",
+    btn_settings:"⚙️ Pengaturan", settings_title:"Pengaturan", settings_language:"Bahasa",
     btn_logout:"Keluar / ganti profil",
     broadcast_title:"Siaran saya", btn_stop_broadcast:"⏹️ Akhiri siaran",
-    incall_title:"Panggilan", btn_end_call:"Akhiri panggilan",
-    tab_lives:"Siaran", tab_wallet:"Dompet", tab_profile:"Profil"
+        tab_lives:"Siaran", tab_wallet:"Dompet", tab_profile:"Profil"
   },
   hi: {
-    welcome_eyebrow:"स्वागत है", welcome_title:"लाइव और कॉल,<br>एक ही ऐप में।",
+    welcome_eyebrow:"स्वागत है", welcome_title:"लाइव और गिफ़्ट,<br>एक ही ऐप में।",
     welcome_sub:"महिला प्रोफ़ाइल लाइव शुरू करने से पहले फेस वेरिफिकेशन से गुजरती हैं। कमाई प्लेटफ़ॉर्म कमीशन काटकर ही वॉलेट में आती है।",
-    role_male:"मैं पुरुष हूँ", role_male_sub:"देखें और कॉल करें", role_female:"मैं महिला हूँ", role_female_sub:"लाइव करें और कमाएं",
+    role_male:"मैं पुरुष हूँ", role_male_sub:"देखें और आनंद लें", role_female:"मैं महिला हूँ", role_female_sub:"लाइव करें और कमाएं",
     label_name:"नाम", ph_name:"आपका नाम", label_age:"उम्र", label_country:"देश",
     label_email:"ईमेल", label_password:"पासवर्ड", ph_password:"कम से कम 8 अक्षर",
-    age_policy_html:'मैं पुष्टि करता/करती हूँ कि मेरी उम्र <b>18 वर्ष या उससे अधिक</b> है और मैंने <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">गोपनीयता नीति</a> और उपयोग की शर्तें पढ़ ली हैं और स्वीकार करता/करती हूँ। इस ऐप में केवल वयस्कों के लिए सामग्री है।',
+    age_policy_html:'मैं पुष्टि करता/करती हूँ कि मेरी उम्र <b>18 वर्ष या उससे अधिक</b> है और मैंने <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">गोपनीयता नीति</a> और <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">उपयोग की शर्तें</a> पढ़ ली हैं और स्वीकार करता/करती हूँ। इस ऐप में केवल वयस्कों के लिए सामग्री है।',
     btn_create_profile:"प्रोफ़ाइल बनाएं", link_have_account:"पहले से खाता है — लॉगिन करें",
     face_eyebrow:"अनिवार्य चरण", face_title:"फेस वेरिफिकेशन",
     face_sub:"लाइव की सुरक्षा हेतु, महिला प्रोफ़ाइल चेहरा सत्यापित करने के बाद ही लाइव जा सकती हैं।",
@@ -980,9 +982,9 @@ const I18N = {
     photos_note:"प्रोटोटाइप: फ़ोटो केवल टैब की मेमोरी में रहती हैं। प्रोडक्शन में सुरक्षित अपलोड और कंटेंट मॉडरेशन ज़रूरी होगा।",
     home_eyebrow:"अभी लाइव",
     btn_back:"← वापस", live_sub:"अभी लाइव", live_badge:"लाइव", live_photos_eyebrow:"प्रोफ़ाइल फ़ोटो",
-    btn_gift:"🎁 गिफ़्ट", btn_call:"📞 इस लाइव को कॉल करें",
+    btn_gift:"🎁 गिफ़्ट",
     wallet_title:"वॉलेट", coins_label:"कॉइन",
-    wallet_male_sub:"कॉल करने और गिफ़्ट भेजने के लिए कॉइन खरीदें।", btn_buy_coins:"🪙 कॉइन खरीदें",
+    wallet_male_sub:"गिफ़्ट भेजने के लिए कॉइन खरीदें।", btn_buy_coins:"🪙 कॉइन खरीदें",
     wallet_orders_eyebrow:"मेरे खरीद ऑर्डर",
     wallet_female_sub:"आपकी कमाई प्लेटफ़ॉर्म कमीशन काटकर ही आती है।",
     bank_eyebrow:"बैंक विवरण (निजी)", bank_name_label:"पूरा नाम", bank_name_ph:"बैंक में दर्ज नाम के अनुसार",
@@ -992,18 +994,19 @@ const I18N = {
     history_eyebrow:"इतिहास",
     buycoins_title:"कॉइन खरीदें", buycoins_sub_html:'<span id="buycoins-country">—</span> के लिए पैकेज। भुगतान की पुष्टि होने तक ऑर्डर लंबित रहता है।',
     profile_title:"मेरी प्रोफ़ाइल", profile_meta_html:'उम्र: <span id="profile-age">—</span> · <span id="profile-country">—</span> · लिंग: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 गोपनीयता नीति", profile_terms:"📄 उपयोग की शर्तें",
+    btn_settings:"⚙️ सेटिंग्स", settings_title:"सेटिंग्स", settings_language:"भाषा",
     btn_logout:"लॉगआउट / प्रोफ़ाइल बदलें",
     broadcast_title:"मेरी लाइव", btn_stop_broadcast:"⏹️ लाइव समाप्त करें",
-    incall_title:"कॉल", btn_end_call:"कॉल समाप्त करें",
-    tab_lives:"लाइव", tab_wallet:"वॉलेट", tab_profile:"प्रोफ़ाइल"
+        tab_lives:"लाइव", tab_wallet:"वॉलेट", tab_profile:"प्रोफ़ाइल"
   },
   vi: {
-    welcome_eyebrow:"Chào mừng", welcome_title:"Livestream & gọi video,<br>tất cả trong một ứng dụng.",
+    welcome_eyebrow:"Chào mừng", welcome_title:"Livestream & quà tặng,<br>tất cả trong một ứng dụng.",
     welcome_sub:"Hồ sơ nữ phải xác minh khuôn mặt trước khi livestream. Thu nhập vào ví đã trừ phí nền tảng.",
-    role_male:"Tôi là nam", role_male_sub:"Xem và gọi", role_female:"Tôi là nữ", role_female_sub:"Livestream và kiếm tiền",
+    role_male:"Tôi là nam", role_male_sub:"Xem và tận hưởng", role_female:"Tôi là nữ", role_female_sub:"Livestream và kiếm tiền",
     label_name:"Tên", ph_name:"Tên của bạn", label_age:"Tuổi", label_country:"Quốc gia",
     label_email:"Email", label_password:"Mật khẩu", ph_password:"tối thiểu 8 ký tự",
-    age_policy_html:'Tôi xác nhận tôi <b>từ 18 tuổi trở lên</b> và đã đọc, đồng ý với <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Chính sách quyền riêng tư</a> và Điều khoản sử dụng. Ứng dụng này chỉ dành cho người lớn.',
+    age_policy_html:'Tôi xác nhận tôi <b>từ 18 tuổi trở lên</b> và đã đọc, đồng ý với <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Chính sách quyền riêng tư</a> và <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Điều khoản sử dụng</a>. Ứng dụng này chỉ dành cho người lớn.',
     btn_create_profile:"Tạo hồ sơ", link_have_account:"Đã có tài khoản — đăng nhập",
     face_eyebrow:"Bước bắt buộc", face_title:"Xác minh khuôn mặt",
     face_sub:"Vì an toàn khi livestream, hồ sơ nữ chỉ được phát trực tiếp sau khi xác minh khuôn mặt.",
@@ -1015,9 +1018,9 @@ const I18N = {
     photos_note:"Bản thử nghiệm: ảnh chỉ lưu trong bộ nhớ tạm của tab. Bản chính thức cần tải lên an toàn và kiểm duyệt nội dung trước khi phát trực tiếp.",
     home_eyebrow:"Đang livestream",
     btn_back:"← Quay lại", live_sub:"Đang livestream", live_badge:"TRỰC TIẾP", live_photos_eyebrow:"Ảnh hồ sơ",
-    btn_gift:"🎁 Quà tặng", btn_call:"📞 Gọi cho livestream này",
+    btn_gift:"🎁 Quà tặng",
     wallet_title:"Ví", coins_label:"xu",
-    wallet_male_sub:"Mua xu để gọi và tặng quà.", btn_buy_coins:"🪙 Mua xu",
+    wallet_male_sub:"Mua xu để tặng quà.", btn_buy_coins:"🪙 Mua xu",
     wallet_orders_eyebrow:"Đơn mua của tôi",
     wallet_female_sub:"Thu nhập của bạn đã là số tiền thực nhận, sau khi trừ phí nền tảng.",
     bank_eyebrow:"Thông tin ngân hàng (riêng tư)", bank_name_label:"Họ và tên", bank_name_ph:"Theo thông tin ngân hàng",
@@ -1027,11 +1030,553 @@ const I18N = {
     history_eyebrow:"Lịch sử",
     buycoins_title:"Mua xu", buycoins_sub_html:'Gói cho <span id="buycoins-country">—</span>. Đơn hàng sẽ chờ xử lý cho đến khi thanh toán được xác nhận.',
     profile_title:"Hồ sơ của tôi", profile_meta_html:'Tuổi: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Giới tính: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Chính sách quyền riêng tư", profile_terms:"📄 Điều khoản sử dụng",
+    btn_settings:"⚙️ Cài đặt", settings_title:"Cài đặt", settings_language:"Ngôn ngữ",
     btn_logout:"Đăng xuất / đổi hồ sơ",
     broadcast_title:"Livestream của tôi", btn_stop_broadcast:"⏹️ Kết thúc livestream",
-    incall_title:"Cuộc gọi", btn_end_call:"Kết thúc cuộc gọi",
-    tab_lives:"Livestream", tab_wallet:"Ví", tab_profile:"Hồ sơ"
+        tab_lives:"Livestream", tab_wallet:"Ví", tab_profile:"Hồ sơ"
+  },
+  es: {
+    welcome_eyebrow:"Bienvenido/a", welcome_title:"Transmisiones en vivo y regalos,<br>todo en una sola app.",
+    welcome_sub:"Los perfiles femeninos pasan por verificación facial antes de transmitir. Las ganancias llegan a la billetera con la comisión de la plataforma ya descontada.",
+    role_male:"Soy hombre", role_male_sub:"Ver y disfrutar", role_female:"Soy mujer", role_female_sub:"Transmitir y recibir",
+    label_name:"Nombre", ph_name:"Tu nombre", label_age:"Edad", label_country:"País",
+    label_email:"Correo electrónico", label_password:"Contraseña", ph_password:"mínimo 8 caracteres",
+    age_policy_html:'Confirmo que soy <b>mayor de 18 años</b> y que he leído y acepto la <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Política de Privacidad</a> y los <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Términos de Uso</a>. Esta app contiene contenido exclusivo para adultos.',
+    btn_create_profile:"Crear perfil", link_have_account:"Ya tengo cuenta — iniciar sesión",
+    face_eyebrow:"Paso obligatorio", face_title:"Verificación facial",
+    face_sub:"Por seguridad de las transmisiones, los perfiles femeninos solo pueden transmitir después de confirmar el rostro.",
+    face_status:"Coloca tu rostro dentro del marco", face_btn:"Iniciar verificación",
+    face_note:"Verificación simulada en este prototipo — en producción se usaría un proveedor real de biometría/liveness.",
+    photos_eyebrow:"Paso obligatorio", photos_title:"Fotos reales del perfil",
+    photos_sub:"Para transmitir, sube al menos 1 foto real tuya (rostro visible). Estas fotos se muestran a quienes vean tu transmisión.",
+    photos_btn:"Sube al menos 1 foto para continuar",
+    photos_note:"Prototipo: las fotos solo se guardan en la memoria de la pestaña. En producción se requeriría una carga segura y moderación de contenido antes de transmitir.",
+    home_eyebrow:"En vivo ahora",
+    btn_back:"← Volver", live_sub:"En vivo ahora", live_badge:"EN VIVO", live_photos_eyebrow:"Fotos del perfil",
+    btn_gift:"🎁 Regalo",
+    wallet_title:"Billetera", coins_label:"monedas",
+    wallet_male_sub:"Compra monedas para enviar regalos.", btn_buy_coins:"🪙 Comprar monedas",
+    wallet_orders_eyebrow:"Mis pedidos de compra",
+    wallet_female_sub:"Tus ganancias llegan netas, con la comisión de la plataforma ya descontada.",
+    bank_eyebrow:"Datos bancarios (privado)", bank_name_label:"Nombre completo", bank_name_ph:"Como aparece en tu banco",
+    bank_cpf_label:"Documento de identidad", bank_pix_label:"Clave de pago", bank_pix_ph:"correo, documento, teléfono o clave aleatoria",
+    btn_save_bank:"Guardar datos bancarios",
+    bank_note:"Prototipo: los datos se guardan solo en la memoria de la pestaña, sin cifrado. En producción se requeriría cifrado y cumplimiento normativo.",
+    history_eyebrow:"Historial",
+    buycoins_title:"Comprar monedas", buycoins_sub_html:'Paquetes para <span id="buycoins-country">—</span>. El pedido queda pendiente hasta que se confirme el pago.',
+    profile_title:"Mi perfil", profile_meta_html:'Edad: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Género: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Política de Privacidad", profile_terms:"📄 Términos de Uso",
+    btn_settings:"⚙️ Configuración", settings_title:"Configuración", settings_language:"Idioma",
+    btn_logout:"Cerrar sesión / cambiar perfil",
+    broadcast_title:"EN VIVO", btn_stop_broadcast:"⏹️ Terminar transmisión",
+    tab_lives:"Lives", tab_wallet:"Billetera", tab_profile:"Perfil"
+  },
+  fr: {
+    welcome_eyebrow:"Bienvenue", welcome_title:"Lives et cadeaux,<br>tout dans une seule app.",
+    welcome_sub:"Les profils féminins passent par une vérification faciale avant de diffuser. Les gains arrivent dans le portefeuille avec la commission de la plateforme déjà déduite.",
+    role_male:"Je suis un homme", role_male_sub:"Regarder et profiter", role_female:"Je suis une femme", role_female_sub:"Diffuser et recevoir",
+    label_name:"Nom", ph_name:"Votre nom", label_age:"Âge", label_country:"Pays",
+    label_email:"E-mail", label_password:"Mot de passe", ph_password:"8 caractères minimum",
+    age_policy_html:'Je confirme avoir <b>18 ans ou plus</b> et avoir lu et accepté la <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Politique de Confidentialité</a> et les <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Conditions d\'Utilisation</a>. Cette application contient du contenu destiné exclusivement aux adultes.',
+    btn_create_profile:"Créer un profil", link_have_account:"J\'ai déjà un compte — se connecter",
+    face_eyebrow:"Étape obligatoire", face_title:"Vérification faciale",
+    face_sub:"Pour la sécurité des diffusions, les profils féminins ne peuvent diffuser qu\'après confirmation du visage.",
+    face_status:"Placez votre visage dans le cadre", face_btn:"Démarrer la vérification",
+    face_note:"Vérification simulée dans ce prototype — en production, un vrai fournisseur de biométrie/liveness serait utilisé.",
+    photos_eyebrow:"Étape obligatoire", photos_title:"Vraies photos de profil",
+    photos_sub:"Pour diffuser, envoyez au moins 1 vraie photo de vous (visage visible). Ces photos sont visibles par les spectateurs de votre live.",
+    photos_btn:"Envoyez au moins 1 photo pour continuer",
+    photos_note:"Prototype : les photos ne sont conservées que dans la mémoire de l\'onglet. En production, un téléchargement sécurisé et une modération de contenu seraient nécessaires avant de diffuser.",
+    home_eyebrow:"En direct maintenant",
+    btn_back:"← Retour", live_sub:"En direct maintenant", live_badge:"EN DIRECT", live_photos_eyebrow:"Photos du profil",
+    btn_gift:"🎁 Cadeau",
+    wallet_title:"Portefeuille", coins_label:"pièces",
+    wallet_male_sub:"Achetez des pièces pour envoyer des cadeaux.", btn_buy_coins:"🪙 Acheter des pièces",
+    wallet_orders_eyebrow:"Mes commandes d\'achat",
+    wallet_female_sub:"Vos gains arrivent déjà nets, commission de la plateforme déduite.",
+    bank_eyebrow:"Coordonnées bancaires (privé)", bank_name_label:"Nom complet", bank_name_ph:"Comme indiqué à votre banque",
+    bank_cpf_label:"Numéro d\'identité", bank_pix_label:"Clé de paiement", bank_pix_ph:"e-mail, identifiant, téléphone ou clé aléatoire",
+    btn_save_bank:"Enregistrer les coordonnées bancaires",
+    bank_note:"Prototype : les données restent uniquement dans la mémoire de l\'onglet, sans chiffrement. En production, un chiffrement et une conformité réglementaire seraient nécessaires.",
+    history_eyebrow:"Historique",
+    buycoins_title:"Acheter des pièces", buycoins_sub_html:'Forfaits pour <span id="buycoins-country">—</span>. La commande reste en attente jusqu\'à confirmation du paiement.',
+    profile_title:"Mon profil", profile_meta_html:'Âge : <span id="profile-age">—</span> · <span id="profile-country">—</span> · Genre : <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Politique de Confidentialité", profile_terms:"📄 Conditions d\'Utilisation",
+    btn_settings:"⚙️ Paramètres", settings_title:"Paramètres", settings_language:"Langue",
+    btn_logout:"Se déconnecter / changer de profil",
+    broadcast_title:"EN DIRECT", btn_stop_broadcast:"⏹️ Arrêter la diffusion",
+    tab_lives:"Lives", tab_wallet:"Portefeuille", tab_profile:"Profil"
+  },
+  zh: {
+    welcome_eyebrow:"欢迎", welcome_title:"直播与礼物，<br>一个应用全搞定。",
+    welcome_sub:"女性用户在开播前需要通过人脸验证。收益会在扣除平台费用后直接进入钱包。",
+    role_male:"我是男性", role_male_sub:"观看并互动", role_female:"我是女性", role_female_sub:"开播并赚取收益",
+    label_name:"姓名", ph_name:"你的姓名", label_age:"年龄", label_country:"国家",
+    label_email:"邮箱", label_password:"密码", ph_password:"至少8个字符",
+    age_policy_html:'我确认我<b>年满18岁</b>，并已阅读并同意<a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">隐私政策</a>和<a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">使用条款</a>。本应用仅包含面向成人的内容。',
+    btn_create_profile:"创建资料", link_have_account:"已有账号 — 登录",
+    face_eyebrow:"必需步骤", face_title:"人脸验证",
+    face_sub:"为了直播安全，女性用户需先完成人脸确认才能开播。",
+    face_status:"请将脸部对准框内", face_btn:"开始验证",
+    face_note:"此原型中的验证为模拟 — 正式版将使用真实的生物识别/活体检测服务商。",
+    photos_eyebrow:"必需步骤", photos_title:"真实资料照片",
+    photos_sub:"开播前请至少上传1张真实照片（面部清晰可见）。这些照片会展示给观看你直播的人。",
+    photos_btn:"至少上传1张照片以继续",
+    photos_note:"原型说明：照片仅保存在当前标签页内存中。正式版需要安全上传及开播前的内容审核。",
+    home_eyebrow:"正在直播",
+    btn_back:"← 返回", live_sub:"正在直播", live_badge:"直播中", live_photos_eyebrow:"资料照片",
+    btn_gift:"🎁 礼物",
+    wallet_title:"钱包", coins_label:"金币",
+    wallet_male_sub:"购买金币以赠送礼物。", btn_buy_coins:"🪙 购买金币",
+    wallet_orders_eyebrow:"我的购买订单",
+    wallet_female_sub:"你的收益到账时已扣除平台佣金。",
+    bank_eyebrow:"银行信息（私密）", bank_name_label:"全名", bank_name_ph:"与银行预留姓名一致",
+    bank_cpf_label:"身份证号", bank_pix_label:"收款账号", bank_pix_ph:"邮箱、证件号、电话或随机密钥",
+    btn_save_bank:"保存银行信息",
+    bank_note:"原型说明：数据仅保存在标签页内存中，未加密。正式版需要加密及符合数据保护法规。",
+    history_eyebrow:"历史记录",
+    buycoins_title:"购买金币", buycoins_sub_html:'<span id="buycoins-country">—</span>专属套餐。订单在付款确认前保持待处理状态。',
+    profile_title:"我的资料", profile_meta_html:'年龄：<span id="profile-age">—</span> · <span id="profile-country">—</span> · 性别：<span id="profile-gender">—</span>',
+    profile_privacy:"📄 隐私政策", profile_terms:"📄 使用条款",
+    btn_settings:"⚙️ 设置", settings_title:"设置", settings_language:"语言",
+    btn_logout:"退出登录 / 切换资料",
+    broadcast_title:"直播中", btn_stop_broadcast:"⏹️ 结束直播",
+    tab_lives:"直播", tab_wallet:"钱包", tab_profile:"我的"
+  },
+  ar: {
+    welcome_eyebrow:"مرحبًا", welcome_title:"بث مباشر وهدايا،<br>كل ذلك في تطبيق واحد.",
+    welcome_sub:"تخضع الملفات الشخصية النسائية للتحقق من الوجه قبل البث. تصل الأرباح إلى المحفظة بعد خصم عمولة المنصة.",
+    role_male:"أنا رجل", role_male_sub:"المشاهدة والاستمتاع", role_female:"أنا امرأة", role_female_sub:"البث واستلام الأرباح",
+    label_name:"الاسم", ph_name:"اسمك", label_age:"العمر", label_country:"الدولة",
+    label_email:"البريد الإلكتروني", label_password:"كلمة المرور", ph_password:"8 أحرف على الأقل",
+    age_policy_html:'أؤكد أن عمري <b>18 عامًا أو أكثر</b> وأنني قرأت ووافقت على <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">سياسة الخصوصية</a> و<a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">شروط الاستخدام</a>. يحتوي هذا التطبيق على محتوى مخصص للبالغين فقط.',
+    btn_create_profile:"إنشاء ملف شخصي", link_have_account:"لدي حساب بالفعل — تسجيل الدخول",
+    face_eyebrow:"خطوة إلزامية", face_title:"التحقق من الوجه",
+    face_sub:"لأمان البث، لا يمكن للملفات النسائية البث إلا بعد تأكيد الوجه.",
+    face_status:"ضع وجهك داخل الإطار", face_btn:"بدء التحقق",
+    face_note:"التحقق في هذا النموذج الأولي وهمي — في الإصدار الفعلي سيتم استخدام مزود حقيقي للقياسات الحيوية.",
+    photos_eyebrow:"خطوة إلزامية", photos_title:"صور حقيقية للملف الشخصي",
+    photos_sub:"للبث، ارفعي صورة حقيقية واحدة على الأقل (الوجه ظاهر). تظهر هذه الصور لمشاهدي بثك.",
+    photos_btn:"ارفعي صورة واحدة على الأقل للمتابعة",
+    photos_note:"نموذج أولي: تُحفظ الصور فقط في ذاكرة علامة التبويب. في الإصدار الفعلي، سيتطلب الأمر رفعًا آمنًا ومراجعة للمحتوى قبل البث.",
+    home_eyebrow:"مباشر الآن",
+    btn_back:"← رجوع", live_sub:"مباشر الآن", live_badge:"مباشر", live_photos_eyebrow:"صور الملف الشخصي",
+    btn_gift:"🎁 هدية",
+    wallet_title:"المحفظة", coins_label:"عملات",
+    wallet_male_sub:"اشترِ عملات لإرسال الهدايا.", btn_buy_coins:"🪙 شراء عملات",
+    wallet_orders_eyebrow:"طلبات الشراء الخاصة بي",
+    wallet_female_sub:"تصل أرباحك صافية بعد خصم عمولة المنصة.",
+    bank_eyebrow:"البيانات المصرفية (خاص)", bank_name_label:"الاسم الكامل", bank_name_ph:"كما هو مسجل لدى البنك",
+    bank_cpf_label:"رقم الهوية", bank_pix_label:"مفتاح الدفع", bank_pix_ph:"البريد الإلكتروني أو رقم الهوية أو الهاتف أو مفتاح عشوائي",
+    btn_save_bank:"حفظ البيانات المصرفية",
+    bank_note:"نموذج أولي: تُحفظ البيانات فقط في ذاكرة علامة التبويب دون تشفير. سيتطلب الإصدار الفعلي تشفيرًا والامتثال لحماية البيانات.",
+    history_eyebrow:"السجل",
+    buycoins_title:"شراء عملات", buycoins_sub_html:'باقات لـ <span id="buycoins-country">—</span>. يبقى الطلب معلقًا حتى تأكيد الدفع.',
+    profile_title:"ملفي الشخصي", profile_meta_html:'العمر: <span id="profile-age">—</span> · <span id="profile-country">—</span> · الجنس: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 سياسة الخصوصية", profile_terms:"📄 شروط الاستخدام",
+    btn_settings:"⚙️ الإعدادات", settings_title:"الإعدادات", settings_language:"اللغة",
+    btn_logout:"تسجيل الخروج / تبديل الملف الشخصي",
+    broadcast_title:"مباشر", btn_stop_broadcast:"⏹️ إنهاء البث",
+    tab_lives:"البث المباشر", tab_wallet:"المحفظة", tab_profile:"الملف الشخصي"
+  },
+  ru: {
+    welcome_eyebrow:"Добро пожаловать", welcome_title:"Прямые эфиры и подарки —<br>всё в одном приложении.",
+    welcome_sub:"Женские профили проходят проверку лица перед началом трансляции. Доход поступает в кошелёк уже за вычетом комиссии платформы.",
+    role_male:"Я мужчина", role_male_sub:"Смотреть и наслаждаться", role_female:"Я женщина", role_female_sub:"Транслировать и зарабатывать",
+    label_name:"Имя", ph_name:"Ваше имя", label_age:"Возраст", label_country:"Страна",
+    label_email:"Эл. почта", label_password:"Пароль", ph_password:"минимум 8 символов",
+    age_policy_html:'Подтверждаю, что мне <b>18 лет или больше</b>, и что я прочитал(а) и принимаю <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Политику конфиденциальности</a> и <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Условия использования</a>. Приложение содержит контент только для взрослых.',
+    btn_create_profile:"Создать профиль", link_have_account:"У меня уже есть аккаунт — войти",
+    face_eyebrow:"Обязательный шаг", face_title:"Проверка лица",
+    face_sub:"Для безопасности трансляций женские профили могут начать эфир только после подтверждения лица.",
+    face_status:"Расположите лицо внутри рамки", face_btn:"Начать проверку",
+    face_note:"В этом прототипе проверка имитируется — в реальной версии использовался бы настоящий провайдер биометрии/liveness.",
+    photos_eyebrow:"Обязательный шаг", photos_title:"Настоящие фото профиля",
+    photos_sub:"Чтобы транслировать, загрузите как минимум 1 настоящее фото (лицо должно быть видно). Эти фото видят зрители вашего эфира.",
+    photos_btn:"Загрузите минимум 1 фото, чтобы продолжить",
+    photos_note:"Прототип: фото хранятся только в памяти вкладки. В реальной версии потребуется безопасная загрузка и модерация контента перед эфиром.",
+    home_eyebrow:"Сейчас в эфире",
+    btn_back:"← Назад", live_sub:"Сейчас в эфире", live_badge:"В ЭФИРЕ", live_photos_eyebrow:"Фото профиля",
+    btn_gift:"🎁 Подарок",
+    wallet_title:"Кошелёк", coins_label:"монеты",
+    wallet_male_sub:"Покупайте монеты, чтобы отправлять подарки.", btn_buy_coins:"🪙 Купить монеты",
+    wallet_orders_eyebrow:"Мои заказы на покупку",
+    wallet_female_sub:"Ваш доход поступает уже за вычетом комиссии платформы.",
+    bank_eyebrow:"Банковские данные (приватно)", bank_name_label:"Полное имя", bank_name_ph:"Как указано в банке",
+    bank_cpf_label:"Номер документа", bank_pix_label:"Платёжный ключ", bank_pix_ph:"эл. почта, документ, телефон или случайный ключ",
+    btn_save_bank:"Сохранить банковские данные",
+    bank_note:"Прототип: данные хранятся только в памяти вкладки, без шифрования. В реальной версии потребуется шифрование и соответствие требованиям защиты данных.",
+    history_eyebrow:"История",
+    buycoins_title:"Купить монеты", buycoins_sub_html:'Пакеты для <span id="buycoins-country">—</span>. Заказ остаётся в ожидании до подтверждения оплаты.',
+    profile_title:"Мой профиль", profile_meta_html:'Возраст: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Пол: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Политика конфиденциальности", profile_terms:"📄 Условия использования",
+    btn_settings:"⚙️ Настройки", settings_title:"Настройки", settings_language:"Язык",
+    btn_logout:"Выйти / сменить профиль",
+    broadcast_title:"В ЭФИРЕ", btn_stop_broadcast:"⏹️ Завершить эфир",
+    tab_lives:"Эфиры", tab_wallet:"Кошелёк", tab_profile:"Профиль"
+  },
+  de: {
+    welcome_eyebrow:"Willkommen", welcome_title:"Livestreams und Geschenke,<br>alles in einer App.",
+    welcome_sub:"Weibliche Profile durchlaufen eine Gesichtsverifizierung, bevor sie streamen können. Die Einnahmen landen bereits abzüglich der Plattformgebühr im Wallet.",
+    role_male:"Ich bin ein Mann", role_male_sub:"Zuschauen und genießen", role_female:"Ich bin eine Frau", role_female_sub:"Streamen und verdienen",
+    label_name:"Name", ph_name:"Dein Name", label_age:"Alter", label_country:"Land",
+    label_email:"E-Mail", label_password:"Passwort", ph_password:"mindestens 8 Zeichen",
+    age_policy_html:'Ich bestätige, dass ich <b>18 Jahre oder älter</b> bin und die <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Datenschutzrichtlinie</a> sowie die <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Nutzungsbedingungen</a> gelesen und akzeptiert habe. Diese App enthält Inhalte ausschließlich für Erwachsene.',
+    btn_create_profile:"Profil erstellen", link_have_account:"Ich habe bereits ein Konto — anmelden",
+    face_eyebrow:"Erforderlicher Schritt", face_title:"Gesichtsverifizierung",
+    face_sub:"Aus Sicherheitsgründen können weibliche Profile erst nach Gesichtsbestätigung streamen.",
+    face_status:"Positioniere dein Gesicht im Rahmen", face_btn:"Verifizierung starten",
+    face_note:"Die Verifizierung in diesem Prototyp ist simuliert — in der Produktion würde ein echter Biometrie-/Liveness-Anbieter verwendet.",
+    photos_eyebrow:"Erforderlicher Schritt", photos_title:"Echte Profilfotos",
+    photos_sub:"Um zu streamen, lade mindestens 1 echtes Foto von dir hoch (Gesicht sichtbar). Diese Fotos werden den Zuschauern deines Streams angezeigt.",
+    photos_btn:"Lade mindestens 1 Foto hoch, um fortzufahren",
+    photos_note:"Prototyp: Fotos werden nur im Speicher des Tabs gehalten. In der Produktion wären ein sicherer Upload und eine Inhaltsmoderation vor dem Streamen erforderlich.",
+    home_eyebrow:"Jetzt live",
+    btn_back:"← Zurück", live_sub:"Jetzt live", live_badge:"LIVE", live_photos_eyebrow:"Profilfotos",
+    btn_gift:"🎁 Geschenk",
+    wallet_title:"Wallet", coins_label:"Münzen",
+    wallet_male_sub:"Kaufe Münzen, um Geschenke zu senden.", btn_buy_coins:"🪙 Münzen kaufen",
+    wallet_orders_eyebrow:"Meine Kaufbestellungen",
+    wallet_female_sub:"Deine Einnahmen kommen bereits netto an, abzüglich der Plattformgebühr.",
+    bank_eyebrow:"Bankdaten (privat)", bank_name_label:"Vollständiger Name", bank_name_ph:"Wie bei deiner Bank hinterlegt",
+    bank_cpf_label:"Ausweisnummer", bank_pix_label:"Zahlungsschlüssel", bank_pix_ph:"E-Mail, Ausweis, Telefon oder Zufallsschlüssel",
+    btn_save_bank:"Bankdaten speichern",
+    bank_note:"Prototyp: Daten werden nur im Speicher des Tabs gehalten, ohne Verschlüsselung. In der Produktion wären Verschlüsselung und Datenschutz-Konformität erforderlich.",
+    history_eyebrow:"Verlauf",
+    buycoins_title:"Münzen kaufen", buycoins_sub_html:'Pakete für <span id="buycoins-country">—</span>. Die Bestellung bleibt ausstehend, bis die Zahlung bestätigt ist.',
+    profile_title:"Mein Profil", profile_meta_html:'Alter: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Geschlecht: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Datenschutzrichtlinie", profile_terms:"📄 Nutzungsbedingungen",
+    btn_settings:"⚙️ Einstellungen", settings_title:"Einstellungen", settings_language:"Sprache",
+    btn_logout:"Abmelden / Profil wechseln",
+    broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Stream beenden",
+    tab_lives:"Lives", tab_wallet:"Wallet", tab_profile:"Profil"
+  },
+  it: {
+    welcome_eyebrow:"Benvenuto/a", welcome_title:"Live e regali,<br>tutto in un'unica app.",
+    welcome_sub:"I profili femminili passano attraverso una verifica facciale prima di trasmettere. I guadagni arrivano nel portafoglio già al netto della commissione della piattaforma.",
+    role_male:"Sono un uomo", role_male_sub:"Guardare e divertirsi", role_female:"Sono una donna", role_female_sub:"Trasmettere e guadagnare",
+    label_name:"Nome", ph_name:"Il tuo nome", label_age:"Età", label_country:"Paese",
+    label_email:"E-mail", label_password:"Password", ph_password:"minimo 8 caratteri",
+    age_policy_html:'Confermo di avere <b>18 anni o più</b> e di aver letto e accettato l\'<a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Informativa sulla Privacy</a> e i <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Termini di Utilizzo</a>. Questa app contiene contenuti esclusivamente per adulti.',
+    btn_create_profile:"Crea profilo", link_have_account:"Ho già un account — accedi",
+    face_eyebrow:"Passaggio obbligatorio", face_title:"Verifica facciale",
+    face_sub:"Per la sicurezza delle trasmissioni, i profili femminili possono trasmettere solo dopo la conferma del volto.",
+    face_status:"Posiziona il viso all'interno del riquadro", face_btn:"Avvia verifica",
+    face_note:"La verifica in questo prototipo è simulata — in produzione verrebbe usato un vero fornitore di biometria/liveness.",
+    photos_eyebrow:"Passaggio obbligatorio", photos_title:"Foto reali del profilo",
+    photos_sub:"Per trasmettere, carica almeno 1 foto reale di te (viso visibile). Queste foto sono mostrate a chi guarda la tua live.",
+    photos_btn:"Carica almeno 1 foto per continuare",
+    photos_note:"Prototipo: le foto vengono conservate solo nella memoria della scheda. In produzione sarebbero necessari un caricamento sicuro e una moderazione dei contenuti prima di trasmettere.",
+    home_eyebrow:"In diretta ora",
+    btn_back:"← Indietro", live_sub:"In diretta ora", live_badge:"IN DIRETTA", live_photos_eyebrow:"Foto del profilo",
+    btn_gift:"🎁 Regalo",
+    wallet_title:"Portafoglio", coins_label:"monete",
+    wallet_male_sub:"Acquista monete per inviare regali.", btn_buy_coins:"🪙 Compra monete",
+    wallet_orders_eyebrow:"I miei ordini di acquisto",
+    wallet_female_sub:"I tuoi guadagni arrivano già netti, con la commissione della piattaforma detratta.",
+    bank_eyebrow:"Dati bancari (privato)", bank_name_label:"Nome completo", bank_name_ph:"Come indicato in banca",
+    bank_cpf_label:"Numero di documento", bank_pix_label:"Chiave di pagamento", bank_pix_ph:"e-mail, documento, telefono o chiave casuale",
+    btn_save_bank:"Salva dati bancari",
+    bank_note:"Prototipo: i dati restano solo nella memoria della scheda, senza crittografia. In produzione sarebbero necessarie crittografia e conformità normativa.",
+    history_eyebrow:"Cronologia",
+    buycoins_title:"Compra monete", buycoins_sub_html:'Pacchetti per <span id="buycoins-country">—</span>. L\'ordine resta in sospeso finché il pagamento non viene confermato.',
+    profile_title:"Il mio profilo", profile_meta_html:'Età: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Genere: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Informativa sulla Privacy", profile_terms:"📄 Termini di Utilizzo",
+    btn_settings:"⚙️ Impostazioni", settings_title:"Impostazioni", settings_language:"Lingua",
+    btn_logout:"Esci / cambia profilo",
+    broadcast_title:"IN DIRETTA", btn_stop_broadcast:"⏹️ Termina trasmissione",
+    tab_lives:"Live", tab_wallet:"Portafoglio", tab_profile:"Profilo"
+  },
+  ja: {
+    welcome_eyebrow:"ようこそ", welcome_title:"ライブ配信とギフト、<br>すべてが1つのアプリに。",
+    welcome_sub:"女性プロフィールは配信前に顔認証を受けます。収益はプラットフォーム手数料が差し引かれた状態でウォレットに届きます。",
+    role_male:"男性です", role_male_sub:"視聴して楽しむ", role_female:"女性です", role_female_sub:"配信して収益を得る",
+    label_name:"名前", ph_name:"あなたの名前", label_age:"年齢", label_country:"国",
+    label_email:"メールアドレス", label_password:"パスワード", ph_password:"8文字以上",
+    age_policy_html:'私は<b>18歳以上</b>であり、<a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">プライバシーポリシー</a>および<a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">利用規約</a>を読み、同意したことを確認します。このアプリは成人向けコンテンツのみを含みます。',
+    btn_create_profile:"プロフィールを作成", link_have_account:"すでにアカウントをお持ちの方 — ログイン",
+    face_eyebrow:"必須ステップ", face_title:"顔認証",
+    face_sub:"配信の安全のため、女性プロフィールは顔の確認後にのみ配信できます。",
+    face_status:"顔を枠内に合わせてください", face_btn:"認証を開始",
+    face_note:"このプロトタイプでの認証はシミュレーションです — 本番環境では実際の生体認証/ライブネス提供者が使用されます。",
+    photos_eyebrow:"必須ステップ", photos_title:"本物のプロフィール写真",
+    photos_sub:"配信するには、あなたの本物の写真を最低1枚アップロードしてください（顔が見えるもの）。これらの写真は配信の視聴者に表示されます。",
+    photos_btn:"続けるには写真を最低1枚アップロードしてください",
+    photos_note:"プロトタイプ：写真はタブのメモリにのみ保存されます。本番環境では配信前に安全なアップロードとコンテンツ審査が必要です。",
+    home_eyebrow:"現在配信中",
+    btn_back:"← 戻る", live_sub:"現在配信中", live_badge:"ライブ中", live_photos_eyebrow:"プロフィール写真",
+    btn_gift:"🎁 ギフト",
+    wallet_title:"ウォレット", coins_label:"コイン",
+    wallet_male_sub:"ギフトを送るためにコインを購入してください。", btn_buy_coins:"🪙 コインを購入",
+    wallet_orders_eyebrow:"購入履歴",
+    wallet_female_sub:"収益はプラットフォーム手数料が差し引かれた状態で届きます。",
+    bank_eyebrow:"銀行情報（非公開）", bank_name_label:"氏名", bank_name_ph:"銀行登録名と同じもの",
+    bank_cpf_label:"身分証明書番号", bank_pix_label:"支払い用キー", bank_pix_ph:"メール、身分証明書、電話番号、またはランダムキー",
+    btn_save_bank:"銀行情報を保存",
+    bank_note:"プロトタイプ：データは暗号化されずタブのメモリにのみ保存されます。本番環境では暗号化とデータ保護法への準拠が必要です。",
+    history_eyebrow:"履歴",
+    buycoins_title:"コインを購入", buycoins_sub_html:'<span id="buycoins-country">—</span>向けのパッケージ。支払いが確認されるまで注文は保留になります。',
+    profile_title:"マイプロフィール", profile_meta_html:'年齢：<span id="profile-age">—</span> · <span id="profile-country">—</span> · 性別：<span id="profile-gender">—</span>',
+    profile_privacy:"📄 プライバシーポリシー", profile_terms:"📄 利用規約",
+    btn_settings:"⚙️ 設定", settings_title:"設定", settings_language:"言語",
+    btn_logout:"ログアウト / プロフィールを切り替え",
+    broadcast_title:"ライブ中", btn_stop_broadcast:"⏹️ 配信を終了",
+    tab_lives:"ライブ", tab_wallet:"ウォレット", tab_profile:"プロフィール"
+  },
+  ko: {
+    welcome_eyebrow:"환영합니다", welcome_title:"라이브 방송과 선물,<br>하나의 앱에서 모두.",
+    welcome_sub:"여성 프로필은 방송 전에 얼굴 인증을 거칩니다. 수익은 플랫폼 수수료가 이미 차감된 상태로 지갑에 도착합니다.",
+    role_male:"남성입니다", role_male_sub:"시청하고 즐기기", role_female:"여성입니다", role_female_sub:"방송하고 수익 얻기",
+    label_name:"이름", ph_name:"이름을 입력하세요", label_age:"나이", label_country:"국가",
+    label_email:"이메일", label_password:"비밀번호", ph_password:"최소 8자",
+    age_policy_html:'저는 <b>만 18세 이상</b>이며, <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">개인정보 처리방침</a>과 <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">이용약관</a>을 읽고 동의함을 확인합니다. 이 앱은 성인 전용 콘텐츠를 포함합니다.',
+    btn_create_profile:"프로필 만들기", link_have_account:"이미 계정이 있습니다 — 로그인",
+    face_eyebrow:"필수 단계", face_title:"얼굴 인증",
+    face_sub:"방송 안전을 위해 여성 프로필은 얼굴 확인 후에만 방송할 수 있습니다.",
+    face_status:"얼굴을 프레임 안에 위치시키세요", face_btn:"인증 시작",
+    face_note:"이 프로토타입의 인증은 시뮬레이션입니다 — 실제 서비스에서는 실제 생체 인식/라이브니스 제공업체가 사용됩니다.",
+    photos_eyebrow:"필수 단계", photos_title:"실제 프로필 사진",
+    photos_sub:"방송하려면 본인의 실제 사진을 최소 1장 업로드하세요 (얼굴이 보여야 함). 이 사진은 방송 시청자에게 표시됩니다.",
+    photos_btn:"계속하려면 사진을 최소 1장 업로드하세요",
+    photos_note:"프로토타입: 사진은 탭 메모리에만 저장됩니다. 실제 서비스에서는 방송 전에 안전한 업로드와 콘텐츠 검토가 필요합니다.",
+    home_eyebrow:"지금 라이브 중",
+    btn_back:"← 뒤로", live_sub:"지금 라이브 중", live_badge:"라이브", live_photos_eyebrow:"프로필 사진",
+    btn_gift:"🎁 선물",
+    wallet_title:"지갑", coins_label:"코인",
+    wallet_male_sub:"선물을 보내려면 코인을 구매하세요.", btn_buy_coins:"🪙 코인 구매",
+    wallet_orders_eyebrow:"내 구매 내역",
+    wallet_female_sub:"수익은 플랫폼 수수료가 차감된 순액으로 도착합니다.",
+    bank_eyebrow:"은행 정보 (비공개)", bank_name_label:"전체 이름", bank_name_ph:"은행에 등록된 이름과 동일하게",
+    bank_cpf_label:"신분증 번호", bank_pix_label:"결제 키", bank_pix_ph:"이메일, 신분증, 전화번호 또는 무작위 키",
+    btn_save_bank:"은행 정보 저장",
+    bank_note:"프로토타입: 데이터는 암호화 없이 탭 메모리에만 저장됩니다. 실제 서비스에서는 암호화 및 데이터 보호 규정 준수가 필요합니다.",
+    history_eyebrow:"내역",
+    buycoins_title:"코인 구매", buycoins_sub_html:'<span id="buycoins-country">—</span> 전용 패키지입니다. 결제가 확인될 때까지 주문은 대기 상태입니다.',
+    profile_title:"내 프로필", profile_meta_html:'나이: <span id="profile-age">—</span> · <span id="profile-country">—</span> · 성별: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 개인정보 처리방침", profile_terms:"📄 이용약관",
+    btn_settings:"⚙️ 설정", settings_title:"설정", settings_language:"언어",
+    btn_logout:"로그아웃 / 프로필 전환",
+    broadcast_title:"라이브", btn_stop_broadcast:"⏹️ 방송 종료",
+    tab_lives:"라이브", tab_wallet:"지갑", tab_profile:"프로필"
+  },
+  tr: {
+    welcome_eyebrow:"Hoş geldin", welcome_title:"Canlı yayınlar ve hediyeler,<br>hepsi tek bir uygulamada.",
+    welcome_sub:"Kadın profiller yayın yapmadan önce yüz doğrulamasından geçer. Kazançlar platform komisyonu düşülmüş olarak cüzdana ulaşır.",
+    role_male:"Erkeğim", role_male_sub:"İzle ve keyfini çıkar", role_female:"Kadınım", role_female_sub:"Yayın yap ve kazan",
+    label_name:"Ad", ph_name:"Adınız", label_age:"Yaş", label_country:"Ülke",
+    label_email:"E-posta", label_password:"Şifre", ph_password:"en az 8 karakter",
+    age_policy_html:'<b>18 yaşında veya daha büyük</b> olduğumu ve <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Gizlilik Politikası</a> ile <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Kullanım Koşulları</a>nı okuyup kabul ettiğimi onaylıyorum. Bu uygulama yalnızca yetişkinlere yönelik içerik barındırır.',
+    btn_create_profile:"Profil oluştur", link_have_account:"Zaten hesabım var — giriş yap",
+    face_eyebrow:"Zorunlu adım", face_title:"Yüz doğrulama",
+    face_sub:"Yayın güvenliği için kadın profiller yalnızca yüz onayından sonra yayın yapabilir.",
+    face_status:"Yüzünüzü çerçeve içine yerleştirin", face_btn:"Doğrulamayı başlat",
+    face_note:"Bu prototipte doğrulama simüle edilmiştir — üretimde gerçek bir biyometri/canlılık sağlayıcısı kullanılacaktır.",
+    photos_eyebrow:"Zorunlu adım", photos_title:"Gerçek profil fotoğrafları",
+    photos_sub:"Yayın yapmak için en az 1 gerçek fotoğrafınızı yükleyin (yüz görünür olmalı). Bu fotoğraflar yayınınızı izleyenlere gösterilir.",
+    photos_btn:"Devam etmek için en az 1 fotoğraf yükleyin",
+    photos_note:"Prototip: fotoğraflar yalnızca sekme belleğinde tutulur. Üretimde yayın öncesi güvenli yükleme ve içerik denetimi gerekecektir.",
+    home_eyebrow:"Şu anda canlı",
+    btn_back:"← Geri", live_sub:"Şu anda canlı", live_badge:"CANLI", live_photos_eyebrow:"Profil fotoğrafları",
+    btn_gift:"🎁 Hediye",
+    wallet_title:"Cüzdan", coins_label:"jeton",
+    wallet_male_sub:"Hediye göndermek için jeton satın alın.", btn_buy_coins:"🪙 Jeton satın al",
+    wallet_orders_eyebrow:"Satın alma siparişlerim",
+    wallet_female_sub:"Kazançlarınız platform komisyonu düşülmüş olarak net şekilde ulaşır.",
+    bank_eyebrow:"Banka bilgileri (özel)", bank_name_label:"Ad Soyad", bank_name_ph:"Bankanızdaki gibi",
+    bank_cpf_label:"Kimlik numarası", bank_pix_label:"Ödeme anahtarı", bank_pix_ph:"e-posta, kimlik, telefon veya rastgele anahtar",
+    btn_save_bank:"Banka bilgilerini kaydet",
+    bank_note:"Prototip: veriler şifrelenmeden yalnızca sekme belleğinde tutulur. Üretimde şifreleme ve veri koruma uyumluluğu gerekecektir.",
+    history_eyebrow:"Geçmiş",
+    buycoins_title:"Jeton satın al", buycoins_sub_html:'<span id="buycoins-country">—</span> için paketler. Ödeme onaylanana kadar sipariş beklemede kalır.',
+    profile_title:"Profilim", profile_meta_html:'Yaş: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Cinsiyet: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Gizlilik Politikası", profile_terms:"📄 Kullanım Koşulları",
+    btn_settings:"⚙️ Ayarlar", settings_title:"Ayarlar", settings_language:"Dil",
+    btn_logout:"Çıkış yap / profil değiştir",
+    broadcast_title:"CANLI", btn_stop_broadcast:"⏹️ Yayını sonlandır",
+    tab_lives:"Canlılar", tab_wallet:"Cüzdan", tab_profile:"Profil"
+  },
+  pl: {
+    welcome_eyebrow:"Witamy", welcome_title:"Transmisje na żywo i prezenty,<br>wszystko w jednej aplikacji.",
+    welcome_sub:"Profile kobiece przechodzą weryfikację twarzy przed rozpoczęciem transmisji. Zarobki trafiają do portfela już po odjęciu prowizji platformy.",
+    role_male:"Jestem mężczyzną", role_male_sub:"Oglądaj i baw się dobrze", role_female:"Jestem kobietą", role_female_sub:"Transmituj i zarabiaj",
+    label_name:"Imię", ph_name:"Twoje imię", label_age:"Wiek", label_country:"Kraj",
+    label_email:"E-mail", label_password:"Hasło", ph_password:"minimum 8 znaków",
+    age_policy_html:'Potwierdzam, że mam <b>18 lat lub więcej</b> oraz że przeczytałem/am i akceptuję <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Politykę Prywatności</a> i <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Regulamin</a>. Ta aplikacja zawiera treści wyłącznie dla dorosłych.',
+    btn_create_profile:"Utwórz profil", link_have_account:"Mam już konto — zaloguj się",
+    face_eyebrow:"Krok obowiązkowy", face_title:"Weryfikacja twarzy",
+    face_sub:"Dla bezpieczeństwa transmisji, profile kobiece mogą transmitować dopiero po potwierdzeniu twarzy.",
+    face_status:"Umieść twarz w ramce", face_btn:"Rozpocznij weryfikację",
+    face_note:"Weryfikacja w tym prototypie jest symulowana — w wersji produkcyjnej użyty zostałby prawdziwy dostawca biometrii/liveness.",
+    photos_eyebrow:"Krok obowiązkowy", photos_title:"Prawdziwe zdjęcia profilowe",
+    photos_sub:"Aby transmitować, prześlij co najmniej 1 prawdziwe zdjęcie siebie (widoczna twarz). Te zdjęcia widzą osoby oglądające Twoją transmisję.",
+    photos_btn:"Prześlij co najmniej 1 zdjęcie, aby kontynuować",
+    photos_note:"Prototyp: zdjęcia są przechowywane tylko w pamięci karty. W wersji produkcyjnej wymagane byłoby bezpieczne przesyłanie i moderacja treści przed transmisją.",
+    home_eyebrow:"Teraz na żywo",
+    btn_back:"← Wstecz", live_sub:"Teraz na żywo", live_badge:"NA ŻYWO", live_photos_eyebrow:"Zdjęcia profilowe",
+    btn_gift:"🎁 Prezent",
+    wallet_title:"Portfel", coins_label:"monety",
+    wallet_male_sub:"Kup monety, aby wysyłać prezenty.", btn_buy_coins:"🪙 Kup monety",
+    wallet_orders_eyebrow:"Moje zamówienia zakupu",
+    wallet_female_sub:"Twoje zarobki docierają już netto, po odjęciu prowizji platformy.",
+    bank_eyebrow:"Dane bankowe (prywatne)", bank_name_label:"Imię i nazwisko", bank_name_ph:"Zgodnie z danymi w banku",
+    bank_cpf_label:"Numer dokumentu tożsamości", bank_pix_label:"Klucz płatności", bank_pix_ph:"e-mail, dokument, telefon lub losowy klucz",
+    btn_save_bank:"Zapisz dane bankowe",
+    bank_note:"Prototyp: dane są przechowywane wyłącznie w pamięci karty, bez szyfrowania. W wersji produkcyjnej wymagane byłoby szyfrowanie i zgodność z przepisami o ochronie danych.",
+    history_eyebrow:"Historia",
+    buycoins_title:"Kup monety", buycoins_sub_html:'Pakiety dla <span id="buycoins-country">—</span>. Zamówienie pozostaje oczekujące do czasu potwierdzenia płatności.',
+    profile_title:"Mój profil", profile_meta_html:'Wiek: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Płeć: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Polityka Prywatności", profile_terms:"📄 Regulamin",
+    btn_settings:"⚙️ Ustawienia", settings_title:"Ustawienia", settings_language:"Język",
+    btn_logout:"Wyloguj się / zmień profil",
+    broadcast_title:"NA ŻYWO", btn_stop_broadcast:"⏹️ Zakończ transmisję",
+    tab_lives:"Live", tab_wallet:"Portfel", tab_profile:"Profil"
+  },
+  nl: {
+    welcome_eyebrow:"Welkom", welcome_title:"Livestreams en cadeaus,<br>alles in één app.",
+    welcome_sub:"Vrouwelijke profielen doorlopen een gezichtsverificatie voordat ze kunnen streamen. Verdiensten komen al netto, na aftrek van de platformvergoeding, in de portemonnee terecht.",
+    role_male:"Ik ben een man", role_male_sub:"Kijken en genieten", role_female:"Ik ben een vrouw", role_female_sub:"Streamen en verdienen",
+    label_name:"Naam", ph_name:"Jouw naam", label_age:"Leeftijd", label_country:"Land",
+    label_email:"E-mail", label_password:"Wachtwoord", ph_password:"minimaal 8 tekens",
+    age_policy_html:'Ik bevestig dat ik <b>18 jaar of ouder</b> ben en dat ik het <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Privacybeleid</a> en de <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Gebruiksvoorwaarden</a> heb gelezen en accepteer. Deze app bevat uitsluitend content voor volwassenen.',
+    btn_create_profile:"Profiel aanmaken", link_have_account:"Ik heb al een account — inloggen",
+    face_eyebrow:"Verplichte stap", face_title:"Gezichtsverificatie",
+    face_sub:"Voor de veiligheid van streams kunnen vrouwelijke profielen pas streamen na bevestiging van het gezicht.",
+    face_status:"Plaats je gezicht binnen het kader", face_btn:"Verificatie starten",
+    face_note:"De verificatie in dit prototype is gesimuleerd — in productie zou een echte biometrie-/liveness-aanbieder worden gebruikt.",
+    photos_eyebrow:"Verplichte stap", photos_title:"Echte profielfoto's",
+    photos_sub:"Om te streamen, upload minstens 1 echte foto van jezelf (gezicht zichtbaar). Deze foto's worden getoond aan wie je stream bekijkt.",
+    photos_btn:"Upload minstens 1 foto om door te gaan",
+    photos_note:"Prototype: foto's worden alleen in het geheugen van het tabblad bewaard. In productie zouden een veilige upload en contentmoderatie vóór het streamen nodig zijn.",
+    home_eyebrow:"Nu live",
+    btn_back:"← Terug", live_sub:"Nu live", live_badge:"LIVE", live_photos_eyebrow:"Profielfoto's",
+    btn_gift:"🎁 Cadeau",
+    wallet_title:"Portemonnee", coins_label:"munten",
+    wallet_male_sub:"Koop munten om cadeaus te versturen.", btn_buy_coins:"🪙 Munten kopen",
+    wallet_orders_eyebrow:"Mijn aankooporders",
+    wallet_female_sub:"Je verdiensten komen al netto binnen, na aftrek van de platformvergoeding.",
+    bank_eyebrow:"Bankgegevens (privé)", bank_name_label:"Volledige naam", bank_name_ph:"Zoals bekend bij je bank",
+    bank_cpf_label:"Identiteitsnummer", bank_pix_label:"Betaalsleutel", bank_pix_ph:"e-mail, identiteit, telefoon of willekeurige sleutel",
+    btn_save_bank:"Bankgegevens opslaan",
+    bank_note:"Prototype: gegevens worden alleen in het geheugen van het tabblad bewaard, zonder versleuteling. In productie zouden versleuteling en naleving van gegevensbescherming nodig zijn.",
+    history_eyebrow:"Geschiedenis",
+    buycoins_title:"Munten kopen", buycoins_sub_html:'Pakketten voor <span id="buycoins-country">—</span>. De bestelling blijft in behandeling totdat de betaling is bevestigd.',
+    profile_title:"Mijn profiel", profile_meta_html:'Leeftijd: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Geslacht: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Privacybeleid", profile_terms:"📄 Gebruiksvoorwaarden",
+    btn_settings:"⚙️ Instellingen", settings_title:"Instellingen", settings_language:"Taal",
+    btn_logout:"Uitloggen / profiel wisselen",
+    broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Stream beëindigen",
+    tab_lives:"Lives", tab_wallet:"Portemonnee", tab_profile:"Profiel"
+  },
+  th: {
+    welcome_eyebrow:"ยินดีต้อนรับ", welcome_title:"ไลฟ์สดและของขวัญ<br>ครบจบในแอปเดียว",
+    welcome_sub:"โปรไฟล์ผู้หญิงต้องผ่านการยืนยันใบหน้าก่อนเริ่มไลฟ์สด รายได้จะเข้ากระเป๋าเงินหลังหักค่าธรรมเนียมแพลตฟอร์มแล้ว",
+    role_male:"ฉันเป็นผู้ชาย", role_male_sub:"ดูและเพลิดเพลิน", role_female:"ฉันเป็นผู้หญิง", role_female_sub:"ไลฟ์สดและรับรายได้",
+    label_name:"ชื่อ", ph_name:"ชื่อของคุณ", label_age:"อายุ", label_country:"ประเทศ",
+    label_email:"อีเมล", label_password:"รหัสผ่าน", ph_password:"อย่างน้อย 8 ตัวอักษร",
+    age_policy_html:'ฉันยืนยันว่าฉัน<b>อายุ 18 ปีขึ้นไป</b> และได้อ่านและยอมรับ<a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">นโยบายความเป็นส่วนตัว</a>และ<a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">ข้อกำหนดการใช้งาน</a> แอปนี้มีเนื้อหาสำหรับผู้ใหญ่เท่านั้น',
+    btn_create_profile:"สร้างโปรไฟล์", link_have_account:"มีบัญชีอยู่แล้ว — เข้าสู่ระบบ",
+    face_eyebrow:"ขั้นตอนที่จำเป็น", face_title:"การยืนยันใบหน้า",
+    face_sub:"เพื่อความปลอดภัยในการไลฟ์สด โปรไฟล์ผู้หญิงจะไลฟ์สดได้หลังจากยืนยันใบหน้าแล้วเท่านั้น",
+    face_status:"วางใบหน้าให้อยู่ในกรอบ", face_btn:"เริ่มการยืนยัน",
+    face_note:"การยืนยันในต้นแบบนี้เป็นการจำลอง — ในเวอร์ชันจริงจะใช้ผู้ให้บริการตรวจสอบไบโอเมตริก/liveness จริง",
+    photos_eyebrow:"ขั้นตอนที่จำเป็น", photos_title:"รูปโปรไฟล์จริง",
+    photos_sub:"ในการไลฟ์สด กรุณาอัปโหลดรูปจริงของคุณอย่างน้อย 1 รูป (เห็นใบหน้าชัดเจน) รูปเหล่านี้จะแสดงให้ผู้ชมไลฟ์สดของคุณเห็น",
+    photos_btn:"อัปโหลดรูปอย่างน้อย 1 รูปเพื่อดำเนินการต่อ",
+    photos_note:"ต้นแบบ: รูปภาพจะถูกเก็บไว้ในหน่วยความจำของแท็บเท่านั้น ในเวอร์ชันจริงจะต้องมีการอัปโหลดที่ปลอดภัยและการตรวจสอบเนื้อหาก่อนไลฟ์สด",
+    home_eyebrow:"กำลังไลฟ์สดตอนนี้",
+    btn_back:"← กลับ", live_sub:"กำลังไลฟ์สดตอนนี้", live_badge:"ไลฟ์สด", live_photos_eyebrow:"รูปโปรไฟล์",
+    btn_gift:"🎁 ของขวัญ",
+    wallet_title:"กระเป๋าเงิน", coins_label:"เหรียญ",
+    wallet_male_sub:"ซื้อเหรียญเพื่อส่งของขวัญ", btn_buy_coins:"🪙 ซื้อเหรียญ",
+    wallet_orders_eyebrow:"คำสั่งซื้อของฉัน",
+    wallet_female_sub:"รายได้ของคุณจะเข้ามาสุทธิหลังหักค่าธรรมเนียมแพลตฟอร์มแล้ว",
+    bank_eyebrow:"ข้อมูลธนาคาร (ส่วนตัว)", bank_name_label:"ชื่อเต็ม", bank_name_ph:"ตามที่แจ้งกับธนาคาร",
+    bank_cpf_label:"เลขบัตรประจำตัว", bank_pix_label:"คีย์การชำระเงิน", bank_pix_ph:"อีเมล เลขบัตรประจำตัว โทรศัพท์ หรือคีย์แบบสุ่ม",
+    btn_save_bank:"บันทึกข้อมูลธนาคาร",
+    bank_note:"ต้นแบบ: ข้อมูลจะถูกเก็บไว้ในหน่วยความจำของแท็บเท่านั้น โดยไม่มีการเข้ารหัส ในเวอร์ชันจริงจะต้องมีการเข้ารหัสและปฏิบัติตามกฎหมายคุ้มครองข้อมูล",
+    history_eyebrow:"ประวัติ",
+    buycoins_title:"ซื้อเหรียญ", buycoins_sub_html:'แพ็กเกจสำหรับ <span id="buycoins-country">—</span> คำสั่งซื้อจะค้างไว้จนกว่าจะยืนยันการชำระเงิน',
+    profile_title:"โปรไฟล์ของฉัน", profile_meta_html:'อายุ: <span id="profile-age">—</span> · <span id="profile-country">—</span> · เพศ: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 นโยบายความเป็นส่วนตัว", profile_terms:"📄 ข้อกำหนดการใช้งาน",
+    btn_settings:"⚙️ การตั้งค่า", settings_title:"การตั้งค่า", settings_language:"ภาษา",
+    btn_logout:"ออกจากระบบ / เปลี่ยนโปรไฟล์",
+    broadcast_title:"ไลฟ์สด", btn_stop_broadcast:"⏹️ สิ้นสุดการไลฟ์สด",
+    tab_lives:"ไลฟ์สด", tab_wallet:"กระเป๋าเงิน", tab_profile:"โปรไฟล์"
+  },
+  bn: {
+    welcome_eyebrow:"স্বাগতম", welcome_title:"লাইভ ও উপহার,<br>সব একটি অ্যাপেই।",
+    welcome_sub:"সম্প্রচারের আগে নারী প্রোফাইলগুলোকে ফেস ভেরিফিকেশনের মধ্য দিয়ে যেতে হয়। আয় প্ল্যাটফর্ম কমিশন বাদ দিয়েই ওয়ালেটে জমা হয়।",
+    role_male:"আমি পুরুষ", role_male_sub:"দেখুন ও উপভোগ করুন", role_female:"আমি নারী", role_female_sub:"সম্প্রচার করুন ও আয় করুন",
+    label_name:"নাম", ph_name:"আপনার নাম", label_age:"বয়স", label_country:"দেশ",
+    label_email:"ইমেইল", label_password:"পাসওয়ার্ড", ph_password:"সর্বনিম্ন ৮ অক্ষর",
+    age_policy_html:'আমি নিশ্চিত করছি যে আমার বয়স <b>১৮ বছর বা তার বেশি</b> এবং আমি <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">গোপনীয়তা নীতি</a> এবং <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">ব্যবহারের শর্তাবলী</a> পড়েছি এবং সম্মত হয়েছি। এই অ্যাপে শুধুমাত্র প্রাপ্তবয়স্কদের জন্য কনটেন্ট রয়েছে।',
+    btn_create_profile:"প্রোফাইল তৈরি করুন", link_have_account:"আমার অ্যাকাউন্ট আছে — লগইন করুন",
+    face_eyebrow:"বাধ্যতামূলক ধাপ", face_title:"ফেস ভেরিফিকেশন",
+    face_sub:"সম্প্রচারের নিরাপত্তার জন্য, নারী প্রোফাইল ফেস নিশ্চিত করার পরই সম্প্রচার করতে পারবে।",
+    face_status:"আপনার মুখ ফ্রেমের ভিতরে রাখুন", face_btn:"ভেরিফিকেশন শুরু করুন",
+    face_note:"এই প্রোটোটাইপে ভেরিফিকেশন সিমুলেটেড — প্রোডাকশনে একটি প্রকৃত বায়োমেট্রিক/লাইভনেস প্রদানকারী ব্যবহার করা হবে।",
+    photos_eyebrow:"বাধ্যতামূলক ধাপ", photos_title:"আসল প্রোফাইল ছবি",
+    photos_sub:"সম্প্রচার করতে, আপনার অন্তত ১টি আসল ছবি আপলোড করুন (মুখ দৃশ্যমান)। এই ছবিগুলো আপনার সম্প্রচার দর্শকদের দেখানো হবে।",
+    photos_btn:"চালিয়ে যেতে অন্তত ১টি ছবি আপলোড করুন",
+    photos_note:"প্রোটোটাইপ: ছবি শুধুমাত্র ট্যাবের মেমরিতে সংরক্ষিত হয়। প্রোডাকশনে সম্প্রচারের আগে নিরাপদ আপলোড এবং কনটেন্ট মডারেশন প্রয়োজন হবে।",
+    home_eyebrow:"এখন লাইভ",
+    btn_back:"← ফিরে যান", live_sub:"এখন লাইভ", live_badge:"লাইভ", live_photos_eyebrow:"প্রোফাইল ছবি",
+    btn_gift:"🎁 উপহার",
+    wallet_title:"ওয়ালেট", coins_label:"কয়েন",
+    wallet_male_sub:"উপহার পাঠাতে কয়েন কিনুন।", btn_buy_coins:"🪙 কয়েন কিনুন",
+    wallet_orders_eyebrow:"আমার কেনাকাটার অর্ডার",
+    wallet_female_sub:"আপনার আয় প্ল্যাটফর্ম কমিশন বাদ দিয়ে নিট আকারে আসে।",
+    bank_eyebrow:"ব্যাংক তথ্য (ব্যক্তিগত)", bank_name_label:"পুরো নাম", bank_name_ph:"আপনার ব্যাংকে যেমন আছে",
+    bank_cpf_label:"পরিচয়পত্র নম্বর", bank_pix_label:"পেমেন্ট কী", bank_pix_ph:"ইমেইল, পরিচয়পত্র, ফোন বা র‍্যান্ডম কী",
+    btn_save_bank:"ব্যাংক তথ্য সংরক্ষণ করুন",
+    bank_note:"প্রোটোটাইপ: তথ্য এনক্রিপশন ছাড়াই শুধুমাত্র ট্যাবের মেমরিতে সংরক্ষিত হয়। প্রোডাকশনে এনক্রিপশন এবং ডেটা সুরক্ষা সম্মতি প্রয়োজন হবে।",
+    history_eyebrow:"ইতিহাস",
+    buycoins_title:"কয়েন কিনুন", buycoins_sub_html:'<span id="buycoins-country">—</span>-এর জন্য প্যাকেজ। পেমেন্ট নিশ্চিত না হওয়া পর্যন্ত অর্ডার মুলতুবি থাকবে।',
+    profile_title:"আমার প্রোফাইল", profile_meta_html:'বয়স: <span id="profile-age">—</span> · <span id="profile-country">—</span> · লিঙ্গ: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 গোপনীয়তা নীতি", profile_terms:"📄 ব্যবহারের শর্তাবলী",
+    btn_settings:"⚙️ সেটিংস", settings_title:"সেটিংস", settings_language:"ভাষা",
+    btn_logout:"লগআউট / প্রোফাইল পরিবর্তন করুন",
+    broadcast_title:"লাইভ", btn_stop_broadcast:"⏹️ সম্প্রচার শেষ করুন",
+    tab_lives:"লাইভ", tab_wallet:"ওয়ালেট", tab_profile:"প্রোফাইল"
+  },
+  fil: {
+    welcome_eyebrow:"Maligayang pagdating", welcome_title:"Mga live stream at regalo,<br>lahat nasa isang app.",
+    welcome_sub:"Dumadaan ang mga babaeng profile sa facial verification bago mag-live. Ang kita ay direktang napupunta sa wallet, bawas na ang komisyon ng platform.",
+    role_male:"Lalaki ako", role_male_sub:"Manood at mag-enjoy", role_female:"Babae ako", role_female_sub:"Mag-live at kumita",
+    label_name:"Pangalan", ph_name:"Iyong pangalan", label_age:"Edad", label_country:"Bansa",
+    label_email:"Email", label_password:"Password", ph_password:"minimum na 8 karakter",
+    age_policy_html:'Kinukumpirma ko na ako ay <b>18 taong gulang pataas</b> at nabasa at tinatanggap ko ang <a href="privacidade.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Patakaran sa Privacy</a> at ang <a href="termos.html" target="_blank" style="color:#f0c75e; text-decoration:underline;">Mga Tuntunin ng Paggamit</a>. Ang app na ito ay naglalaman ng content na para lamang sa mga may sapat na gulang.',
+    btn_create_profile:"Gumawa ng profile", link_have_account:"May account na ako — mag-login",
+    face_eyebrow:"Kinakailangang hakbang", face_title:"Facial verification",
+    face_sub:"Para sa kaligtasan ng mga live stream, makakapag-live lamang ang mga babaeng profile pagkatapos ng kumpirmasyon ng mukha.",
+    face_status:"Ilagay ang iyong mukha sa loob ng frame", face_btn:"Simulan ang verification",
+    face_note:"Ang verification sa prototype na ito ay simulated — sa production, gagamit ng tunay na biometrics/liveness provider.",
+    photos_eyebrow:"Kinakailangang hakbang", photos_title:"Tunay na mga larawan ng profile",
+    photos_sub:"Para makapag-live, mag-upload ng kahit 1 tunay na larawan mo (kitang-kita ang mukha). Makikita ng mga manonood ng iyong live ang mga larawang ito.",
+    photos_btn:"Mag-upload ng kahit 1 larawan para magpatuloy",
+    photos_note:"Prototype: ang mga larawan ay itinatago lamang sa memory ng tab. Sa production, kakailanganin ng ligtas na pag-upload at content moderation bago mag-live.",
+    home_eyebrow:"Live ngayon",
+    btn_back:"← Bumalik", live_sub:"Live ngayon", live_badge:"LIVE", live_photos_eyebrow:"Mga larawan ng profile",
+    btn_gift:"🎁 Regalo",
+    wallet_title:"Wallet", coins_label:"coins",
+    wallet_male_sub:"Bumili ng coins para magpadala ng regalo.", btn_buy_coins:"🪙 Bumili ng coins",
+    wallet_orders_eyebrow:"Aking mga order sa pagbili",
+    wallet_female_sub:"Dumarating ang iyong kita nang neto na, bawas na ang komisyon ng platform.",
+    bank_eyebrow:"Impormasyon sa bangko (pribado)", bank_name_label:"Buong pangalan", bank_name_ph:"Katulad ng nasa bangko mo",
+    bank_cpf_label:"Numero ng ID", bank_pix_label:"Payment key", bank_pix_ph:"email, ID, telepono, o random na key",
+    btn_save_bank:"I-save ang impormasyon sa bangko",
+    bank_note:"Prototype: ang data ay itinatago lamang sa memory ng tab, walang encryption. Sa production, kakailanganin ng encryption at pagsunod sa proteksyon ng datos.",
+    history_eyebrow:"Kasaysayan",
+    buycoins_title:"Bumili ng coins", buycoins_sub_html:'Mga package para sa <span id="buycoins-country">—</span>. Mananatiling nakabinbin ang order hanggang makumpirma ang bayad.',
+    profile_title:"Aking profile", profile_meta_html:'Edad: <span id="profile-age">—</span> · <span id="profile-country">—</span> · Kasarian: <span id="profile-gender">—</span>',
+    profile_privacy:"📄 Patakaran sa Privacy", profile_terms:"📄 Mga Tuntunin ng Paggamit",
+    btn_settings:"⚙️ Mga Setting", settings_title:"Mga Setting", settings_language:"Wika",
+    btn_logout:"Mag-logout / magpalit ng profile",
+    broadcast_title:"LIVE", btn_stop_broadcast:"⏹️ Itigil ang live",
+    tab_lives:"Mga Live", tab_wallet:"Wallet", tab_profile:"Profile"
   }
+
 };
 
 let currentLang = "pt";
@@ -1061,9 +1606,29 @@ function applyLanguage(lang){
 function setLanguage(lang){
   applyLanguage(lang);
   // Se a pessoa ainda está no cadastro, já pré-seleciona o país correspondente à bandeira escolhida.
-  const countryMap = { pt:"BR", id:"ID", hi:"IN", vi:"VN", en:"OT" };
+  const countryMap = { pt:"BR", id:"ID", hi:"IN", vi:"VN", en:"OT", es:"ES", fr:"FR", zh:"CN", ar:"SA", ru:"RU", de:"DE", it:"IT", ja:"JP", ko:"KR", tr:"TR", th:"TH", fil:"PH" };
   const countrySelect = document.getElementById("in-country");
   if(countrySelect && countryMap[lang]) countrySelect.value = countryMap[lang];
+  if(document.getElementById("scr-settings") && document.getElementById("scr-settings").style.display !== "none"){
+    renderSettingsLangList();
+  }
+}
+
+const LANGUAGE_NAMES = {
+  pt:"🇧🇷 Português", en:"🇺🇸 English", es:"🇪🇸 Español", fr:"🇫🇷 Français",
+  de:"🇩🇪 Deutsch", it:"🇮🇹 Italiano", nl:"🇳🇱 Nederlands", pl:"🇵🇱 Polski",
+  ru:"🇷🇺 Русский", tr:"🇹🇷 Türkçe", ar:"🇸🇦 العربية", zh:"🇨🇳 中文",
+  ja:"🇯🇵 日本語", ko:"🇰🇷 한국어", th:"🇹🇭 ไทย", vi:"🇻🇳 Tiếng Việt",
+  id:"🇮🇩 Bahasa Indonesia", hi:"🇮🇳 हिन्दी", bn:"🇧🇩 বাংলা", fil:"🇵🇭 Filipino"
+};
+
+function renderSettingsLangList(){
+  const wrap = document.getElementById("settings-lang-list");
+  if(!wrap) return;
+  wrap.innerHTML = Object.keys(LANGUAGE_NAMES).map(code => `
+    <button class="btn ${currentLang===code ? "btn-primary" : "btn-outline"} btn-block" style="justify-content:flex-start; text-align:left;" onclick="setLanguage('${code}')">
+      ${LANGUAGE_NAMES[code]}
+    </button>`).join("");
 }
 
 function detectInitialLanguage(){
@@ -1076,6 +1641,21 @@ function detectInitialLanguage(){
   if(nav.startsWith("id")) return "id";
   if(nav.startsWith("hi")) return "hi";
   if(nav.startsWith("vi")) return "vi";
+  if(nav.startsWith("es")) return "es";
+  if(nav.startsWith("fr")) return "fr";
+  if(nav.startsWith("zh")) return "zh";
+  if(nav.startsWith("ar")) return "ar";
+  if(nav.startsWith("ru")) return "ru";
+  if(nav.startsWith("de")) return "de";
+  if(nav.startsWith("it")) return "it";
+  if(nav.startsWith("ja")) return "ja";
+  if(nav.startsWith("ko")) return "ko";
+  if(nav.startsWith("tr")) return "tr";
+  if(nav.startsWith("pl")) return "pl";
+  if(nav.startsWith("nl")) return "nl";
+  if(nav.startsWith("th")) return "th";
+  if(nav.startsWith("bn")) return "bn";
+  if(nav.startsWith("fil") || nav.startsWith("tl")) return "fil";
   return "pt";
 }
 
@@ -1148,7 +1728,7 @@ function showAppScreen(id){
   if(id==="scr-buycoins") renderBuyCoins();
   const tabbar = document.getElementById("tabbar");
   if(tabbar && tabbar.style.display !== "none"){
-    tabbar.style.visibility = (id==="scr-live" || id==="scr-broadcast" || id==="scr-incall") ? "hidden" : "visible";
+    tabbar.style.visibility = (id==="scr-live" || id==="scr-broadcast") ? "hidden" : "visible";
   }
 }
 
@@ -1348,7 +1928,6 @@ function enterApp(){
   document.getElementById("tabbar").style.display = "flex";
   renderHome(); renderWallet(); renderProfile();
   showAppScreen("scr-home");
-  if(currentUser.type === "female") listenForIncomingCalls();
 }
 
 function tabTo(id){
@@ -1357,6 +1936,7 @@ function tabTo(id){
   if(id==="scr-home") renderHome();
   if(id==="scr-wallet") renderWallet();
   if(id==="scr-profile") renderProfile();
+  if(id==="scr-settings") renderSettingsLangList();
   if(id==="scr-room-select"){
     const isStreamer = currentUser.type === "female";
     document.getElementById("room-select-solo-divider").style.display = isStreamer ? "block" : "none";
@@ -1406,7 +1986,7 @@ async function renderHome(){
     const coverUrl = (l.cover_status === "approved" && l.cover_path) ? sb.storage.from(PHOTOS_BUCKET).getPublicUrl(l.cover_path).data.publicUrl : null;
     const thumbUrl = coverUrl || (l.photos[0] ? l.photos[0].url : null);
     const thumb = thumbUrl ? `<img src="${thumbUrl}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">` : `<div class="avatar-glow">${l.emoji}</div>`;
-    card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${countryFlag(l.country)} ${l.name}</b><span>${viewers} assistindo · 🪙 ${fmt(l.call_price)}/min</span></div>`;
+    card.innerHTML = `${thumb}<div class="live-badge"><span class="dot"></span> AO VIVO</div><div class="live-meta"><b>${countryFlag(l.country)} ${l.name}</b><span>${viewers} assistindo</span></div>`;
     grid.appendChild(card);
   });
 
@@ -1766,7 +2346,6 @@ async function openLive(l){
   activeLive = l;
   document.getElementById("live-title").textContent = `${countryFlag(l.country)} ${l.name}`;
   document.getElementById("live-sub").textContent = `${Math.floor(Math.random()*400)+30} assistindo`;
-  document.getElementById("call-cta-btn").textContent = `📞 Ligar`;
   const avatarEl = document.getElementById("live-avatar-sm");
   const avatarUrl = (l.photos && l.photos[0]) ? l.photos[0].url : null;
   if(avatarUrl){ avatarEl.style.backgroundImage = `url(${avatarUrl})`; avatarEl.textContent = ""; }
@@ -1839,7 +2418,6 @@ async function joinLiveView(){
   try{
     const res = await callEdgeFunction("join-live", { session_id: activeLive.session_id });
     if(liveCallObject){ try{ liveCallObject.leave(); liveCallObject.destroy(); }catch(e){} liveCallObject = null; }
-    if(dailyCallObject){ try{ dailyCallObject.leave(); dailyCallObject.destroy(); }catch(e){} dailyCallObject = null; }
     if(broadcastCallObject){ try{ broadcastCallObject.leave(); broadcastCallObject.destroy(); }catch(e){} broadcastCallObject = null; }
     liveCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(liveCallObject, "live-chat-feed");
@@ -1908,11 +2486,6 @@ function flipBroadcastCamera(){
   }
 }
 
-function openCallModal(){
-  document.getElementById("modal-cost").textContent = fmt(activeLive.call_price);
-  document.getElementById("modal-balance").textContent = fmt(currentUser.balance);
-  document.getElementById("modal-call").classList.add("active");
-}
 function closeModal(id){ document.getElementById(id).classList.remove("active"); }
 
 /* ============================================================
@@ -1936,129 +2509,6 @@ async function callEdgeFunction(name, body){
     throw new Error(errMsg);
   }
   return json;
-}
-
-let dailyCallObject = null;
-let callMinuteInterval = null;
-let currentCallId = null;
-let pendingIncomingCall = null;
-
-async function confirmCall(){
-  const btn = document.querySelector('#modal-call .btn-primary');
-  if(btn) btn.disabled = true;
-  try{
-    leaveLiveView();
-    const startRes = await callEdgeFunction("start-call", { to_id: activeLive.id });
-    const joinRes = await callEdgeFunction("join-call", { call_id: startRes.call_id });
-    currentCallId = startRes.call_id;
-    closeModal("modal-call");
-    await refreshCurrentUser();
-    renderHome();
-    await enterCallScreen(joinRes.room_url, joinRes.token, joinRes.is_free, joinRes.duration_seconds, activeLive.name);
-  }catch(e){ alert(e && e.message ? e.message : String(e)); joinLiveView(); }
-  finally{ if(btn) btn.disabled = false; }
-}
-
-async function enterCallScreen(roomUrl, token, isFree, freeDurationSeconds, otherName){
-  document.getElementById("incall-title").textContent = "Ligação com " + otherName;
-  showAppScreen("scr-incall");
-  const container = document.getElementById("daily-frame-container");
-  container.innerHTML = "";
-  if(liveCallObject){ try{ liveCallObject.leave(); liveCallObject.destroy(); }catch(e){} liveCallObject = null; }
-  if(dailyCallObject){ try{ dailyCallObject.leave(); dailyCallObject.destroy(); }catch(e){} dailyCallObject = null; }
-  if(broadcastCallObject){ try{ broadcastCallObject.leave(); broadcastCallObject.destroy(); }catch(e){} broadcastCallObject = null; }
-  dailyCallObject = window.DailyIframe.createFrame(container, {
-    showLeaveButton: false,
-    iframeStyle: { width:"100%", height:"100%", border:"0" },
-  });
-  dailyCallObject.on("left-meeting", endCallUI);
-  await dailyCallObject.join({ url: roomUrl, token, startVideoOff: false, startAudioOff: false });
-  if(currentUser.type === "male"){
-    if(isFree){ startFreeCountdown(freeDurationSeconds); }
-    else { startMinuteBilling(); }
-  } else {
-    document.getElementById("incall-timer").textContent = isFree ? "Ligação com cartão grátis" : "Ligação em andamento";
-  }
-}
-
-function startFreeCountdown(seconds){
-  clearInterval(callMinuteInterval);
-  let remain = seconds;
-  const tick = ()=>{
-    const mm = String(Math.floor(remain/60)).padStart(2,"0");
-    const ss = String(remain%60).padStart(2,"0");
-    document.getElementById("incall-timer").textContent = `${mm}:${ss}`;
-    if(remain<=0){ leaveCall(); return; }
-    remain--;
-  };
-  tick();
-  callMinuteInterval = setInterval(tick, 1000);
-}
-
-function startMinuteBilling(){
-  clearInterval(callMinuteInterval);
-  let elapsed = 0;
-  const tick = async ()=>{
-    elapsed += 60;
-    const mm = String(Math.floor(elapsed/60)).padStart(2,"0");
-    const ss = "00";
-    document.getElementById("incall-timer").textContent = `${mm}:${ss} · 🪙 ${fmt(currentUser.balance)}`;
-    try{
-      const { data, error } = await sb.rpc("charge_call_minute", { p_call_id: currentCallId });
-      if(error) throw error;
-      if(!data || !data.continued){
-        clearInterval(callMinuteInterval);
-        await refreshCurrentUser();
-        alert(data && data.reason==="sem_saldo" ? "Suas moedas acabaram, a ligação foi encerrada." : "A ligação foi encerrada.");
-        leaveCall();
-        return;
-      }
-      await refreshCurrentUser();
-      document.getElementById("incall-timer").textContent = `${mm}:${ss} · 🪙 ${fmt(currentUser.balance)}`;
-    }catch(e){ console.error(e); }
-  };
-  document.getElementById("incall-timer").textContent = `00:00 · 🪙 ${fmt(currentUser.balance)}`;
-  callMinuteInterval = setInterval(tick, 60000);
-}
-
-function leaveCall(){
-  if(dailyCallObject){ try{ dailyCallObject.leave(); dailyCallObject.destroy(); }catch(e){} dailyCallObject = null; }
-  if(currentCallId){ sb.rpc("end_call", { p_call_id: currentCallId }).catch(()=>{}); }
-  endCallUI();
-}
-function endCallUI(){
-  clearInterval(callMinuteInterval);
-  currentCallId = null;
-  showAppScreen(currentUser.type==="male" && activeLive ? "scr-live" : "scr-home");
-  if(currentUser.type==="male" && activeLive){ joinLiveView(); } else { renderHome(); }
-  if(currentUser) renderWallet();
-}
-
-/* ===== Criadora: escuta em tempo real chamadas chegando ===== */
-function listenForIncomingCalls(){
-  sb.channel("calls-" + currentUser.id)
-    .on("postgres_changes",
-      { event:"INSERT", schema:"public", table:"calls", filter:`callee_id=eq.${currentUser.id}` },
-      async (payload)=>{
-        pendingIncomingCall = payload.new;
-        const { data: caller } = await sb.from("profiles").select("name").eq("id", payload.new.caller_id).single();
-        document.getElementById("incoming-name").textContent = caller ? caller.name : "Alguém";
-        document.getElementById("modal-incoming").classList.add("active");
-      })
-    .subscribe();
-}
-
-async function acceptIncomingCall(){
-  if(!pendingIncomingCall) return;
-  closeModal("modal-incoming");
-  currentCallId = pendingIncomingCall.id;
-  try{
-    const joinRes = await callEdgeFunction("join-call", { call_id: pendingIncomingCall.id });
-    const { data: caller } = await sb.from("profiles").select("name").eq("id", pendingIncomingCall.caller_id).single();
-    await refreshCurrentUser();
-    await enterCallScreen(joinRes.room_url, joinRes.token, joinRes.is_free, joinRes.duration_seconds, caller ? caller.name : "Alguém");
-  }catch(e){ alert(e && e.message ? e.message : String(e)); }
-  finally{ pendingIncomingCall = null; }
 }
 
 const PAYMENT_METHODS_BY_COUNTRY = {
@@ -2514,7 +2964,7 @@ function renderCreatorSettings(){
     const isSelected = currentUser.call_price === price;
     return `<div class="tier-btn ${isSelected?'selected':''} ${isUnlocked?'':'locked'}" ${isUnlocked?`onclick="setCallPrice(${price})"`:''}>
       <b>🪙 ${fmt(price)}</b>
-      <span>${isUnlocked ? "por 30 min" : `nível ${idx+1} 🔒`}</span>
+      <span>${isUnlocked ? "por hora ao vivo" : `nível ${idx+1} 🔒`}</span>
     </div>`;
   }).join("");
 
@@ -2530,8 +2980,8 @@ function renderCreatorSettings(){
       <div class="photo-thumbs" id="profile-photo-thumbs"></div>
     </div>
     <div class="card">
-      <div class="eyebrow">Valor da chamada (referência 30 min)</div>
-      <p>O valor por minuto é calculado automaticamente a partir daqui. Você recebe automaticamente e sobe de nível conforme acumula ganhos líquidos.</p>
+      <div class="eyebrow">Seu nível de ganhos</div>
+      <p>Você recebe automaticamente e sobe de nível conforme acumula ganhos líquidos com presentes.</p>
       <div class="tier-grid">${tiersHtml}</div>
     </div>`;
 
@@ -2688,7 +3138,7 @@ async function renderAdmin(){
     tr.innerHTML = `
       <td>${a.display_id}</td><td>${a.name}</td><td>${countryFlag(a.country)} ${a.country||"—"}</td><td>${a.type==="female"?"Mulher":"Homem"}</td>
       <td>🪙 ${fmt(a.balance)}</td>
-      <td>${a.type==="female" ? `⭐${a.level} · 🪙${fmt(a.call_price)}` : "—"}</td>
+      <td>${a.type==="female" ? `⭐${a.level}` : "—"}</td>
       <td>${a.type==="female" ? `<code>${a.access_password || "—"}</code>` : "—"}</td>
       <td>${a.active ? '<span class="pill pill-ok">Ativa</span>' : '<span class="pill pill-off">Bloqueada</span>'}</td>
       <td><div class="mini">
@@ -2810,7 +3260,7 @@ function aiActionCard(action){
 async function aiSystemPrompt(){
   const { data: real } = await sb.from("profiles").select("id, display_id, name, type, balance, active").in("type",["male","female"]);
   const list = (real||[]).map(a=>`${a.id} (${a.display_id}) | ${a.name} | ${a.type==="female"?"mulher":"homem"} | saldo ${a.balance} | ${a.active?"ativa":"bloqueada"}`).join("\n");
-  return `Você é o assistente de administração do painel Zuki Live (app de lives com ligações pagas).
+  return `Você é o assistente de administração do painel Zuki Live (app de lives com presentes pagos).
 Sua única função é interpretar pedidos do administrador em português e sugerir NO MÁXIMO UMA ação por vez. Você NUNCA executa nada — só sugere.
 
 Contas cadastradas agora (id interno | display_id | nome | tipo | saldo | status):
