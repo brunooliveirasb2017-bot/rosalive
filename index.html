@@ -1726,6 +1726,7 @@ function showAppScreen(id){
   document.querySelectorAll("#mode-app .screen").forEach(s=>s.style.display="none");
   document.getElementById(id).style.display = "block";
   if(id==="scr-buycoins") renderBuyCoins();
+  if(id==="scr-settings") renderSettingsLangList();
   const tabbar = document.getElementById("tabbar");
   if(tabbar && tabbar.style.display !== "none"){
     tabbar.style.visibility = (id==="scr-live" || id==="scr-broadcast") ? "hidden" : "visible";
@@ -1936,7 +1937,6 @@ function tabTo(id){
   if(id==="scr-home") renderHome();
   if(id==="scr-wallet") renderWallet();
   if(id==="scr-profile") renderProfile();
-  if(id==="scr-settings") renderSettingsLangList();
   if(id==="scr-room-select"){
     const isStreamer = currentUser.type === "female";
     document.getElementById("room-select-solo-divider").style.display = isStreamer ? "block" : "none";
