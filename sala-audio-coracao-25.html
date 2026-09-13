@@ -821,9 +821,8 @@ async function sendLuckyGift(gift){
 }
 
 function showLuckyResult(result){
-  // Resultados comuns (20x/50x) só aparecem no chat da sala -- a mensagem já foi
-  // inserida pelo backend em seat_room_messages, então o chat mostra sozinho.
-  if(result.multiplier < 100) return;
+  // Sem prêmio: o backend nem insere mensagem no chat, então fica em silêncio mesmo.
+  if(!result.multiplier || result.multiplier <= 0) return;
 
   const back = document.getElementById("lucky-popup-back");
   const popup = document.getElementById("lucky-popup");
@@ -837,7 +836,13 @@ function showLuckyResult(result){
   msgEl.textContent = result.sender_name + " ganhou " + fmt(result.prize) + " moedas";
 
   let holdTime = 2200;
-  if(result.multiplier === 100){
+  if(result.multiplier === 20){
+    subEl.textContent = "🍀 GANHOU!";
+    chestEl.style.display = "none";
+  }else if(result.multiplier === 50){
+    subEl.textContent = "🎉 BOA SORTE!";
+    chestEl.style.display = "none";
+  }else if(result.multiplier === 100){
     subEl.textContent = "✨ VITÓRIA!";
     chestEl.style.display = "none";
   }else if(result.multiplier === 250){
