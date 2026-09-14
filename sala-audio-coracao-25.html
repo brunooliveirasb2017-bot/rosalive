@@ -432,7 +432,7 @@ async function loadSeatsFromDb(){
     }catch(e){ /* segue mostrando a silhueta se a foto não carregar */ }
     try{
       await loadAvatarFramesCatalog();
-      const { data: frameRows } = await sb.from("profiles").select("id, equipped_frame_id").in("id", userIds);
+      const { data: frameRows } = await sb.rpc("get_public_profile_frames", { p_ids: userIds });
       const frameByUser = {};
       (frameRows||[]).forEach(p=>{ if(p.equipped_frame_id) frameByUser[p.id] = p.equipped_frame_id; });
       Object.values(seatsState).forEach(seat=>{

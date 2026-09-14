@@ -2010,14 +2010,15 @@ async function renderHome(){
     fab.textContent = "🔴";
     fab.onclick = ()=>showAppScreen("scr-room-select");
   }
-  const { data: sessions, error } = await sb
-    .from("live_sessions")
-    .select("*, profiles!live_sessions_female_id_fkey(*, photos(*))")
-    .eq("status","active");
+  const { data: sessions, error } = await sb.rpc("get_active_lives");
   const grid = document.getElementById("live-grid");
   grid.innerHTML = "";
   if(error){ grid.innerHTML = `<p style="grid-column:1/-1;">Erro ao carregar lives: ${error.message}</p>`; return; }
-  const lives = (sessions||[]).map(s=>({ ...s.profiles, session_id: s.id, room_name: s.room_name }));
+  const lives = (sessions||[]).map(s=>({
+    id: s.female_id, session_id: s.session_id, room_name: s.room_name,
+    name: s.name, age: s.age, country: s.country,
+    cover_path: s.cover_path, cover_status: s.cover_status, photos: s.photos || []
+  }));
   lives.forEach(l=>{
     l.photos = (l.photos||[]).sort((a,b)=>a.position-b.position)
       .map(p=>({ ...p, url: sb.storage.from(PHOTOS_BUCKET).getPublicUrl(p.path).data.publicUrl }));
