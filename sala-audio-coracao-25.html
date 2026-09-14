@@ -133,7 +133,7 @@
   @keyframes giftFly{ 0%{ transform:translateY(0) scale(.6); opacity:0; } 15%{ opacity:1; transform:scale(1);} 100%{ transform:translateY(-160px) scale(1.3); opacity:0; } }
 
 
-/* ===== BOMBA ZUKI LIVE ===== */
+/* ===== FOGOS DE ARTIFÍCIO ZUKI LIVE ===== */
 .seat-grid-wrap{ position:relative; }
 .bomb-mini{ display:none; position:absolute; top:calc(100% + 8px); right:0; width:15%; aspect-ratio:1/1; border-radius:50%; overflow:hidden; cursor:pointer; z-index:15; background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%); border:1.5px solid var(--pink); box-shadow:0 0 10px -3px rgba(212,175,55,.7); }
 .bomb-mini.active{ display:block; animation:bombIn .5s ease-out; }
@@ -144,21 +144,32 @@
 .bomb-event.show{display:block;animation:bombIn .5s ease-out}
 @keyframes bombIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 .bomb-stage{position:relative;width:210px;height:210px;margin:auto}
-.bomb-sphere{position:absolute;inset:15px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%);border:4px solid #55515d;box-shadow:inset -18px -22px 35px #000, inset 12px 10px 25px rgba(255,255,255,.16),0 0 28px rgba(212,175,55,.32)}
-.bomb-liquid{position:absolute;left:-12%;right:-12%;bottom:-3%;height:62%;background:linear-gradient(#e8c56a,#a8791f 45%,#5a3a10);border-top:2px solid rgba(244,197,66,.7);animation:seaWave 1.8s ease-in-out infinite alternate;clip-path:polygon(0 16%,10% 10%,20% 18%,30% 8%,40% 17%,50% 7%,60% 15%,70% 9%,80% 18%,90% 8%,100% 15%,100% 100%,0 100%)}
-@keyframes seaWave{0%{transform:translateX(-3px) rotate(-1deg);height:60%}100%{transform:translateX(5px) rotate(1.5deg);height:65%}}
-.bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.35);animation:bubbleUp 2.8s infinite ease-in}
-.bubble.b1{width:9px;height:9px;left:35%;bottom:28%}.bubble.b2{width:6px;height:6px;left:58%;bottom:22%;animation-delay:.8s}.bubble.b3{width:12px;height:12px;left:48%;bottom:35%;animation-delay:1.4s}
-@keyframes bubbleUp{0%{transform:translateY(0) scale(.7);opacity:0}25%{opacity:.8}100%{transform:translateY(-80px) scale(1);opacity:0}}
-.bomb-highlight{position:absolute;inset:25px;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 28%);pointer-events:none}
-.bomb-fuse{position:absolute;top:0;left:50%;width:34px;height:62px;transform:translateX(-50%) rotate(12deg);border-top:6px solid #29252b;border-right:5px solid #29252b;border-radius:50%;z-index:4}
-.bomb-spark{position:absolute;top:-5px;left:50%;width:17px;height:17px;margin-left:10px;border-radius:50%;background:#fff2a1;box-shadow:0 0 8px #ffd34d,0 0 18px #ff7a00;animation:spark .55s infinite alternate}
-@keyframes spark{to{transform:scale(1.4);opacity:.55}}
-.bomb-level{font-weight:800;font-size:12px;color:var(--gold);letter-spacing:.08em}.bomb-title{font-size:15px;font-weight:800;margin-top:3px}.bomb-trophy{font-size:10px;color:var(--muted);margin-top:3px}.bomb-count{font-size:13px;font-weight:800;color:#fff;margin-top:7px}.bomb-progress{height:7px;border-radius:999px;background:#1c1810;overflow:hidden;margin:7px 25px}.bomb-progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#d4af37,#f4c542);transform-origin:left}.bomb-actions{display:flex;justify-content:center;gap:8px;margin-top:9px}.bomb-btn{border:1px solid var(--gold);background:#21101a;color:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:11px}.bomb-btn.claim{background:var(--pink)}
+.fw-globe{position:absolute;inset:15px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 65%,#1c1130 0%,#0a0612 70%);border:4px solid #55515d;box-shadow:inset -18px -22px 35px #000, inset 12px 10px 25px rgba(255,255,255,.12),0 0 28px rgba(212,175,55,.32)}
+.fw-star{position:absolute;border-radius:50%;background:#fff;opacity:.55;animation:fwTwinkle 1.6s ease-in-out infinite}
+.fw-star.s1{width:3px;height:3px;top:20%;left:26%}.fw-star.s2{width:2px;height:2px;top:30%;left:68%;animation-delay:.4s}.fw-star.s3{width:2px;height:2px;top:14%;left:56%;animation-delay:.9s}
+@keyframes fwTwinkle{0%,100%{opacity:.2}50%{opacity:.9}}
+.fw-core{position:absolute;top:46%;left:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#fff6d0;box-shadow:0 0 10px #ffd34d,0 0 22px #ff9d2e;animation:fwPulse 1s ease-in-out infinite}
+@keyframes fwPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.fw-burst-ring i{position:absolute;top:46%;left:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c);transform:rotate(var(--a)) translateX(0);animation:fwOut 1.4s ease-out infinite}
+@keyframes fwOut{0%{transform:rotate(var(--a)) translateX(0);opacity:0}15%{opacity:1}100%{transform:rotate(var(--a)) translateX(46px);opacity:0}}
+.fw-highlight{position:absolute;inset:25px;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.14),transparent 28%);pointer-events:none}
+.fw-level{font-weight:800;font-size:12px;color:var(--gold);letter-spacing:.08em}.bomb-title{font-size:15px;font-weight:800;margin-top:3px}.bomb-trophy{font-size:10px;color:var(--muted);margin-top:3px}.bomb-count{font-size:13px;font-weight:800;color:#fff;margin-top:7px}.bomb-progress{height:7px;border-radius:999px;background:#1c1810;overflow:hidden;margin:7px 25px}.bomb-progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#d4af37,#f4c542);transform-origin:left}.bomb-actions{display:flex;justify-content:center;gap:8px;margin-top:9px}.bomb-btn{border:1px solid var(--gold);background:#21101a;color:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:11px}.bomb-btn.claim{background:var(--pink)}
 .bomb-burst{display:none;font-size:40px;animation:burst .7s ease-out}.bomb-event.exploded .bomb-stage{display:none}.bomb-event.exploded .bomb-burst{display:block}.bomb-event.exploded .bomb-count{display:none}.bomb-event.exploded .bomb-progress{display:none}
 @keyframes burst{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
 .bomb-winner{display:none;margin-top:8px;background:linear-gradient(135deg,#1c1810,#160a12);border:1px solid var(--gold);border-radius:14px;padding:9px}.bomb-event.exploded .bomb-winner{display:block}.bomb-winner .big{font-size:18px;color:var(--gold);font-weight:900}.bomb-winner .small{font-size:10px;color:var(--cream);margin-top:2px}
 .bomb-prize-panel{display:none;margin:10px auto 0;max-width:330px;background:#0c0b09;border:1px solid var(--line);border-radius:14px;padding:10px}.bomb-prize-panel.show{display:block}.bomb-prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.bomb-prize{border:1px solid var(--line);border-radius:10px;padding:6px;background:#100d0a;font-size:10px}.bomb-prize strong{display:block;color:var(--gold);font-size:12px}.bomb-prize button{margin-top:5px;border:0;border-radius:999px;background:var(--pink);color:#fff;padding:5px 8px;font-size:9px;font-weight:800}.backpack-empty{color:var(--muted);font-size:11px;padding:12px;text-align:center}.backpack-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:7px;margin-top:6px;background:#100d0a}.backpack-item .ico{font-size:24px}.backpack-item .info{flex:1;text-align:left}.backpack-item .info b{font-size:11px}.backpack-item .info small{display:block;color:var(--muted);font-size:9px}.backpack-item button{border:0;background:var(--pink);color:#fff;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:800}
+
+/* ===== Aviso no topo (abertura dos Fogos de Artifício) ===== */
+.fw-top-banner{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-140%);z-index:500;background:linear-gradient(135deg,#3a1550,#160a12);border:1px solid var(--gold);border-radius:999px;padding:10px 20px;font-size:13px;font-weight:800;color:#fff;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 20px rgba(255,211,77,.35);white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;transition:transform .45s cubic-bezier(.2,.8,.3,1)}
+.fw-top-banner.show{transform:translateX(-50%) translateY(0)}
+
+/* ===== Fogos de artifício explodindo em tela cheia (ao abrir) ===== */
+.fw-fullscreen{position:fixed;inset:0;z-index:450;display:none;overflow:hidden;pointer-events:none;background:radial-gradient(circle at 50% 40%,rgba(20,10,35,.35),rgba(0,0,0,0) 70%)}
+.fw-fullscreen.show{display:block}
+.fw-fs-burst{position:absolute;width:6px;height:6px;border-radius:50%}
+.fw-fs-burst i{position:absolute;top:0;left:0;width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c),0 0 16px var(--c);transform:rotate(var(--a)) translateX(0);animation:fwFsOut 1.1s ease-out forwards}
+@keyframes fwFsOut{0%{transform:rotate(var(--a)) translateX(0);opacity:1}100%{transform:rotate(var(--a)) translateX(var(--d));opacity:0}}
+
 
 </style>
 </head>
@@ -193,8 +204,15 @@
     <div class="bomb-mini" id="bomb-mini" onclick="openBombPanel()">
       <div class="bomb-mini-badge" id="bomb-mini-badge">1</div>
       <div class="bomb-stage">
-        <div class="bomb-fuse"><span class="bomb-spark"></span></div>
-        <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+        <div class="fw-globe">
+          <span class="fw-star s1"></span><span class="fw-star s2"></span><span class="fw-star s3"></span>
+          <div class="fw-burst-ring">
+            <i style="--a:0deg;--c:#ffd34d"></i><i style="--a:60deg;--c:#ff5da2"></i><i style="--a:120deg;--c:#59d9ff"></i>
+            <i style="--a:180deg;--c:#ffd34d"></i><i style="--a:240deg;--c:#ff5da2"></i><i style="--a:300deg;--c:#59d9ff"></i>
+          </div>
+          <div class="fw-core"></div>
+          <div class="fw-highlight"></div>
+        </div>
       </div>
       <div class="bomb-mini-count" id="bomb-mini-count">05:00</div>
     </div>
@@ -205,12 +223,19 @@
       <button class="sheet-close" onclick="closeBombPanel()">✕</button>
       <div class="bomb-event show" id="bomb-event">
         <div class="bomb-stage">
-          <div class="bomb-fuse"><span class="bomb-spark"></span></div>
-          <div class="bomb-sphere"><div class="bomb-liquid"><span class="bubble b1"></span><span class="bubble b2"></span><span class="bubble b3"></span></div><div class="bomb-highlight"></div></div>
+          <div class="fw-globe">
+            <span class="fw-star s1"></span><span class="fw-star s2"></span><span class="fw-star s3"></span>
+            <div class="fw-burst-ring">
+              <i style="--a:0deg;--c:#ffd34d"></i><i style="--a:60deg;--c:#ff5da2"></i><i style="--a:120deg;--c:#59d9ff"></i>
+              <i style="--a:180deg;--c:#ffd34d"></i><i style="--a:240deg;--c:#ff5da2"></i><i style="--a:300deg;--c:#59d9ff"></i>
+            </div>
+            <div class="fw-core"></div>
+            <div class="fw-highlight"></div>
+          </div>
         </div>
-        <div class="bomb-burst">💥✨</div>
-        <div class="bomb-level" id="bomb-level">BOMBA LV.1</div>
-        <div class="bomb-title" id="bomb-title">A bomba foi liberada!</div>
+        <div class="bomb-burst">🎆🎇</div>
+        <div class="bomb-level" id="bomb-level">FOGOS LV.1</div>
+        <div class="bomb-title" id="bomb-title">Os Fogos de Artifício foram liberados!</div>
         <div class="bomb-trophy" id="bomb-trophy">Troféu: 0 moedas</div>
         <div class="bomb-count" id="bomb-count">05:00</div>
         <div class="bomb-progress"><i id="bomb-progress"></i></div>
@@ -252,7 +277,7 @@
   </div>
 </div>
 
-<div class="modal-back" id="modal-backpack"><div class="modal-card"><button class="sheet-close" onclick="closeBackpack()">✕</button><h3>🎒 Mochila</h3><p style="margin:0;font-size:12px;color:var(--muted);">Presentes ganhos na bomba</p><div id="backpack-list"></div></div></div>
+<div class="modal-back" id="modal-backpack"><div class="modal-card"><button class="sheet-close" onclick="closeBackpack()">✕</button><h3>🎒 Mochila</h3><p style="margin:0;font-size:12px;color:var(--muted);">Presentes ganhos nos Fogos de Artifício</p><div id="backpack-list"></div></div></div>
 
 <button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
 
@@ -682,7 +707,7 @@ let selectedGift = null;
 
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
-  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = myBackpack.length ? myBackpack.map(x=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>Prêmio da Bomba • 🪙 ${fmt(x.gift_value)} moedas</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos na bomba aparecerão aqui.</div>`; return; }
+  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = myBackpack.length ? myBackpack.map(x=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>Prêmio dos Fogos • 🪙 ${fmt(x.gift_value)} moedas</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos nos Fogos de Artifício aparecerão aqui.</div>`; return; }
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
   grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
@@ -881,7 +906,7 @@ function subscribeGiftsRealtime(){
 }
 
 
-// ---------- Bomba + Mochila (Supabase real) ----------
+// ---------- Fogos de Artifício + Mochila (Supabase real) ----------
 const BOMB_LEVELS = [
   {level:1, threshold:100000, prizes:[{v:2000,q:1},{v:1000,q:1},{v:500,q:2},{v:100,q:10},{v:10,q:30},{v:5,q:50}]},
   {level:2, threshold:250000, prizes:[{v:4000,q:2},{v:2000,q:2},{v:1000,q:4},{v:200,q:20},{v:20,q:60},{v:10,q:100}]},
@@ -896,8 +921,8 @@ async function loadBackpack(){
 function renderBackpack(){
   const el = document.getElementById("backpack-list");
   if(!el) return;
-  if(!myBackpack.length){ el.innerHTML = '<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos na bomba aparecerão aqui.</div>'; return; }
-  el.innerHTML = myBackpack.map(x => `<div class="backpack-item"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>🪙 ${fmt(x.gift_value||0)} • prêmio da Bomba</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("");
+  if(!myBackpack.length){ el.innerHTML = '<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos nos Fogos de Artifício aparecerão aqui.</div>'; return; }
+  el.innerHTML = myBackpack.map(x => `<div class="backpack-item"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>🪙 ${fmt(x.gift_value||0)} • prêmio dos Fogos</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("");
 }
 async function openBackpack(){ document.getElementById("modal-backpack").classList.add("active"); await loadBackpack(); renderBackpack(); }
 function bombTotalPrize(level){return level.prizes.reduce((a,p)=>a+p.v*p.q,0)}
@@ -925,8 +950,8 @@ function showBombFromEvent(ev){
   document.getElementById('bomb-mini').classList.add('active');
   document.getElementById('bomb-mini-badge').textContent=ev.level;
   document.getElementById('bomb-event').classList.remove('exploded');
-  document.getElementById('bomb-level').textContent=`BOMBA LV.${ev.level}`;
-  document.getElementById('bomb-title').textContent=`💣 Prêmios da bomba • ${fmt(bombTotalPrize(b))} moedas`;
+  document.getElementById('bomb-level').textContent=`FOGOS LV.${ev.level}`;
+  document.getElementById('bomb-title').textContent=`🎆 Prêmios dos Fogos de Artifício • ${fmt(bombTotalPrize(b))} moedas`;
   document.getElementById('bomb-trophy').textContent=`Troféu da sala • meta ${fmt(b.threshold)}`;
   document.getElementById('bomb-prize-panel').classList.remove('show');
   document.getElementById('bomb-claim').style.display='inline-block';
@@ -959,7 +984,7 @@ function explodeBomb(){
   if(bombState.exploded)return;
   bombState.exploded=true;
   document.getElementById('bomb-event').classList.add('exploded');
-  document.getElementById('bomb-title').textContent='💥 Bomba encerrada!';
+  document.getElementById('bomb-title').textContent='🎆 Fogos de artifício encerrados!';
   document.getElementById('bomb-prize-panel').classList.add('show');
   document.getElementById('bomb-claim').style.display='none';
   document.getElementById('bomb-mini-count').textContent='FIM';
@@ -970,7 +995,8 @@ async function updateBombWinner(eventId){
   try{
     const {data:claim}=await sb.from('bomb_claims').select('user_id, prize_value').eq('event_id',eventId).order('prize_value',{ascending:false}).limit(1).maybeSingle();
     if(!claim){document.getElementById('bomb-winner-prize').textContent='Maior prêmio';document.getElementById('bomb-winner-name').textContent='Aguardando vencedor';return;}
-    const {data:p}=await sb.from('profiles').select('name').eq('id',claim.user_id).maybeSingle();
+    const {data:pRows}=await sb.rpc('get_public_profile_frames',{p_ids:[claim.user_id]});
+    const p = pRows && pRows[0];
     document.getElementById('bomb-winner-prize').textContent=`🪙 ${fmt(claim.prize_value)} moedas`;
     document.getElementById('bomb-winner-name').textContent=`${p?.name||'Usuário'} ganhou o maior prêmio`;
   }catch(e){console.warn('winner',e)}
@@ -1017,15 +1043,66 @@ function subscribeBombRealtime(){
   sb.channel('bomb-'+ROOM_KEY)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_events',filter:`room_key=eq.${ROOM_KEY}`},payload=>{
       showBombFromEvent(payload.new);
-      showToast(`💣 Bomba LV.${payload.new.level} liberada!`);
+      announceFireworksOpen(payload.new.level);
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_claims'},payload=>{
       if(bombState.eventId && payload.new.event_id===bombState.eventId){
         updateBombWinner(bombState.eventId);
-        if(payload.new.user_id===myUserId) return;
-        showToast('🎉 Um participante pegou um prêmio da bomba!');
       }
     }).subscribe();
+}
+
+function showTopBanner(text, holdMs){
+  let el = document.getElementById('fw-top-banner');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'fw-top-banner';
+    el.className = 'fw-top-banner';
+    document.body.appendChild(el);
+  }
+  el.textContent = text;
+  requestAnimationFrame(()=> el.classList.add('show'));
+  clearTimeout(showTopBanner._t);
+  showTopBanner._t = setTimeout(()=> el.classList.remove('show'), holdMs || 4000);
+}
+
+function playFullscreenFireworks(durationMs){
+  let el = document.getElementById('fw-fullscreen');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'fw-fullscreen';
+    el.className = 'fw-fullscreen';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = '';
+  const colors = ['#ffd34d','#ff5da2','#59d9ff','#7CFF9E','#ffffff'];
+  const burstCount = 6;
+  for(let n=0; n<burstCount; n++){
+    const burst = document.createElement('div');
+    burst.className = 'fw-fs-burst';
+    burst.style.left = (10 + Math.random()*80) + '%';
+    burst.style.top = (12 + Math.random()*45) + '%';
+    burst.style.animationDelay = (n*0.18) + 's';
+    const color = colors[n % colors.length];
+    const rays = 14;
+    for(let i=0; i<rays; i++){
+      const spark = document.createElement('i');
+      spark.style.setProperty('--a', (i * (360/rays)) + 'deg');
+      spark.style.setProperty('--c', color);
+      spark.style.setProperty('--d', (55 + Math.random()*35) + 'px');
+      spark.style.animationDelay = (n*0.18) + 's';
+      burst.appendChild(spark);
+    }
+    el.appendChild(burst);
+  }
+  el.classList.add('show');
+  clearTimeout(playFullscreenFireworks._t);
+  playFullscreenFireworks._t = setTimeout(()=>{ el.classList.remove('show'); el.innerHTML=''; }, durationMs || 3000);
+}
+
+function announceFireworksOpen(level){
+  showTopBanner(`🎆 Fogos de artifício aberto na sala ${ROOM_NAME}!`);
+  playFullscreenFireworks(3000);
 }
 
 // ---------- Init ----------
