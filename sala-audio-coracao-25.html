@@ -720,6 +720,13 @@ function startComboSend(){
 
 function comboSendTap(){
   comboQueue++;
+  comboCount++;
+  const countEl = document.getElementById("combo-send-count");
+  countEl.style.display = "block";
+  countEl.textContent = comboCount;
+  flyFromComboToSeat();
+  clearTimeout(comboHideTimer);
+  comboHideTimer = setTimeout(hideComboSend, 3000);
   processComboQueue();
 }
 
@@ -728,16 +735,7 @@ async function processComboQueue(){
   comboProcessing = true;
   while(comboQueue > 0){
     comboQueue--;
-    const ok = await sendGiftNow(selectedGift);
-    if(ok){
-      comboCount++;
-      const countEl = document.getElementById("combo-send-count");
-      countEl.style.display = "block";
-      countEl.textContent = comboCount;
-      flyFromComboToSeat();
-      clearTimeout(comboHideTimer);
-      comboHideTimer = setTimeout(hideComboSend, 3000);
-    }
+    await sendGiftNow(selectedGift);
   }
   comboProcessing = false;
 }
