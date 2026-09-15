@@ -960,7 +960,7 @@ async function sendBackpackItem(itemId){
   }catch(e){ showToast("Não foi possível enviar: " + (e.message||e)); }
 }
 function renderBombPrizes(){const b=BOMB_LEVELS[bombState.level-1];const grid=document.getElementById('bomb-prize-grid');grid.innerHTML=b.prizes.map(p=>`<div class="bomb-prize"><strong>🪙 ${fmt(p.v)}</strong>${p.q} prêmio(s)</div>`).join('')}
-function showBombFromEvent(ev){
+function showBombFromEvent(ev, celebrate){
   if(!ev || !ev.level || !ev.started_at) return;
   const b=BOMB_LEVELS[ev.level-1]; if(!b) return;
   bombState={active:true,level:ev.level,eventId:ev.id,startedAt:new Date(ev.started_at).getTime(),endedAt:new Date(ev.ended_at).getTime(),claimed:false,timer:null,exploded:false};
@@ -980,6 +980,13 @@ function showBombFromEvent(ev){
   if(bombState.timer) clearInterval(bombState.timer);
   bombState.timer=setInterval(bombTick,250);
   updateBombWinner(ev.id);
+  // Só dispara a animação/som dos fogos quando é um evento NOVO de verdade
+  // (a sala acabou de bater a meta), não toda vez que a página sincroniza
+  // um evento que já estava rolando.
+  if(celebrate){
+    showTopBanner(`🎆 Fogos de artifício aberto na sala ${ROOM_NAME}!`, 5000);
+    playFullscreenFireworks(10000);
+  }
 }
 function openBombPanel(){
   if(!bombState.active) return;
@@ -1083,15 +1090,15 @@ async function checkBombUnlock(){
 async function loadActiveBomb(){
   try{
     const {data}=await sb.from('bomb_events').select('*').eq('room_key',ROOM_KEY).gt('ended_at',new Date().toISOString()).order('level',{ascending:false}).limit(1).maybeSingle();
-    if(data)showBombFromEvent(data);
+    if(data)showBombFromEvent(data, false);
   }catch(e){console.warn('active bomb',e)}
 }
 function subscribeBombRealtime(){
   sb.channel('bomb-'+ROOM_KEY)
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_events',filter:`room_key=eq.${ROOM_KEY}`},payload=>{
-      // Mantém a atualização visual da bomba, mas NÃO dispara os fogos aqui.
-      // Os fogos são exclusivos dos presentes de 100K/300K/600K.
-      showBombFromEvent(payload.new);
+      // Evento novo de verdade: a sala acabou de bater a meta (100K/300K/600K/1M)
+      // — aqui sim dispara os fogos de artifício pra todo mundo que estiver na sala.
+      showBombFromEvent(payload.new, true);
     })
     .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_claims'},payload=>{
       if(bombState.eventId && payload.new.event_id===bombState.eventId){
