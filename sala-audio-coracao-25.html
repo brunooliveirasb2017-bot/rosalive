@@ -137,6 +137,8 @@
 .seat-grid-wrap{ position:relative; }
 .bomb-mini{ display:none; position:absolute; top:calc(100% + 8px); right:0; width:15%; aspect-ratio:1/1; border-radius:50%; overflow:hidden; cursor:pointer; z-index:15; background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%); border:1.5px solid var(--pink); box-shadow:0 0 10px -3px rgba(212,175,55,.7); }
 .bomb-mini.active{ display:block; animation:bombIn .5s ease-out; }
+.bomb-mini.claimed{ filter:grayscale(.6); opacity:.55; }
+.bomb-mini.claiming{ pointer-events:none; opacity:.7; }
 .bomb-mini .bomb-stage{ position:absolute; top:50%; left:50%; width:210px; height:210px; transform:translate(-50%,-50%) scale(.32); margin:0; }
 .bomb-mini-badge{ position:absolute; top:-3px; left:-3px; background:var(--gold); color:#2a1508; font-size:9px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center; z-index:2; }
 .bomb-mini-count{ position:absolute; bottom:1px; left:0; right:0; text-align:center; font-size:8px; font-weight:800; color:#fff; text-shadow:0 1px 2px #000; z-index:2; }
@@ -204,7 +206,7 @@
 
   <div class="seat-grid-wrap">
     <div class="seat-grid" id="seat-grid"></div>
-    <div class="bomb-mini" id="bomb-mini" onclick="openBombPanel()">
+    <div class="bomb-mini" id="bomb-mini" onclick="quickClaimBomb()">
       <div class="bomb-mini-badge" id="bomb-mini-badge">1</div>
       <div class="bomb-stage">
         <div class="fw-globe">
@@ -951,7 +953,9 @@ function showBombFromEvent(ev){
   if(!ev || !ev.level || !ev.started_at) return;
   const b=BOMB_LEVELS[ev.level-1]; if(!b) return;
   bombState={active:true,level:ev.level,eventId:ev.id,startedAt:new Date(ev.started_at).getTime(),endedAt:new Date(ev.ended_at).getTime(),claimed:false,timer:null,exploded:false};
-  document.getElementById('bomb-mini').classList.add('active');
+  const miniEl=document.getElementById('bomb-mini');
+  miniEl.classList.add('active');
+  miniEl.classList.remove('claimed','claiming');
   document.getElementById('bomb-mini-badge').textContent=ev.level;
   document.getElementById('bomb-event').classList.remove('exploded');
   document.getElementById('bomb-level').textContent=`FOGOS LV.${ev.level}`;
@@ -1005,26 +1009,57 @@ async function updateBombWinner(eventId){
     document.getElementById('bomb-winner-name').textContent=`${p?.name||'Usuário'} ganhou o maior prêmio`;
   }catch(e){console.warn('winner',e)}
 }
+async function performBombClaim(){
+  const {data,error}=await sb.rpc('claim_bomb_prize',{p_room_key:ROOM_KEY,p_level:bombState.level});
+  if(error)throw error;
+  const result=data||{}; const value=Number(result.prize||0);
+  bombState.claimed=true;
+  if(result.is_gift){
+    showToast(`🎉 Você contribuiu mais e ganhou o presente "${result.gift_name||"especial"}"! Ele foi pra sua Mochila 🎒`);
+    await loadBackpack();
+  }else{
+    showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
+  }
+  const {data:profile}=await sb.from('profiles').select('balance,name').eq('id',myUserId).single();
+  const balanceEl=document.getElementById('balance'); if(balanceEl) balanceEl.textContent=fmt(profile?.balance||0);
+  await announceBombWinInChat(result,value);
+  updateBombWinner(bombState.eventId);
+  return result;
+}
+async function announceBombWinInChat(result,value){
+  try{
+    const msg = result.is_gift
+      ? `🎁 ganhei o presente "${result.gift_name||'especial'}" nos Fogos de Artifício! 🎆`
+      : `🎆 ganhei ${fmt(value)} moedas nos Fogos de Artifício!`;
+    await sb.from('seat_room_messages').insert({ room_key: ROOM_KEY, user_id: myUserId, display_name: myDisplayName, message: msg });
+    await loadChat();
+  }catch(e){ console.warn('chat bomb announce', e); }
+}
 async function claimBombPrize(){
   if(!bombState.active||bombState.claimed||bombState.exploded)return;
   const btn=document.getElementById('bomb-claim'); btn.disabled=true; btn.textContent='SORTEANDO...';
   try{
-    const {data,error}=await sb.rpc('claim_bomb_prize',{p_room_key:ROOM_KEY,p_level:bombState.level});
-    if(error)throw error;
-    const result=data||{}; const value=Number(result.prize||0);
-    bombState.claimed=true;
+    await performBombClaim();
     btn.textContent='PRÊMIO PEGADO';
-    if(result.is_gift){
-      showToast(`🎉 Você contribuiu mais e ganhou o presente "${result.gift_name||"especial"}"! Ele foi pra sua Mochila 🎒`);
-      await loadBackpack();
-    }else{
-      showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
-    }
-    const {data:profile}=await sb.from('profiles').select('balance,name').eq('id',myUserId).single();
-    const balanceEl=document.getElementById('balance'); if(balanceEl) balanceEl.textContent=fmt(profile?.balance||0);
-    updateBombWinner(bombState.eventId);
   }catch(e){
     btn.disabled=false; btn.textContent='PEGAR PRÊMIO';
+    showToast('Não foi possível pegar o prêmio: '+(e.message||e));
+  }
+}
+async function quickClaimBomb(){
+  if(!bombState.active)return;
+  if(bombState.exploded){ showToast('Os Fogos de Artifício já encerraram.'); return; }
+  if(bombState.claimed){ showToast('Você já pegou seu prêmio dessa rodada 🎁'); return; }
+  const miniEl=document.getElementById('bomb-mini');
+  miniEl.classList.add('claiming');
+  try{
+    await performBombClaim();
+    miniEl.classList.remove('claiming');
+    miniEl.classList.add('claimed');
+    const btn=document.getElementById('bomb-claim');
+    if(btn){ btn.disabled=true; btn.textContent='PRÊMIO PEGADO'; }
+  }catch(e){
+    miniEl.classList.remove('claiming');
     showToast('Não foi possível pegar o prêmio: '+(e.message||e));
   }
 }
