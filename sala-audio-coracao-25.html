@@ -445,7 +445,6 @@ async function loadGiftTotals(){
 
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
-  syncPlayedFireworkThresholds();
 }
 
 function addGiftToTotals(g){
@@ -848,13 +847,6 @@ function subscribeGiftsRealtime(){
 }
 
 
-// ---------- Fogos de Artifício por TOTAL ACUMULADO DA SALA ----------
-// Ao atingir cada marca de moedas recebidas na sala (soma de todos os
-// presentes enviados por qualquer pessoa), os fogos abrem pra todo
-// mundo que estiver na sala nesse momento.
-const FIREWORK_TOTAL_THRESHOLDS = [100000, 300000, 600000];
-const playedFireworkThresholds = new Set();
-
 // Efeito recortado do vídeo de referência, embutido no próprio HTML.
 // O vídeo fica com fundo preto + blend SCREEN para que somente os fogos
 // apareçam sobre a sala, sem substituir a interface.
@@ -941,23 +933,58 @@ function playFullscreenFireworks(durationMs){
   },ms);
 }
 
+// ---------- Fogos de Artifício por TOTAL ACUMULADO DA SALA ----------
+// A cada 100.000 moedas recebidas na sala (soma de todos os presentes,
+// de qualquer pessoa), abre uma contagem regressiva pra todo mundo que
+// estiver na sala. Quando estoura, sorteia moedas (80 a 300) pra até
+// 100 pessoas sentadas nesse momento — inclusive quem entrou durante a
+// contagem regressiva.
+const FIREWORK_STEP = 100000;
+const FIREWORK_COUNTDOWN_SECONDS = 15;
+
 function checkFireworksTotalUnlock(oldTotal, newTotal){
-  FIREWORK_TOTAL_THRESHOLDS.forEach(threshold=>{
-    if(playedFireworkThresholds.has(threshold)) return;
-    if(oldTotal < threshold && newTotal >= threshold){
-      playedFireworkThresholds.add(threshold);
-      showTopBanner(`🎆 A sala ${ROOM_NAME} atingiu ${fmt(threshold)} moedas — fogos de artifício abertos!`, 5000);
-      playFullscreenFireworks(10000);
-    }
-  });
+  const oldSteps = Math.floor(oldTotal / FIREWORK_STEP);
+  const newSteps = Math.floor(newTotal / FIREWORK_STEP);
+  for(let s = oldSteps + 1; s <= newSteps; s++){
+    startFireworksCountdown(s * FIREWORK_STEP);
+  }
 }
 
-function syncPlayedFireworkThresholds(){
-  // Ao sincronizar o total (ex.: ao entrar na sala), marca como já
-  // "tocadas" as marcas que já foram atingidas antes, pra não repetir
-  // o efeito toda vez que a página recarrega.
-  FIREWORK_TOTAL_THRESHOLDS.forEach(threshold=>{
-    if(roomGiftTotal >= threshold) playedFireworkThresholds.add(threshold);
+async function startFireworksCountdown(milestone){
+  let secondsLeft = FIREWORK_COUNTDOWN_SECONDS;
+  const countdownText = ()=> `🎆 Em ${secondsLeft}s os fogos estouram na sala ${ROOM_NAME}! Entre ou fique na sala pra ganhar moedas.`;
+  showTopBanner(countdownText(), 1200);
+  const tick = setInterval(()=>{
+    secondsLeft--;
+    if(secondsLeft > 0) showTopBanner(countdownText(), 1200);
+    else clearInterval(tick);
+  }, 1000);
+
+  await new Promise(r=> setTimeout(r, FIREWORK_COUNTDOWN_SECONDS * 1000));
+
+  showTopBanner(`🎆 Fogos de artifício abertos na sala ${ROOM_NAME}!`, 5000);
+  playFullscreenFireworks(10000);
+
+  try{
+    const { data: winners, error } = await sb.rpc("explode_firework_prizes", {
+      p_room_key: ROOM_KEY, p_milestone: milestone
+    });
+    if(error) throw error;
+    if(winners && winners.length){
+      await announceFireworkWinners(winners);
+      const mine = winners.find(w => w.out_user_id === myUserId);
+      if(mine) showToast(`Você ganhou 🪙 ${fmt(mine.out_amount)} moedas dos fogos!`);
+    }
+  }catch(e){ /* os fogos já tocaram pra todo mundo — só a distribuição de moedas falhou */ }
+}
+
+async function announceFireworkWinners(winners){
+  const names = winners.slice(0, 12).map(w => `${w.out_display_name || "Alguém"} (+${fmt(w.out_amount)})`).join(", ");
+  const extra = winners.length > 12 ? ` e mais ${winners.length - 12} pessoa(s)` : "";
+  await sb.from("seat_room_messages").insert({
+    room_key: ROOM_KEY, user_id: myUserId,
+    display_name: "🎆 Fogos de Artifício",
+    message: `estourou! ${names}${extra} ganharam moedas 🪙`
   });
 }
 
