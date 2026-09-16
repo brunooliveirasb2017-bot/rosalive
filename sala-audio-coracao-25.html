@@ -135,31 +135,6 @@
 
 /* ===== FOGOS DE ARTIFÍCIO ZUKI LIVE ===== */
 .seat-grid-wrap{ position:relative; }
-.bomb-mini{ display:none; position:absolute; top:calc(100% + 8px); right:0; width:15%; aspect-ratio:1/1; border-radius:50%; overflow:hidden; cursor:pointer; z-index:15; background:radial-gradient(circle at 32% 24%,#6b6670 0%,#25242b 28%,#0b0b10 72%); border:1.5px solid var(--pink); box-shadow:0 0 10px -3px rgba(212,175,55,.7); }
-.bomb-mini.active{ display:block; animation:bombIn .5s ease-out; }
-.bomb-mini.claimed{ filter:grayscale(.6); opacity:.55; }
-.bomb-mini.claiming{ pointer-events:none; opacity:.7; }
-.bomb-mini .bomb-stage{ position:absolute; top:50%; left:50%; width:210px; height:210px; transform:translate(-50%,-50%) scale(.32); margin:0; }
-.bomb-mini-badge{ position:absolute; top:-3px; left:-3px; background:var(--gold); color:#2a1508; font-size:9px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center; z-index:2; }
-.bomb-mini-count{ position:absolute; bottom:1px; left:0; right:0; text-align:center; font-size:8px; font-weight:800; color:#fff; text-shadow:0 1px 2px #000; z-index:2; }
-.bomb-event{display:none;position:relative;margin:18px auto 4px;max-width:360px;text-align:center;z-index:20}
-.bomb-event.show{display:block;animation:bombIn .5s ease-out}
-@keyframes bombIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-.bomb-stage{position:relative;width:210px;height:210px;margin:auto}
-.fw-globe{position:absolute;inset:15px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 65%,#1c1130 0%,#0a0612 70%);border:4px solid #55515d;box-shadow:inset -18px -22px 35px #000, inset 12px 10px 25px rgba(255,255,255,.12),0 0 28px rgba(212,175,55,.32)}
-.fw-star{position:absolute;border-radius:50%;background:#fff;opacity:.55;animation:fwTwinkle 1.6s ease-in-out infinite}
-.fw-star.s1{width:3px;height:3px;top:20%;left:26%}.fw-star.s2{width:2px;height:2px;top:30%;left:68%;animation-delay:.4s}.fw-star.s3{width:2px;height:2px;top:14%;left:56%;animation-delay:.9s}
-@keyframes fwTwinkle{0%,100%{opacity:.2}50%{opacity:.9}}
-.fw-core{position:absolute;top:46%;left:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;background:#fff6d0;box-shadow:0 0 10px #ffd34d,0 0 22px #ff9d2e;animation:fwPulse 1s ease-in-out infinite}
-@keyframes fwPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
-.fw-burst-ring i{position:absolute;top:46%;left:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c);transform:rotate(var(--a)) translateX(0);animation:fwOut 1.4s ease-out infinite}
-@keyframes fwOut{0%{transform:rotate(var(--a)) translateX(0);opacity:0}15%{opacity:1}100%{transform:rotate(var(--a)) translateX(46px);opacity:0}}
-.fw-highlight{position:absolute;inset:25px;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.14),transparent 28%);pointer-events:none}
-.fw-level{font-weight:800;font-size:12px;color:var(--gold);letter-spacing:.08em}.bomb-title{font-size:15px;font-weight:800;margin-top:3px}.bomb-trophy{font-size:10px;color:var(--muted);margin-top:3px}.bomb-count{font-size:13px;font-weight:800;color:#fff;margin-top:7px}.bomb-progress{height:7px;border-radius:999px;background:#1c1810;overflow:hidden;margin:7px 25px}.bomb-progress i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#d4af37,#f4c542);transform-origin:left}.bomb-actions{display:flex;justify-content:center;gap:8px;margin-top:9px}.bomb-btn{border:1px solid var(--gold);background:#21101a;color:#fff;border-radius:999px;padding:7px 13px;font-weight:800;font-size:11px}.bomb-btn.claim{background:var(--pink)}
-.bomb-burst{display:none;font-size:40px;animation:burst .7s ease-out}.bomb-event.exploded .bomb-stage{display:none}.bomb-event.exploded .bomb-burst{display:block}.bomb-event.exploded .bomb-count{display:none}.bomb-event.exploded .bomb-progress{display:none}
-@keyframes burst{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
-.bomb-winner{display:none;margin-top:8px;background:linear-gradient(135deg,#1c1810,#160a12);border:1px solid var(--gold);border-radius:14px;padding:9px}.bomb-event.exploded .bomb-winner{display:block}.bomb-winner .big{font-size:18px;color:var(--gold);font-weight:900}.bomb-winner .small{font-size:10px;color:var(--cream);margin-top:2px}
-.bomb-prize-panel{display:none;margin:10px auto 0;max-width:330px;background:#0c0b09;border:1px solid var(--line);border-radius:14px;padding:10px}.bomb-prize-panel.show{display:block}.bomb-prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.bomb-prize{border:1px solid var(--line);border-radius:10px;padding:6px;background:#100d0a;font-size:10px}.bomb-prize strong{display:block;color:var(--gold);font-size:12px}.bomb-prize button{margin-top:5px;border:0;border-radius:999px;background:var(--pink);color:#fff;padding:5px 8px;font-size:9px;font-weight:800}.backpack-empty{color:var(--muted);font-size:11px;padding:12px;text-align:center}.backpack-item{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:7px;margin-top:6px;background:#100d0a}.backpack-item .ico{font-size:24px}.backpack-item .info{flex:1;text-align:left}.backpack-item .info b{font-size:11px}.backpack-item .info small{display:block;color:var(--muted);font-size:9px}.backpack-item button{border:0;background:var(--pink);color:#fff;border-radius:999px;padding:6px 9px;font-size:9px;font-weight:800}
 
 /* ===== Aviso no topo (abertura dos Fogos de Artifício) ===== */
 .fw-top-banner{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-140%);z-index:9999;background:linear-gradient(135deg,#3a1550,#160a12);border:1px solid var(--gold);border-radius:999px;padding:10px 20px;font-size:13px;font-weight:800;color:#fff;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.5),0 0 20px rgba(255,211,77,.35);white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;transition:transform .45s cubic-bezier(.2,.8,.3,1)}
@@ -210,49 +185,6 @@
 
   <div class="seat-grid-wrap">
     <div class="seat-grid" id="seat-grid"></div>
-    <div class="bomb-mini" id="bomb-mini" onclick="quickClaimBomb()">
-      <div class="bomb-mini-badge" id="bomb-mini-badge">1</div>
-      <div class="bomb-stage">
-        <div class="fw-globe">
-          <span class="fw-star s1"></span><span class="fw-star s2"></span><span class="fw-star s3"></span>
-          <div class="fw-burst-ring">
-            <i style="--a:0deg;--c:#ffd34d"></i><i style="--a:60deg;--c:#ff5da2"></i><i style="--a:120deg;--c:#59d9ff"></i>
-            <i style="--a:180deg;--c:#ffd34d"></i><i style="--a:240deg;--c:#ff5da2"></i><i style="--a:300deg;--c:#59d9ff"></i>
-          </div>
-          <div class="fw-core"></div>
-          <div class="fw-highlight"></div>
-        </div>
-      </div>
-      <div class="bomb-mini-count" id="bomb-mini-count">05:00</div>
-    </div>
-  </div>
-
-  <div class="modal-back" id="modal-bomb">
-    <div class="modal-card">
-      <button class="sheet-close" onclick="closeBombPanel()">✕</button>
-      <div class="bomb-event show" id="bomb-event">
-        <div class="bomb-stage">
-          <div class="fw-globe">
-            <span class="fw-star s1"></span><span class="fw-star s2"></span><span class="fw-star s3"></span>
-            <div class="fw-burst-ring">
-              <i style="--a:0deg;--c:#ffd34d"></i><i style="--a:60deg;--c:#ff5da2"></i><i style="--a:120deg;--c:#59d9ff"></i>
-              <i style="--a:180deg;--c:#ffd34d"></i><i style="--a:240deg;--c:#ff5da2"></i><i style="--a:300deg;--c:#59d9ff"></i>
-            </div>
-            <div class="fw-core"></div>
-            <div class="fw-highlight"></div>
-          </div>
-        </div>
-        <div class="bomb-burst">🎆🎇</div>
-        <div class="bomb-level" id="bomb-level">FOGOS LV.1</div>
-        <div class="bomb-title" id="bomb-title">Os Fogos de Artifício foram liberados!</div>
-        <div class="bomb-trophy" id="bomb-trophy">Troféu: 0 moedas</div>
-        <div class="bomb-count" id="bomb-count">05:00</div>
-        <div class="bomb-progress"><i id="bomb-progress"></i></div>
-        <div class="bomb-actions"><button class="bomb-btn claim" id="bomb-claim" onclick="claimBombPrize()">PEGAR PRÊMIO</button></div>
-        <div class="bomb-winner" id="bomb-winner"><div class="big" id="bomb-winner-prize">2.000 moedas</div><div class="small" id="bomb-winner-name">Maior prêmio</div></div>
-        <div class="bomb-prize-panel" id="bomb-prize-panel"><b>Prêmios disponíveis</b><div class="bomb-prize-grid" id="bomb-prize-grid"></div></div>
-      </div>
-    </div>
   </div>
 
   <div class="chat-box">
@@ -286,7 +218,6 @@
   </div>
 </div>
 
-<div class="modal-back" id="modal-backpack"><div class="modal-card"><button class="sheet-close" onclick="closeBackpack()">✕</button><h3>🎒 Mochila</h3><p style="margin:0;font-size:12px;color:var(--muted);">Presentes ganhos nos Fogos de Artifício</p><div id="backpack-list"></div></div></div>
 
 <button class="combo-send-btn" id="combo-send-btn" onclick="comboSendTap()">🎁<span class="combo-send-count" id="combo-send-count" style="display:none;">1</span></button>
 
@@ -514,7 +445,7 @@ async function loadGiftTotals(){
 
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
-  checkBombUnlock();
+  syncPlayedFireworkThresholds();
 }
 
 function addGiftToTotals(g){
@@ -523,11 +454,12 @@ function addGiftToTotals(g){
     processedGiftIds.add(g.id);
   }
   const amount = Number(g.price||0);
+  const oldTotal = roomGiftTotal;
   giftTotalsByUser[g.receiver_id] = (giftTotalsByUser[g.receiver_id]||0) + amount;
   roomGiftTotal += amount;
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
-  checkBombUnlock();
+  checkFireworksTotalUnlock(oldTotal, roomGiftTotal);
 }
 
 function subscribeRealtime(){
@@ -647,7 +579,6 @@ function renderGiftCatTabs(){
   const hasSorte = giftPickerData.some(g=>categorizeGift(g)==="sorte");
   const tabs = [{key:"geral", label:"Em geral"}];
   if(hasSorte) tabs.push({key:"sorte", label:"Sorte"});
-  tabs.push({key:"mochila", label:"Mochila"});
   const wrap = document.getElementById("gift-cat-tabs");
   wrap.innerHTML = tabs.map(t=>`<button type="button" class="gift-cat-tab${t.key===giftPickerActiveCat?" active":""}" onclick="selectGiftCat('${t.key}')">${t.label}</button>`).join("");
 }
@@ -655,7 +586,6 @@ async function selectGiftCat(key){
   giftPickerActiveCat = key;
   if(giftPickerActiveCat !== "sorte" && giftTargetSeat === "all") giftTargetSeat = null;
   renderGiftCatTabs();
-  if(key === "mochila") await loadBackpack();
   renderGiftGrid();
   renderGiftTargets();
 }
@@ -688,7 +618,6 @@ function closeGiftModal(){
 
 function renderGiftTargets(){
   const strip = document.getElementById("gift-target-strip");
-  if(giftPickerActiveCat === "mochila"){ strip.innerHTML=""; return; }
   const seats = occupiedSeatsExceptMe();
   if(!seats.length){
     strip.innerHTML = `<div style="font-size:11px;color:var(--muted);">Ninguém mais na sala ainda pra receber presente.</div>`;
@@ -716,7 +645,6 @@ let selectedGift = null;
 
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
-  if(giftPickerActiveCat === "mochila"){ grid.innerHTML = myBackpack.length ? myBackpack.map(x=>`<div class="backpack-item" style="grid-column:1/-1"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>Prêmio dos Fogos • 🪙 ${fmt(x.gift_value)} moedas</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("") : `<div class="backpack-empty" style="grid-column:1/-1">Sua mochila está vazia.<br>Presentes ganhos nos Fogos de Artifício aparecerão aqui.</div>`; return; }
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
   grid.innerHTML = list.map(g => {
     const img = g.emoji && g.emoji.length > 4
@@ -833,7 +761,6 @@ async function sendGiftNow(gift){
       .order("created_at", {ascending:false}).limit(1).maybeSingle();
     if(lastGift){
       addGiftToTotals(lastGift);
-      triggerFireworksForGift(lastGift);
     }
     return true;
   }catch(e){
@@ -916,201 +843,17 @@ function subscribeGiftsRealtime(){
       flyGiftEmoji(g.gift_emoji);
       showToast((g.receiver_id===myUserId ? "Você recebeu" : "Assento "+g.seat_number+" recebeu") + " " + g.gift_name + " 🎁");
       addGiftToTotals(g);
-      triggerFireworksForGift(g);
     })
     .subscribe();
 }
 
 
-// ---------- Fogos de Artifício + Mochila (Supabase real) ----------
-const BOMB_LEVELS = [
-  {level:1, threshold:100000, prizes:[{v:2000,q:1},{v:1000,q:1},{v:500,q:2},{v:100,q:10},{v:10,q:30},{v:5,q:50}]},
-  {level:2, threshold:300000, prizes:[{v:4000,q:2},{v:2000,q:2},{v:1000,q:4},{v:200,q:20},{v:20,q:60},{v:10,q:100}]},
-  {level:3, threshold:600000, prizes:[{v:8000,q:4},{v:4000,q:4},{v:2000,q:8},{v:400,q:40},{v:40,q:120},{v:20,q:200}]},
-  {level:4, threshold:1000000, prizes:[{v:16000,q:8},{v:8000,q:8},{v:4000,q:16},{v:800,q:80},{v:80,q:240},{v:40,q:400}]}
-];
-let bombState={active:false,level:0,eventId:null,startedAt:0,endedAt:0,claimed:false,timer:null,exploded:false};
-let myBackpack = [];
-async function loadBackpack(){
-  const { data } = await sb.from("player_backpack").select("*").eq("user_id", myUserId).order("created_at", { ascending: false });
-  myBackpack = data || [];
-}
-function renderBackpack(){
-  const el = document.getElementById("backpack-list");
-  if(!el) return;
-  if(!myBackpack.length){ el.innerHTML = '<div class="backpack-empty">Sua mochila está vazia.<br>Os presentes ganhos nos Fogos de Artifício aparecerão aqui.</div>'; return; }
-  el.innerHTML = myBackpack.map(x => `<div class="backpack-item"><div class="ico">${x.gift_emoji && x.gift_emoji.length>4 ? `<img src="${x.gift_emoji}" style="width:32px;height:32px;object-fit:contain;">` : (x.gift_emoji||"🎁")}</div><div class="info"><b>${escapeHtml(x.gift_name||"Presente")}</b><small>🪙 ${fmt(x.gift_value||0)} • prêmio dos Fogos</small></div><button onclick="sendBackpackItem('${x.id}')">Enviar</button></div>`).join("");
-}
-async function openBackpack(){ document.getElementById("modal-backpack").classList.add("active"); await loadBackpack(); renderBackpack(); }
-function bombTotalPrize(level){return level.prizes.reduce((a,p)=>a+p.v*p.q,0)}
-function getBombLevelForTrophy(t){let unlocked=0;for(const b of BOMB_LEVELS)if(t>=b.threshold)unlocked=b.level;return unlocked}
-function closeBackpack(){document.getElementById('modal-backpack').classList.remove('active')}
-async function sendBackpackItem(itemId){
-  if(giftTargetSeat === null){ showToast("Escolha um assento pra enviar o presente."); return; }
-  const seatNum = giftTargetSeat === "all" ? null : giftTargetSeat;
-  const targetInfo = seatNum !== null ? seatsState[seatNum] : null;
-  const receiverId = targetInfo ? targetInfo.user_id : myUserId;
-  try{
-    const { error } = await sb.rpc("send_backpack_gift", { p_item_id: itemId, p_room_key: ROOM_KEY, p_seat_number: seatNum, p_receiver_id: receiverId });
-    if(error) throw error;
-    await loadBackpack();
-    renderBackpack();
-    renderGiftGrid();
-    showToast("Presente enviado! 🎁");
-  }catch(e){ showToast("Não foi possível enviar: " + (e.message||e)); }
-}
-function renderBombPrizes(){const b=BOMB_LEVELS[bombState.level-1];const grid=document.getElementById('bomb-prize-grid');grid.innerHTML=b.prizes.map(p=>`<div class="bomb-prize"><strong>🪙 ${fmt(p.v)}</strong>${p.q} prêmio(s)</div>`).join('')}
-function showBombFromEvent(ev, celebrate){
-  if(!ev || !ev.level || !ev.started_at) return;
-  const b=BOMB_LEVELS[ev.level-1]; if(!b) return;
-  bombState={active:true,level:ev.level,eventId:ev.id,startedAt:new Date(ev.started_at).getTime(),endedAt:new Date(ev.ended_at).getTime(),claimed:false,timer:null,exploded:false};
-  const miniEl=document.getElementById('bomb-mini');
-  miniEl.classList.add('active');
-  miniEl.classList.remove('claimed','claiming');
-  document.getElementById('bomb-mini-badge').textContent=ev.level;
-  document.getElementById('bomb-event').classList.remove('exploded');
-  document.getElementById('bomb-level').textContent=`FOGOS LV.${ev.level}`;
-  document.getElementById('bomb-title').textContent=`🎆 Prêmios dos Fogos de Artifício • ${fmt(bombTotalPrize(b))} moedas`;
-  document.getElementById('bomb-trophy').textContent=`Troféu da sala • meta ${fmt(b.threshold)}`;
-  document.getElementById('bomb-prize-panel').classList.remove('show');
-  document.getElementById('bomb-claim').style.display='inline-block';
-  document.getElementById('bomb-claim').disabled=false;
-  document.getElementById('bomb-claim').textContent='PEGAR PRÊMIO';
-  renderBombPrizes(); bombTick();
-  if(bombState.timer) clearInterval(bombState.timer);
-  bombState.timer=setInterval(bombTick,250);
-  updateBombWinner(ev.id);
-  // Só dispara a animação/som dos fogos quando é um evento NOVO de verdade
-  // (a sala acabou de bater a meta), não toda vez que a página sincroniza
-  // um evento que já estava rolando.
-  if(celebrate){
-    showTopBanner(`🎆 Fogos de artifício aberto na sala ${ROOM_NAME}!`, 5000);
-    playFullscreenFireworks(10000);
-  }
-}
-function openBombPanel(){
-  if(!bombState.active) return;
-  document.getElementById('modal-bomb').classList.add('active');
-}
-function closeBombPanel(){
-  document.getElementById('modal-bomb').classList.remove('active');
-}
-function bombTick(){
-  if(!bombState.active)return;
-  const left=Math.max(0,bombState.endedAt-Date.now());
-  const sec=Math.ceil(left/1000);
-  const label=`${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
-  document.getElementById('bomb-count').textContent=label;
-  document.getElementById('bomb-mini-count').textContent=label;
-  const total=Math.max(1,bombState.endedAt-bombState.startedAt);
-  document.getElementById('bomb-progress').style.transform=`scaleX(${left/total})`;
-  if(left<=0){clearInterval(bombState.timer);explodeBomb()}
-}
-function explodeBomb(){
-  if(bombState.exploded)return;
-  bombState.exploded=true;
-  document.getElementById('bomb-event').classList.add('exploded');
-  document.getElementById('bomb-title').textContent='🎆 Fogos de artifício encerrados!';
-  document.getElementById('bomb-prize-panel').classList.add('show');
-  document.getElementById('bomb-claim').style.display='none';
-  document.getElementById('bomb-mini-count').textContent='FIM';
-  updateBombWinner(bombState.eventId);
-}
-async function updateBombWinner(eventId){
-  if(!eventId)return;
-  try{
-    const {data:claim}=await sb.from('bomb_claims').select('user_id, prize_value').eq('event_id',eventId).order('prize_value',{ascending:false}).limit(1).maybeSingle();
-    if(!claim){document.getElementById('bomb-winner-prize').textContent='Maior prêmio';document.getElementById('bomb-winner-name').textContent='Aguardando vencedor';return;}
-    const {data:pRows}=await sb.rpc('get_public_profile_frames',{p_ids:[claim.user_id]});
-    const p = pRows && pRows[0];
-    document.getElementById('bomb-winner-prize').textContent=`🪙 ${fmt(claim.prize_value)} moedas`;
-    document.getElementById('bomb-winner-name').textContent=`${p?.name||'Usuário'} ganhou o maior prêmio`;
-  }catch(e){console.warn('winner',e)}
-}
-async function performBombClaim(){
-  const {data,error}=await sb.rpc('claim_bomb_prize',{p_room_key:ROOM_KEY,p_level:bombState.level});
-  if(error)throw error;
-  const result=data||{}; const value=Number(result.prize||0);
-  bombState.claimed=true;
-  if(result.is_gift){
-    showToast(`🎉 Você contribuiu mais e ganhou o presente "${result.gift_name||"especial"}"! Ele foi pra sua Mochila 🎒`);
-    await loadBackpack();
-  }else{
-    showToast(`🎉 Você ganhou ${fmt(value)} moedas! O valor foi adicionado ao seu saldo real.`);
-  }
-  const {data:profile}=await sb.from('profiles').select('balance,name').eq('id',myUserId).single();
-  const balanceEl=document.getElementById('balance'); if(balanceEl) balanceEl.textContent=fmt(profile?.balance||0);
-  await announceBombWinInChat(result,value);
-  updateBombWinner(bombState.eventId);
-  return result;
-}
-async function announceBombWinInChat(result,value){
-  try{
-    const msg = result.is_gift
-      ? `🎁 ganhei o presente "${result.gift_name||'especial'}" nos Fogos de Artifício! 🎆`
-      : `🎆 ganhei ${fmt(value)} moedas nos Fogos de Artifício!`;
-    await sb.from('seat_room_messages').insert({ room_key: ROOM_KEY, user_id: myUserId, display_name: myDisplayName, message: msg });
-    await loadChat();
-  }catch(e){ console.warn('chat bomb announce', e); }
-}
-async function claimBombPrize(){
-  if(!bombState.active||bombState.claimed||bombState.exploded)return;
-  const btn=document.getElementById('bomb-claim'); btn.disabled=true; btn.textContent='SORTEANDO...';
-  try{
-    await performBombClaim();
-    btn.textContent='PRÊMIO PEGADO';
-  }catch(e){
-    btn.disabled=false; btn.textContent='PEGAR PRÊMIO';
-    showToast('Não foi possível pegar o prêmio: '+(e.message||e));
-  }
-}
-async function quickClaimBomb(){
-  if(!bombState.active)return;
-  if(bombState.exploded){ showToast('Os Fogos de Artifício já encerraram.'); return; }
-  if(bombState.claimed){ showToast('Você já pegou seu prêmio dessa rodada 🎁'); return; }
-  const miniEl=document.getElementById('bomb-mini');
-  miniEl.classList.add('claiming');
-  try{
-    await performBombClaim();
-    miniEl.classList.remove('claiming');
-    miniEl.classList.add('claimed');
-    const btn=document.getElementById('bomb-claim');
-    if(btn){ btn.disabled=true; btn.textContent='PRÊMIO PEGADO'; }
-  }catch(e){
-    miniEl.classList.remove('claiming');
-    showToast('Não foi possível pegar o prêmio: '+(e.message||e));
-  }
-}
-async function checkBombUnlock(){
-  // DESATIVADO: os fogos não dependem do total acumulado da sala.
-  // O disparo acontece somente quando entra um presente de 100.000,
-  // 300.000 ou 600.000 moedas em seat_room_gifts.
-  return;
-}
-async function loadActiveBomb(){
-  try{
-    const {data}=await sb.from('bomb_events').select('*').eq('room_key',ROOM_KEY).gt('ended_at',new Date().toISOString()).order('level',{ascending:false}).limit(1).maybeSingle();
-    if(data)showBombFromEvent(data, false);
-  }catch(e){console.warn('active bomb',e)}
-}
-function subscribeBombRealtime(){
-  sb.channel('bomb-'+ROOM_KEY)
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_events',filter:`room_key=eq.${ROOM_KEY}`},payload=>{
-      // Evento novo de verdade: a sala acabou de bater a meta (100K/300K/600K/1M)
-      // — aqui sim dispara os fogos de artifício pra todo mundo que estiver na sala.
-      showBombFromEvent(payload.new, true);
-    })
-    .on('postgres_changes',{event:'INSERT',schema:'public',table:'bomb_claims'},payload=>{
-      if(bombState.eventId && payload.new.event_id===bombState.eventId){
-        updateBombWinner(bombState.eventId);
-      }
-    }).subscribe();
-}
-
-// ---------- Fogos de Artifício por PRESENTE (todas as salas) ----------
-// Os valores são do presente individual, não do total acumulado da sala.
-const FIREWORK_GIFT_VALUES = new Set([100000, 300000, 600000]);
-const playedFireworkGiftIds = new Set();
+// ---------- Fogos de Artifício por TOTAL ACUMULADO DA SALA ----------
+// Ao atingir cada marca de moedas recebidas na sala (soma de todos os
+// presentes enviados por qualquer pessoa), os fogos abrem pra todo
+// mundo que estiver na sala nesse momento.
+const FIREWORK_TOTAL_THRESHOLDS = [100000, 300000, 600000];
+const playedFireworkThresholds = new Set();
 
 // Efeito recortado do vídeo de referência, embutido no próprio HTML.
 // O vídeo fica com fundo preto + blend SCREEN para que somente os fogos
@@ -1198,17 +941,24 @@ function playFullscreenFireworks(durationMs){
   },ms);
 }
 
-function triggerFireworksForGift(g){
-  const price=Number(g && g.price || 0);
-  if(!FIREWORK_GIFT_VALUES.has(price)) return false;
-  const id=g && g.id ? String(g.id) : '';
-  if(id && playedFireworkGiftIds.has(id)) return false;
-  if(id) playedFireworkGiftIds.add(id);
+function checkFireworksTotalUnlock(oldTotal, newTotal){
+  FIREWORK_TOTAL_THRESHOLDS.forEach(threshold=>{
+    if(playedFireworkThresholds.has(threshold)) return;
+    if(oldTotal < threshold && newTotal >= threshold){
+      playedFireworkThresholds.add(threshold);
+      showTopBanner(`🎆 A sala ${ROOM_NAME} atingiu ${fmt(threshold)} moedas — fogos de artifício abertos!`, 5000);
+      playFullscreenFireworks(10000);
+    }
+  });
+}
 
-  // A mensagem aparece imediatamente e usa o nome real da sala atual.
-  showTopBanner(`🎆 Fogos de artifício aberto na sala ${ROOM_NAME}!`, 5000);
-  playFullscreenFireworks(10000);
-  return true;
+function syncPlayedFireworkThresholds(){
+  // Ao sincronizar o total (ex.: ao entrar na sala), marca como já
+  // "tocadas" as marcas que já foram atingidas antes, pra não repetir
+  // o efeito toda vez que a página recarrega.
+  FIREWORK_TOTAL_THRESHOLDS.forEach(threshold=>{
+    if(roomGiftTotal >= threshold) playedFireworkThresholds.add(threshold);
+  });
 }
 
 function unlockFireworkMedia(){
@@ -1258,8 +1008,6 @@ async function init(){
     await loadGiftTotals();
     subscribeRealtime();
     subscribeGiftsRealtime();
-    subscribeBombRealtime();
-    await loadActiveBomb();
     await loadChat();
     subscribeChatRealtime();
     await joinDaily(res);
