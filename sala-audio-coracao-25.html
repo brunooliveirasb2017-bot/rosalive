@@ -410,7 +410,8 @@ async function loadSeatsFromDb(){
 }
 
 async function loadGiftTotals(){
-  const { data } = await sb.from("seat_room_gifts").select("id, receiver_id, price").eq("room_key", ROOM_KEY);
+  const { data, error } = await sb.from("seat_room_gifts").select("id, receiver_id, price").eq("room_key", ROOM_KEY);
+  if(error){ console.error("Erro ao buscar presentes da sala:", error); throw error; }
   giftTotalsByUser = {};
   roomGiftTotal = 0;
   processedGiftIds = new Set();
@@ -424,7 +425,8 @@ async function loadGiftTotals(){
   // soma também a comissão de 4% do Presente da Sorte (é só isso que
   // realmente chega pra quem fica na sala; o prêmio em si vai pra
   // quem apostou, não conta aqui pra não inflar o total)
-  const { data: lucky } = await sb.from("lucky_gift_events").select("receiver_id, prize").eq("room_key", ROOM_KEY);
+  const { data: lucky, error: luckyErr } = await sb.from("lucky_gift_events").select("receiver_id, prize").eq("room_key", ROOM_KEY);
+  if(luckyErr){ console.error("Erro ao buscar comissão de Presente da Sorte:", luckyErr); throw luckyErr; }
   const currentOccupants = Object.values(seatsState).map(o=>o.user_id).filter(Boolean);
   (lucky||[]).forEach(row=>{
     const commission = Math.floor(Number(row.prize||0) * 0.04);
@@ -467,7 +469,7 @@ function subscribeRealtime(){
       loadSeatsFromDb();
     })
     .on("postgres_changes", { event:"INSERT", schema:"public", table:"lucky_gift_events", filter:`room_key=eq.${ROOM_KEY}` }, ()=>{
-      loadGiftTotals();
+      loadGiftTotals().catch(e=> console.error("Erro ao atualizar total (evento sorte):", e));
     })
     .subscribe();
 }
@@ -776,7 +778,12 @@ async function sendLuckyGift(gift){
     });
     if(error) throw error;
     showLuckyResult(data);
-    loadGiftTotals();
+    try{
+      await loadGiftTotals();
+    }catch(totalErr){
+      console.error("Falha ao atualizar total da sala:", totalErr);
+      showToast("Presente enviado, mas o total não atualizou: " + totalErr.message);
+    }
     return true;
   }catch(e){
     showToast("Não foi possível enviar: " + e.message);
@@ -1032,7 +1039,11 @@ async function init(){
       : "Você entrou no assento " + mySeatNumber + ".";
     renderHeader();
     await loadSeatsFromDb();
-    await loadGiftTotals();
+    try{
+      await loadGiftTotals();
+    }catch(totalErr){
+      console.error("Erro ao carregar total da sala:", totalErr);
+    }
     subscribeRealtime();
     subscribeGiftsRealtime();
     await loadChat();
