@@ -2,6 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zuki Live — Sala de Áudio (25 assentos)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -204,7 +207,7 @@
   </div>
 
   <div class="status-line" id="status-line">Entrando na sala…</div>
-  <div style="text-align:center;font-size:10px;color:#665;opacity:.6;margin-top:2px;">versão do arquivo: BUILD_7</div>
+  <div style="text-align:center;font-size:10px;color:#665;opacity:.6;margin-top:2px;">versão do arquivo: BUILD_9</div>
 </div>
 <div class="toast" id="toast"></div>
 <div class="modal-back" id="modal-gift">
@@ -788,7 +791,7 @@ async function sendGiftNow(gift){
     }
     return true;
   }catch(e){
-    showToast("Não foi possível enviar: " + e.message);
+    showToast(`Não foi possível enviar "${gift && gift.name}" (id=${gift && gift.id}): ` + e.message);
     return false;
   }
 }
