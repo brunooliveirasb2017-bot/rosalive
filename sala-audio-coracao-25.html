@@ -424,22 +424,22 @@ async function loadGiftTotals(){
     if(row.id) newProcessedIds.add(row.id);
   });
 
-  // soma também a comissão de 4% do Presente da Sorte (é só isso que
-  // realmente chega pra quem fica na sala; o prêmio em si vai pra
-  // quem apostou, não conta aqui pra não inflar o total)
-  const { data: lucky, error: luckyErr } = await sb.from("lucky_gift_events").select("receiver_id, prize").eq("room_key", ROOM_KEY);
-  if(luckyErr){ console.error("Erro ao buscar comissão de Presente da Sorte:", luckyErr); throw luckyErr; }
+  // conta o valor CHEIO gasto em cada Presente da Sorte (gift_price),
+  // sem desconto — o mesmo valor que foi enviado vai pro assento de
+  // quem recebeu, igual a um presente normal.
+  const { data: lucky, error: luckyErr } = await sb.from("lucky_gift_events").select("receiver_id, gift_price").eq("room_key", ROOM_KEY);
+  if(luckyErr){ console.error("Erro ao buscar valores de Presente da Sorte:", luckyErr); throw luckyErr; }
   const currentOccupants = Object.values(seatsState).map(o=>o.user_id).filter(Boolean);
   (lucky||[]).forEach(row=>{
-    const commission = Math.floor(Number(row.prize||0) * 0.04);
-    if(!commission) return;
+    const amount = Number(row.gift_price||0);
+    if(!amount) return;
     if(row.receiver_id){
-      newTotals[row.receiver_id] = (newTotals[row.receiver_id]||0) + commission;
-      newTotal += commission;
+      newTotals[row.receiver_id] = (newTotals[row.receiver_id]||0) + amount;
+      newTotal += amount;
     } else if(currentOccupants.length){
       // "todos da sala": divide pelos ocupantes atuais (aproximação,
       // já que não guardamos quem estava sentado no momento exato)
-      const share = Math.floor(commission / currentOccupants.length);
+      const share = Math.floor(amount / currentOccupants.length);
       currentOccupants.forEach(uid=>{
         newTotals[uid] = (newTotals[uid]||0) + share;
       });
@@ -1067,9 +1067,16 @@ async function init(){
     subscribeGiftsRealtime();
     await loadChat();
     subscribeChatRealtime();
-    await joinDaily(res);
+    try{
+      await joinDaily(res);
+    }catch(dailyErr){
+      console.error("Erro ao entrar na chamada de voz:", dailyErr);
+      const detail = (dailyErr && (dailyErr.message || dailyErr.errorMsg)) || JSON.stringify(dailyErr);
+      showToast("Entrou na sala, mas a voz não conectou: " + detail);
+    }
   }catch(e){
-    document.getElementById("status-line").textContent = "Não foi possível entrar: " + e.message;
+    const detail = (e && e.message) || (e && JSON.stringify(e)) || "erro desconhecido";
+    document.getElementById("status-line").textContent = "Não foi possível entrar: " + detail;
   }
 }
 init();
