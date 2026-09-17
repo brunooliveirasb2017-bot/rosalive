@@ -462,16 +462,16 @@ async function loadGiftTotals(){
 
 function addGiftToTotals(g){
   if(g.id){
-    if(processedGiftIds.has(g.id)) return; // já contado (evita duplicar entre update local e realtime)
+    if(processedGiftIds.has(g.id)) return; // já contado (evita disparar de novo entre update local e realtime)
     processedGiftIds.add(g.id);
   }
-  const amount = Number(g.price||0);
+  // Em vez de somar na memória, recarrega do banco (protegido contra
+  // corrida por loadGiftTotalsSeq) — assim presente normal e Presente
+  // da Sorte nunca mais brigam por qual foi o último a escrever.
   const oldTotal = roomGiftTotal;
-  giftTotalsByUser[g.receiver_id] = (giftTotalsByUser[g.receiver_id]||0) + amount;
-  roomGiftTotal += amount;
-  document.getElementById("room-total").textContent = fmt(roomGiftTotal);
-  renderSeatGrid();
-  checkFireworksTotalUnlock(oldTotal, roomGiftTotal);
+  loadGiftTotals()
+    .then(()=> checkFireworksTotalUnlock(oldTotal, roomGiftTotal))
+    .catch(e=> console.error("Erro ao atualizar total após presente:", e));
 }
 
 function subscribeRealtime(){
