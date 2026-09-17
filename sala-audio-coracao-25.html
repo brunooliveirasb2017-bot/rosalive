@@ -471,7 +471,10 @@ function addGiftToTotals(g){
   const oldTotal = roomGiftTotal;
   loadGiftTotals()
     .then(()=> checkFireworksTotalUnlock(oldTotal, roomGiftTotal))
-    .catch(e=> console.error("Erro ao atualizar total após presente:", e));
+    .catch(e=>{
+      console.error("Erro ao atualizar total após presente:", e);
+      showToast("Presente enviado, mas o total não atualizou: " + (e && e.message));
+    });
 }
 
 function subscribeRealtime(){
