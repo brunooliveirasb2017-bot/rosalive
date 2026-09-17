@@ -267,6 +267,7 @@ async function loadAvatarFramesCatalog(){
 }
 let giftTotalsByUser = {}; // user_id -> soma de moedas recebidas (presentes "em geral") nesta sala
 let roomGiftTotal = 0; // soma de todas as moedas recebidas na sala
+let loadGiftTotalsSeq = 0; // evita que uma resposta antiga sobrescreva uma mais nova quando várias chamadas correm em paralelo
 let processedGiftIds = new Set(); // evita contar o mesmo presente duas vezes (local + realtime)
 
 function fmt(n){ return Number(n||0).toLocaleString("pt-BR"); }
@@ -410,16 +411,17 @@ async function loadSeatsFromDb(){
 }
 
 async function loadGiftTotals(){
+  const mySeq = ++loadGiftTotalsSeq;
   const { data, error } = await sb.from("seat_room_gifts").select("id, receiver_id, price").eq("room_key", ROOM_KEY);
   if(error){ console.error("Erro ao buscar presentes da sala:", error); throw error; }
-  giftTotalsByUser = {};
-  roomGiftTotal = 0;
-  processedGiftIds = new Set();
+  const newTotals = {};
+  let newTotal = 0;
+  const newProcessedIds = new Set();
   (data||[]).forEach(row=>{
     const amount = Number(row.price||0);
-    giftTotalsByUser[row.receiver_id] = (giftTotalsByUser[row.receiver_id]||0) + amount;
-    roomGiftTotal += amount;
-    if(row.id) processedGiftIds.add(row.id);
+    newTotals[row.receiver_id] = (newTotals[row.receiver_id]||0) + amount;
+    newTotal += amount;
+    if(row.id) newProcessedIds.add(row.id);
   });
 
   // soma também a comissão de 4% do Presente da Sorte (é só isso que
@@ -432,18 +434,27 @@ async function loadGiftTotals(){
     const commission = Math.floor(Number(row.prize||0) * 0.04);
     if(!commission) return;
     if(row.receiver_id){
-      giftTotalsByUser[row.receiver_id] = (giftTotalsByUser[row.receiver_id]||0) + commission;
-      roomGiftTotal += commission;
+      newTotals[row.receiver_id] = (newTotals[row.receiver_id]||0) + commission;
+      newTotal += commission;
     } else if(currentOccupants.length){
       // "todos da sala": divide pelos ocupantes atuais (aproximação,
       // já que não guardamos quem estava sentado no momento exato)
       const share = Math.floor(commission / currentOccupants.length);
       currentOccupants.forEach(uid=>{
-        giftTotalsByUser[uid] = (giftTotalsByUser[uid]||0) + share;
+        newTotals[uid] = (newTotals[uid]||0) + share;
       });
-      roomGiftTotal += share * currentOccupants.length;
+      newTotal += share * currentOccupants.length;
     }
   });
+
+  if(mySeq !== loadGiftTotalsSeq){
+    // já saiu uma chamada mais nova depois desta — descarta este
+    // resultado (mais antigo) pra não sobrescrever um total mais atual
+    return;
+  }
+  giftTotalsByUser = newTotals;
+  roomGiftTotal = newTotal;
+  processedGiftIds = newProcessedIds;
 
   document.getElementById("room-total").textContent = fmt(roomGiftTotal);
   renderSeatGrid();
