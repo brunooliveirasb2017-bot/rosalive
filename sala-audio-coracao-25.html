@@ -572,6 +572,7 @@ function subscribeChatRealtime(){
 let giftPickerData = [];
 let giftTargetSeat = null;
 let giftPickerActiveCat = "geral";
+let currentGiftGridList = []; // presentes exibidos agora na grade (por índice, evita bug de onclick com JSON)
 
 function categorizeGift(g){
   return g.category === "sorte" ? "sorte" : "geral";
@@ -647,17 +648,24 @@ let selectedGift = null;
 function renderGiftGrid(){
   const grid = document.getElementById("gift-picker-grid");
   const list = giftPickerData.filter(g=>categorizeGift(g)===giftPickerActiveCat);
-  grid.innerHTML = list.map(g => {
+  currentGiftGridList = list;
+  grid.innerHTML = list.map((g, idx) => {
     const img = g.emoji && g.emoji.length > 4
       ? `<div class="gift-icon-wrap"><img src="${g.emoji}" class="gift-icon-img" alt="" onerror="this.parentElement.replaceWith(Object.assign(document.createElement('div'),{className:'em-fallback',textContent:'🎁'}))"></div>`
       : `<div class="em-fallback">${g.emoji || "🎁"}</div>`;
     const isSelected = selectedGift && selectedGift.id === g.id;
-    return `<div class="gift-item${isSelected?" selected":""}" onclick='selectGift(${JSON.stringify(g).replace(/'/g,"&#39;")})'>
+    return `<div class="gift-item${isSelected?" selected":""}" onclick="selectGiftByIndex(${idx})">
       ${img}
       <div class="nm">${escapeHtml(g.name)}</div>
       <div class="pr">🪙 ${fmt(g.price)}</div>
     </div>`;
   }).join("");
+}
+
+function selectGiftByIndex(idx){
+  const gift = currentGiftGridList[idx];
+  if(!gift) return;
+  selectGift(gift);
 }
 
 function selectGift(gift){
