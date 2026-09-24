@@ -1,12 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "io.github.brunooliveirasb2017_bot.twa",
-      "sha256_cert_fingerprints": [
-        "7E:90:71:95:03:CD:5B:F1:04:18:1A:97:80:9F:33:BE:99:82:B6:4E:DE:97:E2:5F:3B:42:B3:57:26:29:97:39"
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.brunooliveirasb2017_bot.twa",
+        "sha256_cert_fingerprints": ["27:D0:4F:35:91:1B:AB:37:C6:DA:7F:31:06:AA:74:90:89:6F:48:F5:7B:B8:35:FD:A7:8D:BD:DC:C1:65:BE:AD"]
+      }
+    }]
