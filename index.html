@@ -2573,16 +2573,19 @@ async function renderWallet(){
   document.getElementById("wallet-balance").textContent = fmt(currentUser.balance);
 
   const isFemale = currentUser.type === "female";
-  document.getElementById("wallet-male-view").style.display = isFemale ? "none" : "block";
+  // Agora todo mundo compra moedas; perfis femininos também veem a seção de ganhos/saque.
+  document.getElementById("wallet-male-view").style.display = "block";
   document.getElementById("wallet-female-view").style.display = isFemale ? "block" : "none";
 
   if(isFemale){
     document.getElementById("bank-name").value = currentUser.bank_name || "";
     document.getElementById("bank-cpf").value = currentUser.bank_cpf || "";
     document.getElementById("bank-pix").value = currentUser.bank_pix || "";
-  } else {
+  }
+
+  {
     const purchaseWrap = document.getElementById("purchase-history");
-    const { data: purchases } = await sb.from("coin_purchases").select("*").eq("male_id", currentUser.id).order("created_at",{ascending:false}).limit(10);
+    const { data: purchases } = await sb.from("coin_purchases").select("*").eq("buyer_id", currentUser.id).order("created_at",{ascending:false}).limit(10);
     purchaseWrap.innerHTML = "";
     (purchases||[]).forEach(p=>{
       const div = document.createElement("div");
@@ -2633,7 +2636,7 @@ async function buyCoinPackage(packageId){
   const { data: pk, error: pkErr } = await sb.from("coin_packages").select("*").eq("id", packageId).single();
   if(pkErr || !pk){ banner.innerHTML += `<div class="banner banner-err">${t('package_not_found')}</div>`; return; }
   const { error } = await sb.from("coin_purchases").insert({
-    male_id: currentUser.id, package_id: pk.id, coins: pk.coins, price: pk.price, status: "pending",
+    buyer_id: currentUser.id, package_id: pk.id, coins: pk.coins, price: pk.price, status: "pending",
   });
   if(error){ banner.innerHTML += `<div class="banner banner-err">${error.message}</div>`; return; }
   banner.innerHTML += `<div class="banner banner-ok">${t('order_sent_msg')}</div>`;
