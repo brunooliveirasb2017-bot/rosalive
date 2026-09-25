@@ -726,6 +726,21 @@
       </div>
     </div>
 
+    <div class="modal-back" id="modal-payment">
+      <div class="modal-sheet" style="text-align:center;">
+        <h3 id="payment-title">Pagamento</h3>
+        <img id="payment-qr" src="" style="width:200px; height:200px; margin:12px auto; display:block; border-radius:10px;">
+        <div class="field" style="text-align:left;">
+          <label id="payment-code-label">Código</label>
+          <textarea id="payment-code" readonly rows="3" style="width:100%; font-size:11px; word-break:break-all;"></textarea>
+        </div>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="copyPaymentCode()">📋 Copiar código</button>
+        <a id="payment-external-link" href="#" target="_blank" class="btn btn-primary btn-block" style="margin-top:8px; display:none;">Abrir para pagar</a>
+        <p style="font-size:12px; color:var(--muted); margin-top:12px;">Assim que o pagamento for confirmado, as moedas caem na sua carteira automaticamente — não precisa fazer nada aqui.</p>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="closeModal('modal-payment')">Fechar</button>
+      </div>
+    </div>
+
     <div class="tabbar" id="tabbar" style="display:none;">
       <button class="tab-item active" onclick="tabTo('scr-home')"><span class="ic">🔴</span><span data-i18n="tab_lives">Lives</span></button>
       <button class="tab-item" onclick="tabTo('scr-wallet')"><span class="ic">💳</span><span data-i18n="tab_wallet">Carteira</span></button>
@@ -2572,12 +2587,11 @@ async function renderWallet(){
   document.getElementById("wallet-id").textContent = currentUser.display_id;
   document.getElementById("wallet-balance").textContent = fmt(currentUser.balance);
 
-  const isFemale = currentUser.type === "female";
-  // Agora todo mundo compra moedas; perfis femininos também veem a seção de ganhos/saque.
+  // Agora todo mundo compra moedas E todo mundo tem acesso ao saque/ganhos.
   document.getElementById("wallet-male-view").style.display = "block";
-  document.getElementById("wallet-female-view").style.display = isFemale ? "block" : "none";
+  document.getElementById("wallet-female-view").style.display = "block";
 
-  if(isFemale){
+  {
     document.getElementById("bank-name").value = currentUser.bank_name || "";
     document.getElementById("bank-cpf").value = currentUser.bank_cpf || "";
     document.getElementById("bank-pix").value = currentUser.bank_pix || "";
@@ -2619,7 +2633,7 @@ async function renderBuyCoins(){
 
   const grid = document.getElementById("buycoins-grid");
   grid.innerHTML = `<p>${t('loading_packages')}</p>`;
-  const { data: packages, error } = await sb.from("coin_packages").select("*").eq("country", country).eq("active", true).order("coins",{ascending:true});
+  const { data: packages, error } = await sb.from("coin_packages").select("*").eq("active", true).order("coins",{ascending:true});
   grid.innerHTML = "";
   if(error){ grid.innerHTML = `<p>Erro ao carregar pacotes: ${error.message}</p>`; return; }
   (packages||[]).forEach(pk=>{
@@ -2633,13 +2647,35 @@ async function renderBuyCoins(){
 
 async function buyCoinPackage(packageId){
   const banner = document.getElementById("buycoins-banner");
-  const { data: pk, error: pkErr } = await sb.from("coin_packages").select("*").eq("id", packageId).single();
-  if(pkErr || !pk){ banner.innerHTML += `<div class="banner banner-err">${t('package_not_found')}</div>`; return; }
-  const { error } = await sb.from("coin_purchases").insert({
-    buyer_id: currentUser.id, package_id: pk.id, coins: pk.coins, price: pk.price, status: "pending",
-  });
-  if(error){ banner.innerHTML += `<div class="banner banner-err">${error.message}</div>`; return; }
-  banner.innerHTML += `<div class="banner banner-ok">${t('order_sent_msg')}</div>`;
+  try{
+    const isBR = (currentUser.country || "").toUpperCase() === "BR";
+    const fnName = isBR ? "create-pix-charge" : "create-binance-charge";
+    const result = await callEdgeFunction(fnName, { buyer_id: currentUser.id, package_id: packageId });
+    openPaymentModal(isBR, result);
+  } catch(e){
+    banner.innerHTML += `<div class="banner banner-err">${e.message}</div>`;
+  }
+}
+
+function openPaymentModal(isBR, result){
+  document.getElementById("payment-title").textContent = isBR ? "Pagar com PIX" : "Pagar com Binance Pay";
+  document.getElementById("payment-qr").src = result.qr_code_image || "";
+  document.getElementById("payment-code-label").textContent = isBR ? "PIX Copia e Cola" : "Código de referência";
+  document.getElementById("payment-code").value = isBR ? (result.pix_copia_cola || "") : (result.checkout_url || "");
+  const link = document.getElementById("payment-external-link");
+  if(!isBR && result.checkout_url){
+    link.href = result.checkout_url;
+    link.style.display = "block";
+  } else {
+    link.style.display = "none";
+  }
+  document.getElementById("modal-payment").classList.add("active");
+}
+
+function copyPaymentCode(){
+  const el = document.getElementById("payment-code");
+  el.select();
+  document.execCommand("copy");
 }
 
 async function saveBank(){
