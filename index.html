@@ -735,6 +735,7 @@
           <textarea id="payment-code" readonly rows="3" style="width:100%; font-size:11px; word-break:break-all;"></textarea>
         </div>
         <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="copyPaymentCode()">📋 Copiar código</button>
+        <div id="payment-extra-note" style="font-size:13px; margin-top:10px;"></div>
         <a id="payment-external-link" href="#" target="_blank" class="btn btn-primary btn-block" style="margin-top:8px; display:none;">Abrir para pagar</a>
         <p style="font-size:12px; color:var(--muted); margin-top:12px;">Assim que o pagamento for confirmado, as moedas caem na sua carteira automaticamente — não precisa fazer nada aqui.</p>
         <button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="closeModal('modal-payment')">Fechar</button>
@@ -2649,7 +2650,7 @@ async function buyCoinPackage(packageId){
   const banner = document.getElementById("buycoins-banner");
   try{
     const isBR = (currentUser.country || "").toUpperCase() === "BR";
-    const fnName = isBR ? "create-pix-charge" : "create-binance-charge";
+    const fnName = isBR ? "create-pix-charge" : "create-usdt-charge";
     const result = await callEdgeFunction(fnName, { buyer_id: currentUser.id, package_id: packageId });
     openPaymentModal(isBR, result);
   } catch(e){
@@ -2658,16 +2659,26 @@ async function buyCoinPackage(packageId){
 }
 
 function openPaymentModal(isBR, result){
-  document.getElementById("payment-title").textContent = isBR ? "Pagar com PIX" : "Pagar com Binance Pay";
-  document.getElementById("payment-qr").src = result.qr_code_image || "";
-  document.getElementById("payment-code-label").textContent = isBR ? "PIX Copia e Cola" : "Código de referência";
-  document.getElementById("payment-code").value = isBR ? (result.pix_copia_cola || "") : (result.checkout_url || "");
+  const qrEl = document.getElementById("payment-qr");
+  const codeEl = document.getElementById("payment-code");
+  const labelEl = document.getElementById("payment-code-label");
   const link = document.getElementById("payment-external-link");
-  if(!isBR && result.checkout_url){
-    link.href = result.checkout_url;
-    link.style.display = "block";
+  const extra = document.getElementById("payment-extra-note");
+  link.style.display = "none";
+
+  if(isBR){
+    document.getElementById("payment-title").textContent = "Pagar com PIX";
+    qrEl.src = result.qr_code_image || "";
+    labelEl.textContent = "PIX Copia e Cola";
+    codeEl.value = result.pix_copia_cola || "";
+    extra.textContent = "";
   } else {
-    link.style.display = "none";
+    document.getElementById("payment-title").textContent = "Pagar com USDT (rede TRC20 / Tron)";
+    qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(result.wallet_address)}`;
+    labelEl.textContent = "Endereço da carteira (TRC20)";
+    codeEl.value = result.wallet_address || "";
+    const expira = result.expires_at ? new Date(result.expires_at).toLocaleTimeString("pt-BR") : "";
+    extra.innerHTML = `<b style="color:var(--gold, #d4af37);">Envie exatamente ${result.amount_usdt} USDT</b> (com todas as casas decimais — um valor diferente não é reconhecido automaticamente).<br>Prazo: até ${expira}.`;
   }
   document.getElementById("modal-payment").classList.add("active");
 }
