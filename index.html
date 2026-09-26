@@ -369,10 +369,6 @@
   <div class="topbar">
     <div class="mark">Z</div>
     <div class="name">Zuki<span>Live</span></div>
-    <div class="switch">
-      <button id="sw-app" class="active" onclick="setMode('app')">App</button>
-      <button id="sw-admin" onclick="setMode('admin')">Admin</button>
-    </div>
   </div>
 
   <!-- ======================= MODO APP (usuário) ======================= -->
@@ -1726,6 +1722,16 @@ function detectInitialLanguage(){
 
 document.addEventListener("DOMContentLoaded", ()=> applyLanguage(detectInitialLanguage()));
 
+// Acesso ao painel admin: só abre se a URL tiver o código secreto certo.
+// Troque "zuki-painel-2026" pelo código que você quiser usar.
+const ADMIN_ACCESS_CODE = "zuki-painel-2026";
+(function checkAdminAccess(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get("acesso") === ADMIN_ACCESS_CODE){
+    setMode("admin");
+  }
+})();
+
 /* ============================================================
    ZUKI LIVE — INTEGRAÇÃO COM SUPABASE (backend real)
    Preencha as duas linhas abaixo com os dados do SEU projeto
@@ -1783,8 +1789,6 @@ async function refreshCurrentUser(){
 function setMode(mode){
   document.getElementById("mode-app").classList.toggle("hidden", mode!=="app");
   document.getElementById("mode-admin").classList.toggle("hidden", mode!=="admin");
-  document.getElementById("sw-app").classList.toggle("active", mode==="app");
-  document.getElementById("sw-admin").classList.toggle("active", mode==="admin");
 }
 
 function showAppScreen(id){
