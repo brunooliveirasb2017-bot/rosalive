@@ -776,6 +776,12 @@ async function processComboQueue(){
 }
 
 function hideComboSend(){
+  if(comboProcessing || comboQueue > 0){
+    // ainda tem envios do lote em andamento — não apaga o presente selecionado,
+    // só tenta de novo daqui a pouco.
+    comboHideTimer = setTimeout(hideComboSend, 400);
+    return;
+  }
   document.getElementById("combo-send-btn").style.display = "none";
   document.getElementById("combo-send-count").style.display = "none";
   comboCount = 0;
