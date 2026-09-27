@@ -3224,7 +3224,7 @@ function pkHandleInviteResponse(payload){
 
 async function pkJoinAsGuest(sessionId){
   try{
-    const res = await callEdgeFunction("join-live", { session_id: sessionId });
+    const res = await callEdgeFunction("join-live", { session_id: sessionId, role: "pk_guest" });
     if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
