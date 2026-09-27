@@ -3166,18 +3166,19 @@ async function pkSearchOnline(){
   const list = document.getElementById("pk-online-list");
   list.innerHTML = '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Procurando quem está ao vivo agora...</p>';
   try{
-    const { data: sessions } = await sb.from("live_sessions").select("id, female_id").eq("status","active").neq("female_id", currentUser.id);
-    if(!sessions || sessions.length === 0){
+    // Reaproveita a mesma função (get_active_lives) que a tela inicial já usa
+    // pra listar quem está ao vivo — assim pega o nome certo e o session_id
+    // no mesmo formato que o resto do app já usa pra entrar numa live.
+    const { data: sessions, error } = await sb.rpc("get_active_lives");
+    if(error) throw error;
+    const others = (sessions||[]).filter(s=> s.female_id !== currentUser.id && s.session_id);
+    if(others.length === 0){
       list.innerHTML = '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Ninguém mais está ao vivo agora. Tente de novo em instantes.</p>';
       return;
     }
-    const ids = sessions.map(s=>s.female_id);
-    const { data: profiles } = await sb.from("profiles").select("id, name").in("id", ids);
-    const nameById = {};
-    (profiles||[]).forEach(p=> nameById[p.id] = p.name);
     list.innerHTML = "";
-    sessions.forEach(s=>{
-      const name = nameById[s.female_id] || "Ao vivo agora";
+    others.forEach(s=>{
+      const name = s.name || "Ao vivo agora";
       const row = document.createElement("div");
       row.style.cssText = "display:flex; align-items:center; justify-content:space-between; background:var(--bg-elev); border:1px solid var(--line); border-radius:12px; padding:10px 12px;";
       row.innerHTML = `<span style="font-size:13.5px;">🔴 ${name}</span>`;
@@ -3185,7 +3186,7 @@ async function pkSearchOnline(){
       btn.className = "btn-primary";
       btn.style.cssText = "padding:7px 16px; border-radius:999px; border:none; font-weight:700; font-size:12px;";
       btn.textContent = "Convidar";
-      btn.onclick = ()=> pkSendInvite(s.id, name, btn);
+      btn.onclick = ()=> pkSendInvite(s.session_id, name, btn);
       row.appendChild(btn);
       list.appendChild(row);
     });
@@ -3196,38 +3197,53 @@ async function pkSearchOnline(){
 
 let pkInviteTimeoutTimer = null;
 
+/* Envia uma mensagem de PK (convite/resposta) e só considera "enviado" depois
+   que o Supabase confirma o recebimento (ack:true) — antes era "atira e
+   esquece", então uma falha de rede no meio do caminho passava batido sem
+   avisar ninguém. onResult(true) = confirmado, onResult(false, erro) = falhou. */
+function pkSendToChannel(channelName, event, payload, onResult){
+  const ch = sb.channel(channelName, { config: { broadcast: { ack: true } } });
+  let done = false;
+  const finish = (ok, err)=>{
+    if(done) return;
+    done = true;
+    try{ sb.removeChannel(ch); }catch(e){}
+    if(onResult) onResult(ok, err);
+  };
+  ch.subscribe((status)=>{
+    if(status === "SUBSCRIBED"){
+      ch.send({ type:"broadcast", event, payload }).then(()=> finish(true)).catch((e)=> finish(false, e));
+    } else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED"){
+      finish(false, new Error(status));
+    }
+  });
+  setTimeout(()=> finish(false, new Error("timeout")), 8000);
+}
+
 function pkSendInvite(targetSessionId, targetName, btnEl){
   if(!myLiveSessionId){ alert("Inicie sua live antes de convidar pra PK."); return; }
   if(btnEl) btnEl.disabled = true;
   document.getElementById("pk-retry-invite-btn").style.display = "none";
-  const ch = sb.channel("pk-invite-"+targetSessionId);
-  let sent = false;
-  ch.subscribe((status)=>{
-    if(status === "SUBSCRIBED"){
-      if(sent) return;
-      sent = true;
-      ch.send({ type:"broadcast", event:"invite", payload:{ from_session_id: myLiveSessionId, from_name: currentUser.name } });
-      // deixa o canal aberto um pouco mais antes de fechar, pra reduzir a
-      // chance do convite se perder numa rede mais lenta
-      setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 10000);
-    } else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED"){
-      if(!sent){
-        document.getElementById("pk-waiting-text").textContent = "Não deu pra enviar o convite (conexão).";
-        document.getElementById("pk-retry-invite-btn").style.display = "block";
-      }
-    }
-  });
   pkOutboxTarget = { session_id: targetSessionId, name: targetName };
   document.getElementById("pk-lobby-view").style.display = "none";
   document.getElementById("pk-waiting-view").style.display = "block";
-  document.getElementById("pk-waiting-text").textContent = "Aguardando "+targetName+" aceitar...";
-  clearTimeout(pkInviteTimeoutTimer);
-  pkInviteTimeoutTimer = setTimeout(()=>{
-    if(pkOutboxTarget && pkOutboxTarget.session_id === targetSessionId){
-      document.getElementById("pk-waiting-text").textContent = targetName+" não respondeu.";
+  document.getElementById("pk-waiting-text").textContent = "Enviando convite...";
+  pkSendToChannel("pk-invite-"+targetSessionId, "invite", { from_session_id: myLiveSessionId, from_name: currentUser.name }, (ok)=>{
+    if(!pkOutboxTarget || pkOutboxTarget.session_id !== targetSessionId) return; // já saiu dessa tela
+    if(ok){
+      document.getElementById("pk-waiting-text").textContent = "Aguardando "+targetName+" aceitar...";
+      clearTimeout(pkInviteTimeoutTimer);
+      pkInviteTimeoutTimer = setTimeout(()=>{
+        if(pkOutboxTarget && pkOutboxTarget.session_id === targetSessionId){
+          document.getElementById("pk-waiting-text").textContent = targetName+" não respondeu.";
+          document.getElementById("pk-retry-invite-btn").style.display = "block";
+        }
+      }, 20000);
+    } else {
+      document.getElementById("pk-waiting-text").textContent = "Não deu pra enviar o convite (conexão).";
       document.getElementById("pk-retry-invite-btn").style.display = "block";
     }
-  }, 20000);
+  });
 }
 
 function pkRetryInvite(){
@@ -3246,27 +3262,17 @@ function pkAcceptInvite(){
   document.getElementById("pk-waiting-view").style.display = "block";
   document.getElementById("pk-waiting-text").textContent = "Entrando na PK...";
   pkJoinAsGuest(invite.from_session_id).then(()=>{
-    const ch = sb.channel("pk-invite-"+invite.from_session_id);
-    ch.subscribe((status)=>{
-      if(status === "SUBSCRIBED"){
-        ch.send({ type:"broadcast", event:"response", payload:{ accepted:true, guest_name: currentUser.name } });
-        setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
-      }
-    });
     closeModal("modal-pk");
+    pkSendToChannel("pk-invite-"+invite.from_session_id, "response", { accepted:true, guest_name: currentUser.name }, (ok)=>{
+      if(!ok) console.warn("Não deu pra avisar o anfitrião que aceitei a PK (conexão).");
+    });
   });
 }
 
 function pkDeclineInvite(){
   if(pkPendingInvite){
     const invite = pkPendingInvite;
-    const ch = sb.channel("pk-invite-"+invite.from_session_id);
-    ch.subscribe((status)=>{
-      if(status === "SUBSCRIBED"){
-        ch.send({ type:"broadcast", event:"response", payload:{ accepted:false } });
-        setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
-      }
-    });
+    pkSendToChannel("pk-invite-"+invite.from_session_id, "response", { accepted:false }, ()=>{});
   }
   pkPendingInvite = null;
   closeModal("modal-pk");
