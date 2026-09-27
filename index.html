@@ -3284,10 +3284,15 @@ function pkHandleInviteResponse(payload){
   document.getElementById("pk-retry-invite-btn").style.display = "none";
   if(payload.accepted){
     pkIAmHost = true;
+    document.getElementById("pk-lobby-view").style.display = "none";
+    document.getElementById("pk-incoming-view").style.display = "none";
+    document.getElementById("pk-waiting-view").style.display = "block";
     document.getElementById("pk-waiting-text").textContent = (payload.guest_name||pkOutboxTarget.name)+" aceitou! Toque pra iniciar.";
     document.getElementById("pk-start-visible-btn").style.display = "block";
+    document.getElementById("modal-pk").classList.add("active"); // reabre sozinho, mesmo se tiver sido fechado enquanto esperava
   } else {
     document.getElementById("pk-waiting-text").textContent = pkOutboxTarget.name+" recusou o convite.";
+    document.getElementById("modal-pk").classList.add("active");
     setTimeout(()=>{ document.getElementById("pk-lobby-view").style.display = "block"; document.getElementById("pk-waiting-view").style.display = "none"; pkSearchOnline(); }, 1800);
   }
   pkOutboxTarget = null;
