@@ -730,12 +730,22 @@
     <div class="modal-back" id="modal-pk">
       <div class="modal-sheet">
         <div class="eyebrow">Batalha PK</div>
-        <p style="font-size:13px; color:var(--pink-soft); margin-bottom:14px;">Envie seu código pra quem vai entrar na sua PK, ou cole o código de quem te convidou.</p>
-        <div class="field"><label>Seu código (compartilhe)</label><input id="pk-my-code" readonly onclick="this.select()"></div>
-        <div class="field"><label>Código de quem te convidou</label><input id="pk-guest-code" placeholder="Cole o código aqui"></div>
-        <button class="btn-primary" style="width:100%; padding:13px; border-radius:14px; margin-top:6px; border:none; font-weight:700; font-size:14px;" onclick="pkJoinAsGuest()">Entrar na PK</button>
-        <button class="btn-outline" style="width:100%; padding:13px; border-radius:14px; margin-top:10px; font-weight:700; font-size:14px;" onclick="showComingSoonToast('Convite aleatório de PK')">🎲 Convite aleatório</button>
-        <div id="pk-status" style="font-size:12px; color:var(--muted); margin-top:12px; text-align:center;"></div>
+        <div id="pk-lobby-view">
+          <p style="font-size:13px; color:var(--pink-soft); margin-bottom:10px;">Toque em alguém pra convidar pra uma PK ao vivo.</p>
+          <div id="pk-online-list" style="max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+            <p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Procurando quem está ao vivo agora...</p>
+          </div>
+        </div>
+        <div id="pk-waiting-view" style="display:none; text-align:center; padding:10px 0;">
+          <div class="eyebrow" id="pk-waiting-text">Aguardando resposta...</div>
+        </div>
+        <div id="pk-incoming-view" style="display:none; text-align:center; padding:6px 0;">
+          <p style="font-size:14px; margin-bottom:14px;"><b id="pk-incoming-name"></b> te chamou pra uma PK!</p>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-outline" style="flex:1; padding:12px; border-radius:14px; font-weight:700;" onclick="pkDeclineInvite()">Recusar</button>
+            <button class="btn-primary" style="flex:1; padding:12px; border-radius:14px; border:none; font-weight:700;" onclick="pkAcceptInvite()">Aceitar</button>
+          </div>
+        </div>
         <button class="btn-gold" id="pk-start-visible-btn" style="display:none; width:100%; padding:13px; border-radius:14px; margin-top:10px; border:none; font-weight:700; font-size:14px;" onclick="pkStartBattle()">▶ Iniciar Batalha</button>
         <button class="btn-outline" id="pk-end-visible-btn" style="display:none; width:100%; padding:13px; border-radius:14px; margin-top:10px; font-weight:700; font-size:14px;" onclick="pkEndBattle()">Encerrar PK</button>
         <div class="toggle-link" onclick="closeModal('modal-pk')">Fechar</div>
@@ -3052,58 +3062,184 @@ async function startBroadcast(){
     });
     await broadcastCallObject.join({ url: res.room_url, token: res.token });
     updateBroadcastLocalVideo(); // força atualização caso a track já esteja pronta antes do evento
+    subscribePkInbox();
   }catch(e){ alert(e && e.message ? e.message : String(e)); }
   finally{ if(btn){ btn.disabled = false; } checkLiveStatus(); }
 }
 
 /* ========== PK Battle ==========
-   O convite/entrada usa o MESMO room do Daily do transmissor (via join-live),
-   então quem entra como convidado passa a ser um segundo participante de vídeo
-   dentro da própria live — por isso presente, chat e os eventos de PK (início,
-   curtida, fim) já chegam a todo mundo (host, convidado e audiência) através do
-   sendAppMessage que o app já usa. O que falta no backend: confirmar que o token
-   devolvido por "join-live" permite o convidado publicar câmera/microfone (hoje
-   joinLiveView força startVideoOff/startAudioOff=true para espectadores comuns) —
-   isso é ajustado na função do Supabase, não neste arquivo. */
+   Convite automático: busca quem está com live_sessions.status="active" agora,
+   mostra a lista pra convidar com um toque. O convite/aceite/recusa viaja pelo
+   Supabase Realtime (broadcast), num canal próprio por sessão (pk-invite-<session_id>) —
+   não precisa de tabela nova. Quem aceita entra como segundo participante de vídeo
+   dentro da MESMA sala do Daily de quem convidou (por isso presente, chat e os
+   eventos da PK já chegam a todo mundo, do mesmo jeito que a live já funciona).
+   Pendência de backend: a função "join-live" hoje devolve token com vídeo/áudio
+   desligados (pensada pra espectador comum) — pra o convidado aparecer com câmera
+   de verdade, essa função no Supabase precisa liberar publicação de vídeo/áudio
+   pra esse caso. Isso não dá pra ajustar por aqui, só no código da Edge Function. */
 let pkActive = false;
-let pkIAmHost = false;   // true = estou transmitindo (lado A); false = entrei como convidado (lado B)
+let pkIAmHost = false;
 let pkScoreA = 0, pkScoreB = 0, pkWinA = 0, pkWinB = 0;
 let pkTimerId = null, pkEndsAt = 0;
 let pkGuestCallObject = null;
+let pkInboxChannel = null;
+let pkPendingInvite = null;   // { from_session_id, from_name } quando alguém me convidou
+let pkOutboxTarget = null;    // { session_id, name } de quem eu convidei
 
 function pkActiveCallObject(){ return pkIAmHost ? broadcastCallObject : pkGuestCallObject; }
 
-function openPkModal(){
-  document.getElementById("pk-my-code").value = myLiveSessionId || "(inicie a live primeiro)";
-  document.getElementById("pk-status").textContent = "";
-  document.getElementById("pk-start-visible-btn").style.display = (pkActiveCallObject() && !pkActive) ? "block" : "none";
-  document.getElementById("pk-end-visible-btn").style.display = pkActive ? "block" : "none";
+/* Assina o canal pessoal da minha sessão pra receber convites/respostas de PK
+   enquanto estou ao vivo. Chamado assim que a transmissão começa. */
+function subscribePkInbox(){
+  if(!myLiveSessionId) return;
+  if(pkInboxChannel){ try{ sb.removeChannel(pkInboxChannel); }catch(e){} }
+  pkInboxChannel = sb.channel("pk-invite-"+myLiveSessionId);
+  pkInboxChannel.on("broadcast", { event:"invite" }, (msg)=>{
+    pkPendingInvite = msg.payload;
+    showPkIncomingInvite(msg.payload.from_name);
+  });
+  pkInboxChannel.on("broadcast", { event:"response" }, (msg)=>{
+    pkHandleInviteResponse(msg.payload);
+  });
+  pkInboxChannel.subscribe();
+}
+
+function unsubscribePkInbox(){
+  if(pkInboxChannel){ try{ sb.removeChannel(pkInboxChannel); }catch(e){} pkInboxChannel = null; }
+}
+
+function showPkIncomingInvite(name){
+  document.getElementById("pk-incoming-name").textContent = name;
+  document.getElementById("pk-lobby-view").style.display = "none";
+  document.getElementById("pk-waiting-view").style.display = "none";
+  document.getElementById("pk-incoming-view").style.display = "block";
   document.getElementById("modal-pk").classList.add("active");
 }
 
-async function pkJoinAsGuest(){
-  const code = (document.getElementById("pk-guest-code").value || "").trim();
-  const status = document.getElementById("pk-status");
-  if(!code){ status.textContent = "Cole o código de quem te convidou."; return; }
-  status.textContent = "Entrando na PK...";
+async function openPkModal(){
+  document.getElementById("pk-lobby-view").style.display = "block";
+  document.getElementById("pk-waiting-view").style.display = "none";
+  document.getElementById("pk-incoming-view").style.display = "none";
+  document.getElementById("pk-start-visible-btn").style.display = (pkActiveCallObject() && !pkActive) ? "block" : "none";
+  document.getElementById("pk-end-visible-btn").style.display = pkActive ? "block" : "none";
+  document.getElementById("modal-pk").classList.add("active");
+  if(!pkActive) await pkSearchOnline();
+}
+
+async function pkSearchOnline(){
+  const list = document.getElementById("pk-online-list");
+  list.innerHTML = '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Procurando quem está ao vivo agora...</p>';
   try{
-    const res = await callEdgeFunction("join-live", { session_id: code });
+    const { data: sessions } = await sb.from("live_sessions").select("id, female_id").eq("status","active").neq("female_id", currentUser.id);
+    if(!sessions || sessions.length === 0){
+      list.innerHTML = '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Ninguém mais está ao vivo agora. Tente de novo em instantes.</p>';
+      return;
+    }
+    const ids = sessions.map(s=>s.female_id);
+    const { data: profiles } = await sb.from("profiles").select("id, name").in("id", ids);
+    const nameById = {};
+    (profiles||[]).forEach(p=> nameById[p.id] = p.name);
+    list.innerHTML = "";
+    sessions.forEach(s=>{
+      const name = nameById[s.female_id] || "Ao vivo agora";
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex; align-items:center; justify-content:space-between; background:var(--bg-elev); border:1px solid var(--line); border-radius:12px; padding:10px 12px;";
+      row.innerHTML = `<span style="font-size:13.5px;">🔴 ${name}</span>`;
+      const btn = document.createElement("button");
+      btn.className = "btn-primary";
+      btn.style.cssText = "padding:7px 16px; border-radius:999px; border:none; font-weight:700; font-size:12px;";
+      btn.textContent = "Convidar";
+      btn.onclick = ()=> pkSendInvite(s.id, name, btn);
+      row.appendChild(btn);
+      list.appendChild(row);
+    });
+  }catch(e){
+    list.innerHTML = '<p style="font-size:12px; color:var(--muted); text-align:center; padding:14px 0;">Não deu pra buscar agora. Tente de novo.</p>';
+  }
+}
+
+function pkSendInvite(targetSessionId, targetName, btnEl){
+  if(!myLiveSessionId){ alert("Inicie sua live antes de convidar pra PK."); return; }
+  if(btnEl) btnEl.disabled = true;
+  const ch = sb.channel("pk-invite-"+targetSessionId);
+  ch.subscribe((status)=>{
+    if(status === "SUBSCRIBED"){
+      ch.send({ type:"broadcast", event:"invite", payload:{ from_session_id: myLiveSessionId, from_name: currentUser.name } });
+      setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
+    }
+  });
+  pkOutboxTarget = { session_id: targetSessionId, name: targetName };
+  document.getElementById("pk-lobby-view").style.display = "none";
+  document.getElementById("pk-waiting-view").style.display = "block";
+  document.getElementById("pk-waiting-text").textContent = "Aguardando "+targetName+" aceitar...";
+}
+
+function pkAcceptInvite(){
+  if(!pkPendingInvite) return;
+  const invite = pkPendingInvite;
+  pkPendingInvite = null;
+  document.getElementById("pk-incoming-view").style.display = "none";
+  document.getElementById("pk-waiting-view").style.display = "block";
+  document.getElementById("pk-waiting-text").textContent = "Entrando na PK...";
+  pkJoinAsGuest(invite.from_session_id).then(()=>{
+    const ch = sb.channel("pk-invite-"+invite.from_session_id);
+    ch.subscribe((status)=>{
+      if(status === "SUBSCRIBED"){
+        ch.send({ type:"broadcast", event:"response", payload:{ accepted:true, guest_name: currentUser.name } });
+        setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
+      }
+    });
+    closeModal("modal-pk");
+  });
+}
+
+function pkDeclineInvite(){
+  if(pkPendingInvite){
+    const invite = pkPendingInvite;
+    const ch = sb.channel("pk-invite-"+invite.from_session_id);
+    ch.subscribe((status)=>{
+      if(status === "SUBSCRIBED"){
+        ch.send({ type:"broadcast", event:"response", payload:{ accepted:false } });
+        setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
+      }
+    });
+  }
+  pkPendingInvite = null;
+  closeModal("modal-pk");
+}
+
+function pkHandleInviteResponse(payload){
+  if(!pkOutboxTarget) return;
+  if(payload.accepted){
+    pkIAmHost = true;
+    document.getElementById("pk-waiting-text").textContent = (payload.guest_name||pkOutboxTarget.name)+" aceitou! Toque pra iniciar.";
+    document.getElementById("pk-start-visible-btn").style.display = "block";
+  } else {
+    document.getElementById("pk-waiting-text").textContent = pkOutboxTarget.name+" recusou o convite.";
+    setTimeout(()=>{ document.getElementById("pk-lobby-view").style.display = "block"; document.getElementById("pk-waiting-view").style.display = "none"; pkSearchOnline(); }, 1800);
+  }
+  pkOutboxTarget = null;
+}
+
+async function pkJoinAsGuest(sessionId){
+  try{
+    const res = await callEdgeFunction("join-live", { session_id: sessionId });
     if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
     pkGuestCallObject.on("error", (e)=>console.error("Daily error (pk guest):", e));
     await pkGuestCallObject.join({ url: res.room_url, token: res.token, startVideoOff:false, startAudioOff:false });
     pkIAmHost = false;
-    status.textContent = "Entrou! Aguarde o anfitrião iniciar a batalha.";
-    document.getElementById("pk-start-visible-btn").style.display = "none";
   }catch(e){
-    status.textContent = "Não deu pra entrar: " + (e && e.message ? e.message : e);
+    alert("Não deu pra entrar na PK: " + (e && e.message ? e.message : e));
+    throw e;
   }
 }
 
 function pkStartBattle(){
   const callObj = pkActiveCallObject();
-  if(!callObj){ document.getElementById("pk-status").textContent = "Entre na PK antes de iniciar."; return; }
+  if(!callObj){ return; }
   pkIAmHost = true;
   const endsAt = Date.now() + 5*60*1000;
   callObj.sendAppMessage({ type:"pk_start", endsAt }, "*");
@@ -3199,6 +3335,8 @@ function pkApplyEnd(){
 
 async function stopBroadcast(){
   try{ if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }catch(e){}
+  unsubscribePkInbox();
+  if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
   if(broadcastCallObject){ try{ broadcastCallObject.leave(); broadcastCallObject.destroy(); }catch(e){} broadcastCallObject = null; }
   if(myLiveSessionId){
     await sb.from("live_sessions").update({ status:"ended", ended_at: new Date().toISOString() }).eq("id", myLiveSessionId);
