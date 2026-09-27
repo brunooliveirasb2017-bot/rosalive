@@ -273,13 +273,17 @@
   .pk-win.active{ display:block; }
   .pk-win.a{ left:8px; }
   .pk-win.b{ right:8px; }
+  .pk-leave-btn{ position:absolute; top:32px; left:50%; transform:translateX(-50%); z-index:6; display:none; background:rgba(0,0,0,.55); border:1px solid var(--gold); color:var(--gold); font-size:10px; font-weight:800; padding:3px 12px; border-radius:10px; }
+  .pk-leave-btn.active{ display:block; }
   .pk-remote-video{ position:absolute; top:0; right:0; bottom:0; width:50%; object-fit:cover; background:#000; z-index:1; display:none; }
   .pk-vs{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:18px; font-weight:900; color:var(--gold); z-index:3; display:none; text-shadow:0 0 8px rgba(0,0,0,.8); }
   .live-stage.pk-active .live-video-el{ width:50%; }
   .live-stage.pk-active .pk-remote-video{ display:block; }
   .live-stage.pk-active .pk-vs{ display:block; }
-  .pk-tap-zone{ position:absolute; inset:0; z-index:4; display:none; }
+  .pk-tap-zone{ position:absolute; top:0; left:0; right:0; bottom:130px; z-index:4; display:none; }
   .live-stage.pk-active .pk-tap-zone{ display:block; }
+  #scr-broadcast.pk-mode .live-top-bar, #scr-live.pk-mode .live-top-bar{ top:26px; }
+  #scr-broadcast.pk-mode .broadcast-earnings-box{ top:86px; }
   .pk-heart{ position:absolute; font-size:20px; animation:pkFloat 1.2s ease-out forwards; pointer-events:none; z-index:5; }
   @keyframes pkFloat{ from{ opacity:1; transform:translateY(0) scale(.6); } to{ opacity:0; transform:translateY(-140px) scale(1.3); } }
   .live-like-btn{ font-size:22px; }
@@ -712,6 +716,7 @@
       </div>
       <div class="pk-win a" id="pk-win-a">WIN x0</div>
       <div class="pk-win b" id="pk-win-b">WIN x0</div>
+      <button class="pk-leave-btn" id="pk-leave-btn" onclick="pkLeaveBattle()">✕ Sair da PK</button>
       <div class="broadcast-earnings-box" onclick="showAppScreen('scr-wallet')">
         <span class="trophy">🏆</span>
         <div class="txt"><span class="lbl">Saldo recebido</span><b id="broadcast-earnings">0</b></div>
@@ -750,6 +755,7 @@
         </div>
         <div id="pk-waiting-view" style="display:none; text-align:center; padding:10px 0;">
           <div class="eyebrow" id="pk-waiting-text">Aguardando resposta...</div>
+          <button class="btn-outline" id="pk-retry-invite-btn" style="display:none; width:100%; padding:11px; border-radius:14px; margin-top:12px; font-weight:700; font-size:13px;" onclick="pkRetryInvite()">🔁 Convidar de novo</button>
         </div>
         <div id="pk-incoming-view" style="display:none; text-align:center; padding:6px 0;">
           <p style="font-size:14px; margin-bottom:14px;"><b id="pk-incoming-name"></b> te chamou pra uma PK!</p>
@@ -2551,10 +2557,20 @@ function updateLiveViewerVideo(){
   const pkVideoEl = document.getElementById("live-pk-remote-video");
   const loading = document.getElementById("live-stage-loading");
   const participants = liveCallObject.participants();
-  const remotes = [];
-  for(const id in participants){ if(!participants[id].local) remotes.push(participants[id]); }
-  const playing = attachParticipantToVideoEl(remotes[0] || null, videoEl);
-  if(pkVideoEl) attachParticipantToVideoEl(remotes[1] || null, pkVideoEl);
+  // A sala é compartilhada com toda a audiência, então não dá pra pegar "o
+  // 1º e o 2º remoto" por ordem de entrada — precisa achar exatamente quem
+  // é o host (__pk_host__) e quem é o convidado da PK (__pk_guest__), senão
+  // às vezes pega um espectador qualquer sem câmera no lugar de um dos dois.
+  let host = null, guest = null;
+  for(const id in participants){
+    const p = participants[id];
+    if(p.local) continue;
+    if(p.user_name === "__pk_host__") host = p;
+    else if(p.user_name === "__pk_guest__") guest = p;
+  }
+  if(!host){ for(const id in participants){ if(!participants[id].local){ host = participants[id]; break; } } }
+  const playing = attachParticipantToVideoEl(host, videoEl);
+  if(pkVideoEl) attachParticipantToVideoEl(guest, pkVideoEl);
   if(loading) loading.classList.toggle("hidden", playing);
 }
 
@@ -3031,14 +3047,19 @@ function updateBroadcastLocalVideo(){
   pkUpdateRemoteVideo();
 }
 
-/* Assim que um segundo participante de vídeo entra na sala do host (o convidado
-   da PK, via pkJoinAsGuest), a câmera dele aparece no quadro da direita. */
+/* Assim que o convidado da PK (marcado com userName __pk_guest__ ao entrar)
+   aparece na sala do host, a câmera dele vai pro quadro da direita. Como a
+   sala do Daily é compartilhada com TODA a audiência, não dá pra simplesmente
+   pegar "o primeiro participante remoto" — precisa achar exatamente quem tem
+   essa etiqueta, senão às vezes pega um espectador qualquer sem câmera. */
 function pkUpdateRemoteVideo(){
   if(!broadcastCallObject) return;
   const videoEl = document.getElementById("broadcast-pk-remote-video");
   const participants = broadcastCallObject.participants();
   let remote = null;
-  for(const id in participants){ if(!participants[id].local){ remote = participants[id]; break; } }
+  for(const id in participants){
+    if(participants[id].user_name === "__pk_guest__"){ remote = participants[id]; break; }
+  }
   attachParticipantToVideoEl(remote, videoEl);
 }
 
@@ -3074,7 +3095,7 @@ async function startBroadcast(){
     ["joined-meeting","participant-joined","participant-updated","participant-left","track-started","track-stopped"].forEach(ev=>{
       broadcastCallObject.on(ev, updateBroadcastLocalVideo);
     });
-    await broadcastCallObject.join({ url: res.room_url, token: res.token });
+    await broadcastCallObject.join({ url: res.room_url, token: res.token, userName: "__pk_host__" });
     updateBroadcastLocalVideo(); // força atualização caso a track já esteja pronta antes do evento
     subscribePkInbox();
   }catch(e){ alert(e && e.message ? e.message : String(e)); }
@@ -3173,20 +3194,45 @@ async function pkSearchOnline(){
   }
 }
 
+let pkInviteTimeoutTimer = null;
+
 function pkSendInvite(targetSessionId, targetName, btnEl){
   if(!myLiveSessionId){ alert("Inicie sua live antes de convidar pra PK."); return; }
   if(btnEl) btnEl.disabled = true;
+  document.getElementById("pk-retry-invite-btn").style.display = "none";
   const ch = sb.channel("pk-invite-"+targetSessionId);
+  let sent = false;
   ch.subscribe((status)=>{
     if(status === "SUBSCRIBED"){
+      if(sent) return;
+      sent = true;
       ch.send({ type:"broadcast", event:"invite", payload:{ from_session_id: myLiveSessionId, from_name: currentUser.name } });
-      setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 4000);
+      // deixa o canal aberto um pouco mais antes de fechar, pra reduzir a
+      // chance do convite se perder numa rede mais lenta
+      setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} }, 10000);
+    } else if(status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED"){
+      if(!sent){
+        document.getElementById("pk-waiting-text").textContent = "Não deu pra enviar o convite (conexão).";
+        document.getElementById("pk-retry-invite-btn").style.display = "block";
+      }
     }
   });
   pkOutboxTarget = { session_id: targetSessionId, name: targetName };
   document.getElementById("pk-lobby-view").style.display = "none";
   document.getElementById("pk-waiting-view").style.display = "block";
   document.getElementById("pk-waiting-text").textContent = "Aguardando "+targetName+" aceitar...";
+  clearTimeout(pkInviteTimeoutTimer);
+  pkInviteTimeoutTimer = setTimeout(()=>{
+    if(pkOutboxTarget && pkOutboxTarget.session_id === targetSessionId){
+      document.getElementById("pk-waiting-text").textContent = targetName+" não respondeu.";
+      document.getElementById("pk-retry-invite-btn").style.display = "block";
+    }
+  }, 20000);
+}
+
+function pkRetryInvite(){
+  if(!pkOutboxTarget) return;
+  pkSendInvite(pkOutboxTarget.session_id, pkOutboxTarget.name);
 }
 
 function pkAcceptInvite(){
@@ -3228,6 +3274,8 @@ function pkDeclineInvite(){
 
 function pkHandleInviteResponse(payload){
   if(!pkOutboxTarget) return;
+  clearTimeout(pkInviteTimeoutTimer);
+  document.getElementById("pk-retry-invite-btn").style.display = "none";
   if(payload.accepted){
     pkIAmHost = true;
     document.getElementById("pk-waiting-text").textContent = (payload.guest_name||pkOutboxTarget.name)+" aceitou! Toque pra iniciar.";
@@ -3267,7 +3315,7 @@ async function pkJoinAsGuest(sessionId){
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
     pkGuestCallObject.on("error", (e)=>console.error("Daily error (pk guest):", e));
-    await pkGuestCallObject.join({ url: res.room_url, token: res.token, startVideoOff:false, startAudioOff:false });
+    await pkGuestCallObject.join({ url: res.room_url, token: res.token, startVideoOff:false, startAudioOff:false, userName: "__pk_guest__" });
     pkIAmHost = false;
   }catch(e){
     alert("Não deu pra entrar na PK: " + (e && e.message ? e.message : e));
@@ -3296,8 +3344,11 @@ function pkApplyStart(endsAt){
   pkScoreA = 0; pkScoreB = 0;
   pkEndsAt = endsAt;
   document.querySelectorAll(".live-stage").forEach(el=>el.classList.add("pk-active"));
+  const scrB0 = document.getElementById("scr-broadcast"); if(scrB0) scrB0.classList.add("pk-mode");
+  const scrL0 = document.getElementById("scr-live"); if(scrL0) scrL0.classList.add("pk-mode");
   document.querySelectorAll(".pk-scorebar").forEach(el=>el.classList.add("active"));
   document.querySelectorAll(".pk-win").forEach(el=>el.classList.add("active"));
+  document.querySelectorAll(".pk-leave-btn").forEach(el=>el.classList.add("active"));
   document.querySelectorAll(".pk-win.a").forEach(el=>el.textContent = "WIN x"+pkWinA);
   document.querySelectorAll(".pk-win.b").forEach(el=>el.textContent = "WIN x"+pkWinB);
   pkUpdateBar();
@@ -3354,6 +3405,12 @@ function handlePkTap(e){
   setTimeout(()=>h.remove(), 1200);
 }
 
+function pkLeaveBattle(){
+  // Por enquanto esse botão só existe na tela do host (não tem UI de PK pro
+  // convidado ainda), então sempre encerra a PK pra todo mundo.
+  pkEndBattle();
+}
+
 function pkEndBattle(){
   const callObj = pkActiveCallObject();
   if(callObj) callObj.sendAppMessage({ type:"pk_end" }, "*");
@@ -3365,14 +3422,17 @@ function pkApplyEnd(){
   pkActive = false;
   clearInterval(pkTimerId);
   document.querySelectorAll(".live-stage").forEach(el=>el.classList.remove("pk-active"));
+  const scrB1 = document.getElementById("scr-broadcast"); if(scrB1) scrB1.classList.remove("pk-mode");
+  const scrL1 = document.getElementById("scr-live"); if(scrL1) scrL1.classList.remove("pk-mode");
   document.querySelectorAll(".pk-scorebar").forEach(el=>el.classList.remove("active"));
   document.querySelectorAll(".pk-win").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".pk-leave-btn").forEach(el=>el.classList.remove("active"));
   let text;
   if(pkScoreA === pkScoreB){ text = "PK empatada! 🤝  ("+pkScoreA+" x "+pkScoreB+")"; }
   else if(pkScoreA > pkScoreB){ pkWinA++; text = "🏆 Lado A venceu a PK!  ("+pkScoreA+" x "+pkScoreB+")"; }
   else { pkWinB++; text = "🏆 Lado B venceu a PK!  ("+pkScoreA+" x "+pkScoreB+")"; }
   renderChatMessage(pkIAmHost ? "broadcast-chat-feed" : "live-chat-feed", "PK", text);
-  if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
+  if(pkGuestCallObject){ pkTeardownCallObject(pkGuestCallObject); pkGuestCallObject = null; }
 }
 
 async function stopBroadcast(){
