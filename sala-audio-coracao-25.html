@@ -109,9 +109,17 @@
   .gift-cat-tab.active{ color:var(--cream); border-bottom-color:var(--pink); }
   .gift-item{ min-width:0; background:linear-gradient(135deg, #1c1810, #0d0d0d 75%); border:1px solid var(--line); border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; overflow:hidden; }
   .gift-item.selected{ border:2px solid var(--gold); }
-  .gift-send-row{ display:flex; justify-content:flex-end; margin-top:12px; position:sticky; bottom:-18px; padding:10px 0 4px; background:#0c0b09; }
+  .gift-send-row{ display:flex; justify-content:flex-end; align-items:center; gap:8px; margin-top:12px; position:sticky; bottom:-18px; padding:10px 0 4px; background:#0c0b09; }
   .gift-send-btn{ background:var(--pink); color:#fff; border:0; border-radius:999px; padding:9px 20px; font-size:13px; font-weight:700; cursor:pointer; }
   .gift-send-btn:disabled{ opacity:.4; cursor:default; }
+  .gift-qty-select{ position:relative; }
+  .gift-qty-pill{ display:flex; align-items:center; gap:5px; background:#1a1712; border:1.5px solid var(--gold); color:var(--gold); border-radius:999px; padding:9px 12px; font-size:13px; font-weight:700; cursor:pointer; min-width:44px; justify-content:center; }
+  .gift-qty-pill .arrow{ font-size:9px; }
+  .gift-qty-menu{ display:none; position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%); background:#1a1230; border:1px solid var(--gold); border-radius:12px; overflow:hidden; z-index:20; min-width:64px; box-shadow:0 6px 18px rgba(0,0,0,.5); }
+  .gift-qty-menu.open{ display:block; }
+  .gift-qty-menu div{ padding:9px 0; text-align:center; font-size:13px; font-weight:700; color:var(--cream); cursor:pointer; }
+  .gift-qty-menu div:hover, .gift-qty-menu div.active{ background:rgba(244,197,66,.18); color:var(--gold); }
+  .gift-qty-menu div+div{ border-top:1px solid rgba(255,255,255,.08); }
   .combo-send-btn{ position:fixed; right:18px; bottom:220px; width:72px; height:72px; border-radius:50%; background:var(--pink); border:4px solid var(--gold); color:#fff; font-size:32px; z-index:300; display:none; align-items:center; justify-content:center; box-shadow:0 0 0 6px rgba(212,175,55,.25); }
   .combo-send-count{ position:absolute; top:-6px; right:-6px; background:var(--gold); color:#4a1b0c; font-size:11px; font-weight:700; border-radius:10px; padding:1px 7px; }
   .gift-fly{ position:fixed; font-size:44px; z-index:301; pointer-events:none; transition:all 1.3s cubic-bezier(.2,.7,.3,1); filter:drop-shadow(0 0 6px rgba(0,0,0,.6)); }
@@ -218,7 +226,20 @@
     <div class="gift-target-strip" id="gift-target-strip"></div>
     <div class="gift-cat-tabs" id="gift-cat-tabs"></div>
     <div class="gift-picker-grid" id="gift-picker-grid"></div>
-    <div class="gift-send-row"><button class="gift-send-btn" id="gift-send-btn" disabled onclick="startComboSend()">Enviar</button></div>
+    <div class="gift-send-row">
+      <div class="gift-qty-select">
+        <div class="gift-qty-pill" id="gift-qty-pill" onclick="toggleGiftQtyMenu()"><span id="gift-qty-label">1</span><span class="arrow">▲</span></div>
+        <div class="gift-qty-menu" id="gift-qty-menu">
+          <div onclick="selectGiftQty(1)">1</div>
+          <div onclick="selectGiftQty(7)">7</div>
+          <div onclick="selectGiftQty(17)">17</div>
+          <div onclick="selectGiftQty(77)">77</div>
+          <div onclick="selectGiftQty(177)">177</div>
+          <div onclick="selectGiftQty(777)">777</div>
+        </div>
+      </div>
+      <button class="gift-send-btn" id="gift-send-btn" disabled onclick="startComboSend()">Enviar</button>
+    </div>
   </div>
 </div>
 
@@ -627,6 +648,9 @@ async function openGiftPicker(targetSeat){
   }
   giftPickerActiveCat = "geral";
   selectedGift = null;
+  giftQty = 1;
+  document.getElementById("gift-qty-label").textContent = "1";
+  document.getElementById("gift-qty-menu").classList.remove("open");
   document.getElementById("gift-send-btn").disabled = true;
   renderGiftCatTabs();
   renderGiftGrid();
@@ -696,6 +720,17 @@ let comboCount = 0;
 let comboHideTimer = null;
 let comboQueue = 0;
 let comboProcessing = false;
+let giftQty = 1;
+
+function toggleGiftQtyMenu(){
+  document.getElementById("gift-qty-menu").classList.toggle("open");
+}
+function selectGiftQty(n){
+  giftQty = n;
+  document.getElementById("gift-qty-label").textContent = n;
+  document.getElementById("gift-qty-menu").classList.remove("open");
+  document.querySelectorAll("#gift-qty-menu div").forEach(d=> d.classList.toggle("active", Number(d.textContent)===n));
+}
 
 function startComboSend(){
   if(!selectedGift || giftTargetSeat === null) return;
@@ -704,7 +739,18 @@ function startComboSend(){
   comboQueue = 0;
   const comboBtn = document.getElementById("combo-send-btn");
   comboBtn.style.display = "flex";
-  comboSendTap();
+  const qty = giftQty || 1;
+  for(let i=0;i<qty;i++){
+    comboQueue++;
+    comboCount++;
+    if(i < 12) flyFromComboToSeat(); // evita empilhar animação demais em combos grandes (177x/777x)
+  }
+  const countEl = document.getElementById("combo-send-count");
+  countEl.style.display = "block";
+  countEl.textContent = comboCount;
+  clearTimeout(comboHideTimer);
+  comboHideTimer = setTimeout(hideComboSend, 3000);
+  processComboQueue();
 }
 
 function comboSendTap(){
