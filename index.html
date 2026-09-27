@@ -3191,6 +3191,9 @@ function pkSendInvite(targetSessionId, targetName, btnEl){
 
 function pkAcceptInvite(){
   if(!pkPendingInvite) return;
+  if(broadcastCallObject && !confirm("Sua própria live vai pausar enquanto você estiver nessa PK (só dá pra ter uma transmissão de vídeo aberta por vez). Quer continuar?")){
+    return;
+  }
   const invite = pkPendingInvite;
   pkPendingInvite = null;
   document.getElementById("pk-incoming-view").style.display = "none";
@@ -3239,6 +3242,12 @@ function pkHandleInviteResponse(payload){
 async function pkJoinAsGuest(sessionId){
   try{
     const res = await callEdgeFunction("join-live", { session_id: sessionId, role: "pk_guest" });
+    // O Daily só permite UMA chamada de vídeo aberta por vez na mesma aba.
+    // Se eu já estava com minha própria live no ar (broadcastCallObject) ou
+    // assistindo outra live (liveCallObject), preciso sair de lá primeiro —
+    // senão dá o erro "Duplicate DailyIframe instances are not allowed".
+    if(broadcastCallObject){ try{ await broadcastCallObject.leave(); broadcastCallObject.destroy(); }catch(e){} broadcastCallObject = null; }
+    if(liveCallObject){ try{ await liveCallObject.leave(); liveCallObject.destroy(); }catch(e){} liveCallObject = null; }
     if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
