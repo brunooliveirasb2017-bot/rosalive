@@ -3066,6 +3066,19 @@ function pkUpdateRemoteVideo(){
 async function startBroadcast(){
   const btn = document.getElementById("go-live-btn");
   if(btn){ btn.disabled = true; btn.textContent = "Iniciando..."; }
+  // Se uma PK anterior ficou "grudada" (app fechado sem clicar em Sair da
+  // PK, por exemplo), garante que essa live nova começa limpa, sem barra,
+  // sem tela dividida e sem vídeo encolhido — sem mandar mensagem de PK
+  // encerrada nem contar vitória, já que essa PK nem era dessa live nova.
+  pkActive = false;
+  clearInterval(pkTimerId);
+  document.querySelectorAll(".live-stage").forEach(el=>el.classList.remove("pk-active"));
+  document.querySelectorAll(".pk-scorebar").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".pk-win").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".pk-leave-btn").forEach(el=>el.classList.remove("active"));
+  const scrBReset = document.getElementById("scr-broadcast"); if(scrBReset) scrBReset.classList.remove("pk-mode");
+  const scrLReset = document.getElementById("scr-live"); if(scrLReset) scrLReset.classList.remove("pk-mode");
+  if(pkGuestCallObject){ pkTeardownCallObject(pkGuestCallObject); pkGuestCallObject = null; }
   try{
     const res = await callEdgeFunction("start-live", {});
     myLiveSessionId = res.session_id;
@@ -3366,6 +3379,13 @@ function pkApplyStart(endsAt){
   clearInterval(pkTimerId);
   pkTimerId = setInterval(pkTick, 1000);
   pkTick();
+  // Redimensionar o vídeo de 100% pra 50% às vezes trava num quadro preto até
+  // alguém forçar o replay — isso garante que ele continua tocando.
+  setTimeout(()=>{
+    document.querySelectorAll(".live-video-el, .pk-remote-video").forEach(v=>{
+      if(v.srcObject){ v.play && v.play().catch(()=>{}); }
+    });
+  }, 350);
 }
 
 function pkTick(){
