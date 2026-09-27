@@ -3239,6 +3239,12 @@ function pkHandleInviteResponse(payload){
   pkOutboxTarget = null;
 }
 
+async function pkTeardownCallObject(obj){
+  if(!obj) return;
+  try{ await obj.leave(); }catch(e){ console.warn("pk teardown leave():", e); }
+  try{ await obj.destroy(); }catch(e){ console.warn("pk teardown destroy():", e); }
+}
+
 async function pkJoinAsGuest(sessionId){
   try{
     const res = await callEdgeFunction("join-live", { session_id: sessionId, role: "pk_guest" });
@@ -3246,9 +3252,18 @@ async function pkJoinAsGuest(sessionId){
     // Se eu já estava com minha própria live no ar (broadcastCallObject) ou
     // assistindo outra live (liveCallObject), preciso sair de lá primeiro —
     // senão dá o erro "Duplicate DailyIframe instances are not allowed".
-    if(broadcastCallObject){ try{ await broadcastCallObject.leave(); broadcastCallObject.destroy(); }catch(e){} broadcastCallObject = null; }
-    if(liveCallObject){ try{ await liveCallObject.leave(); liveCallObject.destroy(); }catch(e){} liveCallObject = null; }
-    if(pkGuestCallObject){ try{ pkGuestCallObject.leave(); pkGuestCallObject.destroy(); }catch(e){} pkGuestCallObject = null; }
+    // leave() e destroy() rodam cada um no seu try/catch, senão se o leave()
+    // falhar o destroy() nunca roda e a chamada antiga fica presa.
+    await pkTeardownCallObject(broadcastCallObject); broadcastCallObject = null;
+    await pkTeardownCallObject(liveCallObject); liveCallObject = null;
+    await pkTeardownCallObject(pkGuestCallObject); pkGuestCallObject = null;
+    // Rede de segurança: se sobrou alguma instância do Daily de uma tentativa
+    // anterior que falhou no meio do caminho (sem passar pelas variáveis acima),
+    // o próprio Daily sabe qual é e a gente fecha ela também.
+    if(window.DailyIframe && typeof window.DailyIframe.getCallInstance === "function"){
+      const leftover = window.DailyIframe.getCallInstance();
+      if(leftover) await pkTeardownCallObject(leftover);
+    }
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
     pkGuestCallObject.on("error", (e)=>console.error("Daily error (pk guest):", e));
