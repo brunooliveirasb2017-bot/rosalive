@@ -3311,6 +3311,25 @@ function pkHandleInviteResponse(payload){
   pkOutboxTarget = null;
 }
 
+/* Tela de quem ENTROU como convidado: como a chamada própria dela foi fechada
+   (o Daily só permite uma por vez), o vídeo vem da chamada de convidado.
+   Host (__pk_host__) na metade esquerda, a própria convidada na direita —
+   mesma ordem que o host e a audiência veem. */
+function pkUpdateGuestVideos(){
+  if(!pkGuestCallObject) return;
+  const parts = pkGuestCallObject.participants();
+  let host = null;
+  for(const id in parts){
+    if(!parts[id].local && parts[id].user_name === "__pk_host__"){ host = parts[id]; break; }
+  }
+  const leftEl = document.getElementById("broadcast-local-video");
+  const rightEl = document.getElementById("broadcast-pk-remote-video");
+  const playing = attachParticipantToVideoEl(host, leftEl);
+  attachParticipantToVideoEl(parts.local, rightEl);
+  const loading = document.getElementById("broadcast-stage-loading");
+  if(loading) loading.classList.toggle("hidden", playing);
+}
+
 async function pkTeardownCallObject(obj){
   if(!obj) return;
   try{ await obj.leave(); }catch(e){ console.warn("pk teardown leave():", e); }
@@ -3339,6 +3358,9 @@ async function pkJoinAsGuest(sessionId){
     pkGuestCallObject = window.DailyIframe.createCallObject();
     wireGiftListener(pkGuestCallObject, "broadcast-chat-feed");
     pkGuestCallObject.on("error", (e)=>console.error("Daily error (pk guest):", e));
+    ["joined-meeting","participant-joined","participant-updated","participant-left","track-started","track-stopped"].forEach(ev=>{
+      pkGuestCallObject.on(ev, pkUpdateGuestVideos);
+    });
     await pkGuestCallObject.join({ url: res.room_url, token: res.token, startVideoOff:false, startAudioOff:false, userName: "__pk_guest__" });
     pkIAmHost = false;
   }catch(e){
