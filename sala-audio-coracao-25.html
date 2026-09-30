@@ -920,13 +920,47 @@ function flyGiftEmoji(emoji){
   setTimeout(()=> el.remove(), 1700);
 }
 
+// Presentes com vídeo em tela cheia (nome do presente -> link do vídeo).
+// Pra adicionar outro presente com vídeo, só acrescenta uma linha aqui,
+// igual foi feito na tela de transmissão principal (index.html).
+const GIFT_FULLSCREEN_VIDEOS = {
+  "Te amo": "https://brunooliveirasb2017-bot.github.io/rosalive/assets/gifts/te-amo.mp4",
+};
+
+function playFullscreenGiftVideo(url, caption){
+  let overlay = document.getElementById("fullscreen-gift-video-overlay");
+  if(!overlay){
+    overlay = document.createElement("div");
+    overlay.id = "fullscreen-gift-video-overlay";
+    overlay.style.cssText = "display:none; position:fixed; inset:0; z-index:999; background:#000;";
+    overlay.innerHTML = `<video id="fullscreen-gift-video" style="width:100%; height:100%; object-fit:contain;" playsinline muted></video>
+      <div id="fullscreen-gift-video-caption" style="position:absolute; bottom:18px; left:0; right:0; text-align:center; color:#ffd257; font-weight:800; font-size:15px; text-shadow:0 2px 6px rgba(0,0,0,.8);"></div>`;
+    document.body.appendChild(overlay);
+  }
+  const videoEl = document.getElementById("fullscreen-gift-video");
+  document.getElementById("fullscreen-gift-video-caption").textContent = caption || "";
+  videoEl.src = url;
+  videoEl.muted = true; // autoplay só é garantido mudo — sem isso fica tela preta pra quem recebe
+  overlay.style.display = "block";
+  videoEl.currentTime = 0;
+  videoEl.play().catch((e)=> console.warn("Não deu pra tocar o vídeo do presente:", e));
+  const hide = ()=>{ overlay.style.display = "none"; videoEl.src = ""; videoEl.removeEventListener("ended", hide); };
+  videoEl.addEventListener("ended", hide);
+  setTimeout(hide, 12000);
+}
+
 function subscribeGiftsRealtime(){
   sb.channel("seat-gifts-"+ROOM_KEY)
     .on("postgres_changes", { event:"INSERT", schema:"public", table:"seat_room_gifts", filter:`room_key=eq.${ROOM_KEY}` }, (payload)=>{
       const g = payload.new;
-      flyGiftEmoji(g.gift_emoji);
-      showToast((g.receiver_id===myUserId ? "Você recebeu" : "Assento "+g.seat_number+" recebeu") + " " + g.gift_name + " 🎁");
-      addGiftToTotals(g);
+      const videoUrl = GIFT_FULLSCREEN_VIDEOS[g.gift_name];
+      if(videoUrl){
+        playFullscreenGiftVideo(videoUrl, "Alguém enviou " + g.gift_name);
+      } else {
+        flyGiftEmoji(g.gift_emoji);
+        showToast((g.receiver_id===myUserId ? "Você recebeu" : "Assento "+g.seat_number+" recebeu") + " " + g.gift_name + " 🎁");
+      }
+      addGiftToTotals(g); // o total da sala soma sempre, com ou sem vídeo
     })
     .subscribe();
 }
