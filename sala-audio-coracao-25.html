@@ -166,6 +166,23 @@
 .fw-video-overlay.show{display:block}
 .fw-reference-video{position:absolute;left:0;top:calc(50% - 195px);width:100vw;height:100vw;max-height:none;object-fit:fill;display:block}
 
+
+/* ===== GAME CENTER ===== */
+.game-center-btn{position:fixed;right:14px;bottom:82px;z-index:120;background:linear-gradient(135deg,#f4c542,#d4af37);color:#241800;border:1px solid #ffe69a;border-radius:18px;padding:9px 12px;font-weight:800;font-size:12px;box-shadow:0 6px 22px rgba(0,0,0,.35);cursor:pointer}
+.game-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;display:none;align-items:flex-end;justify-content:center}
+.game-modal.active{display:flex}
+.game-card{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:radial-gradient(120% 70% at 50% 0%,#241b08,#0c0b09 58%);border:1px solid var(--line);border-radius:22px 22px 0 0;padding:14px}
+.game-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.game-head h3{margin:0;font-family:var(--font-display);font-size:18px;color:#ffe9a8}.game-balance{font-size:11px;color:var(--muted)}
+.game-close{border:0;background:rgba(255,255,255,.08);color:#fff;border-radius:50%;width:30px;height:30px}
+.game-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+.game-tile{position:relative;min-height:112px;border:1px solid rgba(244,197,66,.28);border-radius:14px;background:linear-gradient(160deg,#2b210d,#100e0a);overflow:hidden;cursor:pointer;text-align:left;color:#fff;padding:10px}
+.game-tile .emoji{font-size:38px;display:block;text-align:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.45));margin:2px 0 6px}.game-tile b{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.game-tile small{display:block;color:#d8cda8;font-size:8px;margin-top:3px}.game-price{position:absolute;right:6px;top:6px;background:#0a0a0d;border:1px solid #d4af37;border-radius:999px;padding:3px 6px;color:#ffe9a8;font-size:8px;font-weight:800}
+.game-notice{margin-top:10px;padding:9px;border-radius:10px;background:rgba(255,255,255,.04);color:#bdb39a;font-size:9px;line-height:1.4}
+.game-admin{margin-top:14px;border-top:1px solid rgba(244,197,66,.18);padding-top:12px;display:none}.game-admin.show{display:block}.game-admin h4{margin:0 0 8px}.country-row{display:grid;grid-template-columns:1fr 86px;gap:6px;margin:5px 0}.country-row select,.country-row input{background:#14120d;color:#fff;border:1px solid #4c4022;border-radius:8px;padding:7px;font-size:10px}.game-admin button{background:#d4af37;color:#241800;border:0;border-radius:9px;padding:8px 12px;font-weight:800}
+.game-launch{position:fixed;inset:0;background:#000;z-index:700;display:none}.game-launch.active{display:block}.game-launch iframe{width:100%;height:100%;border:0}.game-launch .close-launch{position:absolute;right:10px;top:10px;z-index:3;width:36px;height:36px;border:0;border-radius:50%;background:rgba(0,0,0,.72);color:#fff;font-size:18px}
+@media(max-width:360px){.game-grid{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -217,6 +234,22 @@
   <div class="status-line" id="status-line">Entrando na sala…</div>
   <div style="text-align:center;font-size:10px;color:#665;opacity:.6;margin-top:2px;">versão do arquivo: BUILD_9</div>
 </div>
+
+<button class="game-center-btn" onclick="openGameCenter()">🎮 Jogos</button>
+<div class="game-modal" id="game-modal">
+  <div class="game-card">
+    <div class="game-head"><div><h3>🎮 Game Center</h3><div class="game-balance">Saldo: <b id="game-balance">0</b> moedas</div></div><button class="game-close" onclick="closeGameCenter()">✕</button></div>
+    <div class="game-grid" id="game-grid"></div>
+    <div class="game-notice">Os jogos são carregados pelo fornecedor conectado ao seu servidor. O navegador nunca recebe a chave secreta do fornecedor. O acesso por país e o débito da carteira são verificados no servidor antes do jogo abrir.</div>
+    <div class="game-admin" id="game-admin">
+      <h4>⚙️ Controle de jogos</h4>
+      <div id="country-rules"></div>
+      <button onclick="saveGameRules()">Salvar bloqueios</button>
+    </div>
+  </div>
+</div>
+<div class="game-launch" id="game-launch"><button class="close-launch" onclick="closeGameLaunch()">✕</button><iframe id="game-frame" allow="autoplay; fullscreen; gamepad; payment" allowfullscreen></iframe></div>
+
 <div class="toast" id="toast"></div>
 <div class="modal-back" id="modal-gift">
   <div class="modal-card">
@@ -1126,11 +1159,13 @@ function unlockFireworkMedia(){
 document.addEventListener('pointerdown', unlockFireworkMedia, {once:true, passive:true});
 document.addEventListener('touchstart', unlockFireworkMedia, {once:true, passive:true});
 
+\n// ===== GAME CENTER =====\nconst GAME_CATALOG = [\n  {id:'teen-patti',name:'Teen Patti',emoji:'🃏',cost:100,type:'cards'},\n  {id:'pro-patti',name:'Pro Patti',emoji:'♠️',cost:100,type:'cards'},\n  {id:'dragon-tiger',name:'Dragon Tiger',emoji:'🐉',cost:100,type:'cards'},\n  {id:'hilo',name:'HiLo',emoji:'🎴',cost:50,type:'cards'},\n  {id:'777',name:'777',emoji:'7️⃣',cost:50,type:'slots'},\n  {id:'fruit-777',name:'777 Frutas',emoji:'🍒',cost:50,type:'slots'},\n  {id:'fortune-pig',name:'Fortune Pig',emoji:'🐷',cost:50,type:'slots'},\n  {id:'pirate',name:'Pirate',emoji:'🏴‍☠️',cost:50,type:'slots'},\n  {id:'bee-slot',name:'Bee Slot',emoji:'🐝',cost:50,type:'slots'},\n  {id:'treasure',name:'Treasure',emoji:'💰',cost:50,type:'slots'},\n  {id:'dice',name:'Dice',emoji:'🎲',cost:50,type:'instant'},\n  {id:'crash',name:'Rocket / Crash',emoji:'🚀',cost:100,type:'crash'},\n  {id:'football',name:'Football',emoji:'⚽',cost:50,type:'sports'},\n  {id:'luxury-car',name:'Luxury Car',emoji:'🏎️',cost:50,type:'instant'}\n];\nconst GAME_COUNTRIES = ['BR','US','PT','MX','IN','PH','NG','CO','PE','CL','AR','OTHER'];\nlet gameRules = {};\nfunction renderGameCatalog(){\n  const el=document.getElementById('game-grid'); if(!el)return;\n  el.innerHTML=GAME_CATALOG.map(g=>`<button class="game-tile" onclick="launchGame('${g.id}')"><span class="game-price">🪙 ${g.cost}</span><span class="emoji">${g.emoji}</span><b>${g.name}</b><small>${g.type}</small></button>`).join('');\n}\nasync function openGameCenter(){\n  renderGameCatalog();\n  document.getElementById('game-modal').classList.add('active');\n  try{const {data:p}=await sb.from('profiles').select('balance').eq('id',myUserId).single();document.getElementById('game-balance').textContent=fmt(p?.balance||0);}catch(e){}\n  await loadGameRules();\n}\nfunction closeGameCenter(){document.getElementById('game-modal').classList.remove('active')}\nasync function launchGame(id){\n  const g=GAME_CATALOG.find(x=>x.id===id); if(!g)return;\n  if(!g.uid){showToast('Este jogo ainda precisa do código do fornecedor.');return;}\n  try{\n    showToast('Verificando acesso e saldo…');\n    const res=await callEdgeFunction('game-launch',{game_id:g.id,cost:g.cost,currency:'COINS',language:(navigator.language||'en').slice(0,2)});\n    if(!res || !res.game_url) throw new Error('O fornecedor não devolveu o link do jogo.');\n    document.getElementById('game-frame').src=res.game_url;\n    document.getElementById('game-launch').classList.add('active');\n  }catch(e){showToast((e&&e.message)||'Não foi possível abrir o jogo.');}\n}\nfunction closeGameLaunch(){document.getElementById('game-frame').src='about:blank';document.getElementById('game-launch').classList.remove('active')}\nasync function loadGameRules(){\n  try{\n    const {data,error}=await sb.from('game_country_rules').select('country_code,enabled');\n    if(error)throw error; gameRules={}; (data||[]).forEach(x=>gameRules[x.country_code]=x.enabled);\n    const {data:adm}=await sb.from('game_admins').select('user_id').eq('user_id',myUserId).maybeSingle();\n    if(adm){document.getElementById('game-admin').classList.add('show');renderCountryRules();}\n  }catch(e){}\n}\nfunction renderCountryRules(){\n  const el=document.getElementById('country-rules'); if(!el)return;\n  el.innerHTML=GAME_COUNTRIES.map(c=>`<div class="country-row"><span>${c}</span><select id="country-${c}"><option value="1" ${gameRules[c]!==false?'selected':''}>Liberado</option><option value="0" ${gameRules[c]===false?'selected':''}>Bloqueado</option></select></div>`).join('');\n}\nasync function saveGameRules(){\n  try{\n    const rows=GAME_COUNTRIES.map(c=>({country_code:c,enabled:document.getElementById('country-'+c).value==='1',updated_by:myUserId}));\n    const {error}=await sb.from('game_country_rules').upsert(rows,{onConflict:'country_code'}); if(error)throw error;\n    showToast('Bloqueios salvos.');\n  }catch(e){showToast('Não foi possível salvar: '+(e.message||e));}\n}\n
 // ---------- Init ----------
 async function init(){
   const { data: auth } = await sb.auth.getUser();
   if(!auth || !auth.user){ window.location.href="index.html"; return; }
   myUserId = auth.user.id;
+  await loadGameRules();
 
   const { data: profile } = await sb.from("profiles").select("name").eq("id", myUserId).single();
   myDisplayName = profile ? profile.name : "—";
