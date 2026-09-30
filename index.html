@@ -934,6 +934,10 @@
   </div>
 </div>
 
+<div id="fullscreen-gift-video-overlay" style="display:none; position:fixed; inset:0; z-index:999; background:#000;">
+  <video id="fullscreen-gift-video" style="width:100%; height:100%; object-fit:contain;" playsinline></video>
+  <div id="fullscreen-gift-video-caption" style="position:absolute; bottom:18px; left:0; right:0; text-align:center; color:#ffd257; font-weight:800; font-size:15px; text-shadow:0 2px 6px rgba(0,0,0,.8);"></div>
+</div>
 <div id="gift-overlay" style="display:none;">
   <div class="go-veil"></div>
   <div class="go-flash" id="go-flash"></div>
@@ -2288,10 +2292,10 @@ async function sendGiftNow(gift){
     if(error) throw error;
     closeModal("modal-gift");
     await refreshCurrentUser();
-    renderGiftAnimation(data.gift_emoji, data.gift_name, currentUser.name, data.duration_seconds || 3);
+    renderGiftAnimation(data.gift_emoji, data.gift_name, currentUser.name, data.duration_seconds || 3, data.gift_video_url);
     showGiftRecentBanner(currentUser.name, data.gift_name);
     if(liveCallObject){
-      liveCallObject.sendAppMessage({ type:"gift", emoji:data.gift_emoji, name:data.gift_name, sender:currentUser.name, duration:data.duration_seconds || 3 }, "*");
+      liveCallObject.sendAppMessage({ type:"gift", emoji:data.gift_emoji, name:data.gift_name, sender:currentUser.name, duration:data.duration_seconds || 3, video_url:data.gift_video_url }, "*");
     }
   }catch(e){
     banner.innerHTML = `<div class="banner banner-err">${e.message}</div>`;
@@ -2403,7 +2407,25 @@ function goSparkleTail(duration){
   }catch(e){}
 }
 
-function renderGiftAnimation(emoji, name, sender, durationSeconds){
+function playFullscreenGiftVideo(url, caption){
+  const overlay = document.getElementById("fullscreen-gift-video-overlay");
+  const videoEl = document.getElementById("fullscreen-gift-video");
+  document.getElementById("fullscreen-gift-video-caption").textContent = caption || "";
+  videoEl.src = url;
+  overlay.style.display = "block";
+  videoEl.currentTime = 0;
+  videoEl.play().catch(()=>{});
+  const hide = ()=>{ overlay.style.display = "none"; videoEl.src = ""; videoEl.removeEventListener("ended", hide); };
+  videoEl.addEventListener("ended", hide);
+  // segurança: se o vídeo travar por qualquer motivo, não trava a tela pra sempre
+  setTimeout(hide, 12000);
+}
+
+function renderGiftAnimation(emoji, name, sender, durationSeconds, videoUrl){
+  if(videoUrl){
+    playFullscreenGiftVideo(videoUrl, sender + " enviou " + name);
+    return;
+  }
   const overlay = document.getElementById("gift-overlay");
   const box = overlay.querySelector(".gift-box");
   const imgEl = document.getElementById("gift-overlay-img");
@@ -2466,7 +2488,7 @@ function wireGiftListener(callObj, chatFeedId){
   callObj.on("app-message", (ev)=>{
     if(!ev || !ev.data) return;
     if(ev.data.type === "gift"){
-      renderGiftAnimation(ev.data.emoji, ev.data.name, ev.data.sender, ev.data.duration || 3);
+      renderGiftAnimation(ev.data.emoji, ev.data.name, ev.data.sender, ev.data.duration || 3, ev.data.video_url);
     } else if(ev.data.type === "chat" && chatFeedId){
       renderChatMessage(chatFeedId, ev.data.sender, ev.data.text);
     } else if(ev.data.type === "pk_start"){
